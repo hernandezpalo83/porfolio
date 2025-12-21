@@ -32,4 +32,4 @@ RUN mkdir -p /app/staticfiles /app/photos
 RUN cd /app && python manage.py collectstatic --noinput --clear
 
 # Comando para correr la aplicación
-CMD ["sh", "-c", "cd /app && python manage.py migrate && gunicorn app.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120"]
+CMD ["sh", "-c", "cd /app && python manage.py migrate && gunicorn app.app.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120"]
