@@ -1,0 +1,12 @@
+Django>=5.1
+django-tables2
+django-filter
+django-htmx
+crispy-bootstrap5
+whitenoise
+Pillow
+python-dotenv
+whitenoise
+gunicorn
+django-ckeditor-5
+# Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python
