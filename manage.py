@@ -3,6 +3,9 @@
 import os
 import sys
 
+# Add app directory to path so Django can find settings
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
+
 
 def main():
     """Run administrative tasks."""
