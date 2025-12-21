@@ -22,7 +22,7 @@ services:
           property: connectionString
       - key: DJANGO_SETTINGS_MODULE
         scope: run_and_build
-        value: app.settings
+        value: app.app.settings
     disk:
       name: portfolio_data
       mountPath: /var/www/data

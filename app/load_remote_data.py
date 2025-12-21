@@ -7,7 +7,7 @@ import os
 import sys
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.app.settings')
 django.setup()
 
 from django.core.management import call_command

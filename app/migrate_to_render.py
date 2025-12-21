@@ -22,7 +22,7 @@ import base64
 from pathlib import Path
 
 # Configurar Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.app.settings')
 django.setup()
 
 from django.core.management import call_command
