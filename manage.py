@@ -3,13 +3,14 @@
 import os
 import sys
 
-# Add app directory to path so Django can find settings
+# Add app directory to path so Django can find settings (inner package is app/app)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app', 'app'))
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.app.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
