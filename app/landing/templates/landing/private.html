@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Privada</title>
+</head>
+<body>
+    <h1>Bienvenido al área privada</h1>
+    <p>Este contenido solo es visible para usuarios autenticados.</p>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link">Logout</button>
+</form>
+</body>
+</html>

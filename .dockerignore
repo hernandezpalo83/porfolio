@@ -1,0 +1,38 @@
+# flyctl launch added from app/.gitignore
+# Python
+app/**/__pycache__
+app/**/*.py[cod]
+app/**/*.pyo
+app/**/*.pyd
+app/**/*.pyc
+app/**/*.pdb
+app/**/*.egg-info
+app/**/*.egg
+app/**/*.env
+app/**/.env
+app/**/venv
+app/**/ENV
+app/**/env
+app/**/.Python
+
+# Django
+app/**/db.sqlite3
+app/staticfiles
+app/media
+app/*.log
+
+# VSCode
+app/**/.vscode
+
+# MacOS
+app/**/.DS_Store
+
+# Docker
+app/**/*.pid
+
+app/**/.env
+
+# flyctl launch added from venv/.gitignore
+# Created by venv; see https://docs.python.org/3/library/venv.html
+venv/**/*
+fly.toml

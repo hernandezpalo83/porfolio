@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+*.env
+.env
+venv/
+ENV/
+env/
+.Python
+
+# Django
+db.sqlite3
+/staticfiles/
+/media/
+/*.log
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Docker
+*.pid
+
+.env

@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+header {
+    background: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+header h1 {
+    margin: 0;
+}
+nav {
+    background: #444;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    text-transform: uppercase;
+}
+.section {
+    padding: 20px;
+    background: #fff;
+    margin: 20px 0;
+}
+.section h2 {
+    margin-top: 0;
+}
+.about img {
+    float: left;
+    margin-right: 20px;
+    border-radius: 50%;
+}
+.skills ul, .experience ul, .education ul, .projects ul {
+    list-style: none;
+    padding: 0;
+}
+.skills li, .experience li, .education li, .projects li {
+    background: #f4f4f4;
+    margin: 5px 0;
+    padding: 10px;
+    border-left: 5px solid #333;
+}
+.contact p {
+    margin: 5px 0;
+}

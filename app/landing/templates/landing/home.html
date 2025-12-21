@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portafolio personal Javier Hernandez Martin">  
+	<meta name="author" content="Javier Hernandez Martin">
+    <title>Portafolio | Javier Hernandez Martin</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'landing/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/css/modal.css' %}">
+    <link rel="icon" type="image/png" href="landing/img/favicon.png">
+</head>
+<body>
+
+    <header>   	
+        <div class="row">
+ 
+            <div class="top-bar">
+                <a class="menu-toggle" href="#"><span>Menu</span></a>
+ 
+                <div class="logo">
+                  <a href="index.html">HernandezPalo</a>
+               </div>		      
+ 
+                <nav id="main-nav-wrap">
+                     <ul class="main-navigation">
+                         <li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
+                         <li><a class="smoothscroll"  href="#about" title="">About</a></li>
+                         <li><a class="smoothscroll"  href="#skills" title="">Skills</a></li>
+                         <li><a class="smoothscroll"  href="#experience" title="">Experiencia</a></li>
+                         <li><a class="smoothscroll"  href="#education" title="">Formación</a></li>					
+                         <li><a class="smoothscroll"  href="#projects" title="">Proyectos</a></li>	
+                         <li><a class="smoothscroll"  href="#contact" title="">Contacto</a></li>	
+                     </ul>
+                 </nav>    		
+            </div>
+            
+        </div>
+    </header>
+
+    <div class="container">
+        <section id="about" class="section about">
+            <img src="{{ info.photo.url }}" alt="Foto de perfil" width="150">
+            <h2>Sobre mí</h2>
+            <p>Nombre: {{ info.name }}</p>
+            <p>Bio: {{ info.bio }}</p>
+            <p>Email: {{ info.email }}</p>
+            <p>Teléfono: {{ info.phone }}</p>
+            <p>Dirección: {{ info.address }}</p>
+        </section>
+        <section id="skills" class="section skills">
+            <h2>Skills</h2>
+            <ul>
+                {% for skill in skills %}
+                <li>{{ skill.name }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section id="experience" class="section experience">
+            <h2>Experiencia</h2>
+            <ul>
+                {% for experience in experiences %}
+                <li>{{ experience.company }} - {{ experience.position }} ({{ experience.start_date }} - {{ experience.end_date }})</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section id="education" class="section education">
+            <h2>Formación</h2>
+            <ul>
+                {% for edu in education %}
+                <li>{{ edu.institution }} - {{ edu.degree }} ({{ edu.start_date }} - {{ edu.end_date }})</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section id="projects" class="section projects">
+            <h2>Proyectos</h2>
+            <ul>
+                {% for project in projects %}
+                <li>{{ project.title }}: {{ project.description }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section id="contact" class="section contact">
+            <h2>Contacto</h2>
+            <p>Email: {{ contact.email }}</p>
+            <p>Teléfono: {{ contact.phone }}</p>
+        </section>
+
+    <!-- El Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Iniciar sesión</h2>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'landing/js/scripts.js' %}"></script>    
+</body>
+</html>
