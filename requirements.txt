@@ -6,7 +6,8 @@ crispy-bootstrap5
 whitenoise
 Pillow
 python-dotenv
-whitenoise
 gunicorn
 django-ckeditor-5
+psycopg[binary]
+dj-database-url
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python

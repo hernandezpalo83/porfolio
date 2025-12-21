@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -95,21 +96,32 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Allow overriding the SQLite database path via the DB_PATH env var.
-# This is useful for platforms like Fly where we mount a persistent volume
-# and point `DB_PATH` to the mounted path (for example `/data/db.sqlite3`).
-db_path = os.getenv('DB_PATH')
-if db_path:
-    db_name = db_path
-else:
-    db_name = BASE_DIR / 'db.sqlite3'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': db_name,
+# En Render, usa PostgreSQL vía DATABASE_URL
+# En local, usa SQLite
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    # Producción: usar PostgreSQL desde Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Desarrollo: usar SQLite
+    db_path = os.getenv('DB_PATH')
+    if db_path:
+        db_name = db_path
+    else:
+        db_name = BASE_DIR / 'db.sqlite3'
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': db_name,
+        }
+    }
 
 
 # Password validation
