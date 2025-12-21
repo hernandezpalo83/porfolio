@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+/media/
+/staticfiles/
+/static/
+*.pot
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Configuración
+.env
+.env.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# Datos sensibles
+datos_full.json
+datos_full.json.gz
+datos_*.json
+backup_*.sql
+backup_*.sql.gz
+
+# Certificados
+*.pem
+*.key
+*.crt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Fly.io (eliminado)
+fly.toml
+
+# Temporal
+*.tmp
+.tmp/
+temp/
