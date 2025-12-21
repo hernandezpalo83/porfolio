@@ -156,10 +156,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'private' 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    os.path.join(BASE_DIR, 'static'),
-]
+# Directorio raíz para los archivos estáticos
+STATICFILES_DIRS = []
 # Configuración adicional para crispy-forms
 CRISPY_TEMPLATE_PACK = 'bootstrap5'  # O 'bootstrap5', 'tailwind', etc., dependiendo de tu elección
 
