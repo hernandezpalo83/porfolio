@@ -1,6 +1,6 @@
 
 import django_tables2 as tables
-from gym.models import Product, Producto
+from app.gym.models import Product, Producto
 
 class ProductHTMxTable(tables.Table):
     class Meta:

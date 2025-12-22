@@ -3,9 +3,9 @@ from django_tables2 import RequestConfig
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
 
-from gym.models import Product, Producto
-from gym.tables import ProductHTMxTable, ProductoTable
-from gym.filters import ProductFilter, ProductoFilter
+from app.gym.models import Product, Producto
+from app.gym.tables import ProductHTMxTable, ProductoTable
+from app.gym.filters import ProductFilter, ProductoFilter
 
 class ProductHTMxTableView(SingleTableMixin, FilterView):
     table_class = ProductHTMxTable

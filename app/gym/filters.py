@@ -2,7 +2,7 @@
 from decimal import Decimal
 from django.db.models import Q
 import django_filters
-from gym.models import Product, Producto
+from app.gym.models import Product, Producto
 
 class ProductFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
