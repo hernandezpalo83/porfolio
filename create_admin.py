@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')  # Ajusta si tu settings está en otra ruta
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.config.settings') 
 django.setup()
 
 from django.contrib.auth import get_user_model
