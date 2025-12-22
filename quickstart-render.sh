@@ -44,7 +44,7 @@ if [[ -f "app/db.sqlite3" ]]; then
     python3 -c "
 import os
 os.chdir('app')
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.app.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 import django
 django.setup()
 from django.core.management import call_command
