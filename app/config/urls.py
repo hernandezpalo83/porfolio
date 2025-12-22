@@ -20,8 +20,8 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('landing.urls')),
-    path('', include('gym.urls')),
+    path('', include('app.landing.urls')),
+    path('', include('app.gym.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='landing/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),

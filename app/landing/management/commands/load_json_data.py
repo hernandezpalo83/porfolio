@@ -50,8 +50,8 @@ class Command(BaseCommand):
             )
 
             # Show summary
-            from landing.models import Skill, Experience, Education, Project, Info, Contact
-            from gym.models import Producto
+            from app.landing.models import Skill, Experience, Education, Project, Info, Contact
+            from app.gym.models import Producto
 
             self.stdout.write('\nData Summary:')
             self.stdout.write(f'  Skills: {Skill.objects.count()}')
