@@ -56,8 +56,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5', 
     'django_ckeditor_5',
-    'landing',
-    'gym'
+    'app.landing',
+    'app.gym'
 ]
 
 MIDDLEWARE = [
