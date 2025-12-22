@@ -27,7 +27,11 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # Ahora puedes usar las variables de entorno
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1"
+).split(",")
+
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-!0-@1+kl^00mix&^^79fv5+93lvh1szx2u!t+e#27udxrr+t*+')
 
