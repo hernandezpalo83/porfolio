@@ -14,7 +14,7 @@
           hx-swap="outerHTML" 
           hx-indicator=".progress" 
           class="form-inline">
-        {% crispy filter.form %}
+        {{ filter.form.as_p }}
     </form>
 
     {# Progress indicator #}
