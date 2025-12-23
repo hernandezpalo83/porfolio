@@ -9,7 +9,7 @@ from app.gym.filters import ProductFilter, ProductoFilter
 
 class ProductHTMxTableView(SingleTableMixin, FilterView):
     table_class = ProductHTMxTable
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by("name")
     filterset_class = ProductFilter
     paginate_by = 15
 
