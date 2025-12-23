@@ -2,6 +2,7 @@ Django>=5.1
 django-tables2
 django-filter
 django-htmx
+django-crispy-forms
 crispy-bootstrap5
 whitenoise
 Pillow
