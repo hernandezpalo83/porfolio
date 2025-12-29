@@ -172,6 +172,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'private' 
+LOGIN_URL = 'login'
 
 STATIC_URL = '/static/'
 # Directorio raíz para los archivos estáticos
