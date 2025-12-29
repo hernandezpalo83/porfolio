@@ -3,15 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión</title>
+    <title>Login | Javier Hernandez Martin</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'landing/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/css/modal.css' %}">
+    <style>
+        /* Ajustes específicos para centrar el formulario de login en una página limpia */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding-top: 100px; /* Espacio para el header fijo */
+        }
+        .login-card {
+            background: #FFFFFF;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-card h2 {
+            margin-bottom: 30px;
+            color: #313131;
+            text-align: center;
+            font-weight: bold;
+        }
+        .form-field { margin-bottom: 20px; }
+        .form-field label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .form-field input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Importante para el ancho */
+        }
+        .btn-login {
+            width: 100%;
+            background-color: #313131; /* Ajusta al color de tu marca */
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-login:hover { background-color: #111; }
+        .errorlist { color: #ff4d4d; list-style: none; padding: 0; font-size: 0.9em; }
+    </style>
 </head>
-<body>
-    <h1>Iniciar sesión</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Iniciar sesión</button>
-    </form>
-    <p>¿No tienes una cuenta? <a href="#">Regístrate</a></p>
+<body style="background-color: #f5f5f5;">
+
+    <header style="background-color: #111; position: fixed; width: 100%; top: 0; z-index: 1000;">    
+        <div class="row">
+            <div class="top-bar">
+                <div class="logo">
+                  <a href="{% url 'home' %}" style="color: white;">HernandezPalo</a>
+               </div>             
+            </div>
+        </div>
+    </header>
+
+    <div class="login-container">
+        <div class="login-card">
+            <h2>Acceso Privado</h2>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <ul class="errorlist">
+                        <li>Usuario o contraseña incorrectos.</li>
+                    </ul>
+                {% endif %}
+
+                <div class="form-field">
+                    <label for="id_username">Usuario</label>
+                    <input type="text" name="username" id="id_username" required placeholder="Tu usuario">
+                </div>
+
+                <div class="form-field">
+                    <label for="id_password">Contraseña</label>
+                    <input type="password" name="password" id="id_password" required placeholder="********">
+                </div>
+
+                <button type="submit" class="btn-login">ENTRAR</button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="{% url 'home' %}" style="color: #777; font-size: 0.9em; text-decoration: none;">← Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
