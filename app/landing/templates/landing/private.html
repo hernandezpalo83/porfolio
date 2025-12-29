@@ -1,16 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área Privada</title>
-</head>
-<body>
-    <h1>Bienvenido al área privada</h1>
-    <p>Este contenido solo es visible para usuarios autenticados.</p>
-    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-link">Logout</button>
-</form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold text-primary">Panel de Control</h1>
+            <p class="lead text-muted">Bienvenido, <strong>{{ user.username }}</strong>. Tienes acceso a los siguientes módulos privados.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger shadow-sm">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for module in modules %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 hover-shadow transition">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-3 p-3 me-3">
+                            <i class="bi {{ module.icon }} fs-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-uppercase text-muted small fw-bold">{{ module.category }}</span>
+                            <h5 class="card-title mb-0 fw-bold">{{ module.title }}</h5>
+                        </div>
+                    </div>
+                    <p class="card-text text-muted">{{ module.description }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                    <a href="{% url module.url_name %}" class="btn btn-primary w-100 fw-bold">
+                        Abrir Herramienta <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-5 p-4 bg-light rounded-3 border">
+        <div class="row align-items-center">
+            <div class="col-md-9">
+                <h6 class="fw-bold mb-1 text-dark">¿Necesitas añadir un nuevo módulo?</h6>
+                <p class="mb-0 text-muted small">Configura nuevas URLs en el archivo de rutas y agrégalas al diccionario de la vista.</p>
+            </div>
+            <div class="col-md-3 text-end">
+                <a href="/admin/" class="btn btn-sm btn-dark">Acceso Admin</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important;
+        transition: all 0.3s ease;
+    }
+    .feature-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+    }
+    .transition {
+        transition: all 0.3s ease;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
