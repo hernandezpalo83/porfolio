@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold">Gestor de Prompts para PMs</h1>
+            <p class="lead text-muted">Herramientas exclusivas para optimizar el ciclo de vida del producto.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-primary">Usuario: {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger ms-2">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por título o descripción..." value="{{ query }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="category" class="form-select">
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for prompt in prompts %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="card-title fw-bold">{{ prompt.title }}</h5>
+                        <span class="badge rounded-pill bg-light text-dark border">{{ prompt.category }}</span>
+                    </div>
+                    <p class="card-text text-muted small mt-2">{{ prompt.description }}</p>
+                    
+                    <div class="bg-dark text-light p-3 rounded mb-3 position-relative">
+                        <code id="prompt-{{ prompt.id }}" class="text-info small">{{ prompt.prompt }}</code>
+                        <button onclick="copyToClipboard('prompt-{{ prompt.id }}')" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2" title="Copiar">
+                            <i class="bi bi-clipboard"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="mt-2">
+                        {% for tag in prompt.tags %}
+                            <span class="badge bg-secondary opacity-75">#{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No se encontraron prompts que coincidan con tu búsqueda.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function copyToClipboard(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Prompt copiado al portapapeles');
+    });
+}
+</script>
+{% endblock %}

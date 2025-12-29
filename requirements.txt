@@ -11,4 +11,5 @@ gunicorn
 django-ckeditor-5
 psycopg[binary]
 dj-database-url
+requests
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python

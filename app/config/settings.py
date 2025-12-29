@@ -25,7 +25,8 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # Ahora puedes usar las variables de entorno
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
+
 
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
@@ -61,7 +62,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5', 
     'django_ckeditor_5',
     'app.landing',
-    'app.gym'
+    'app.gym',
+    'app.prompts',
 ]
 
 MIDDLEWARE = [
