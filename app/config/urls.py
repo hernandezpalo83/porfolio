@@ -19,10 +19,13 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from app.landing.sitemaps import StaticViewSitemap
+from django.conf.urls import handler404
 
 sitemaps = {
     'static': StaticViewSitemap,
 }
+
+handler404 = 'app.landing.views.error_404_view'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
