@@ -17,9 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
+from app.landing.sitemaps import StaticViewSitemap, ProjectSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'projects': ProjectSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},name='django.contrib.sitemaps.views.sitemap'),
     path('', include('app.landing.urls')),
     path('', include('app.gym.urls')),
     path('', include('app.prompts.urls')),
