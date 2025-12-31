@@ -20,6 +20,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from app.landing.sitemaps import StaticViewSitemap
 from django.conf.urls import handler404
+from app.landing.views import export_data_view
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -36,5 +37,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='landing/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
+    path("admin/db-backup/", export_data_view, name="db_backup"),
     
 ]

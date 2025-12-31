@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
 from .models import Info, Skill, Experience, Education, Project, Contact
-
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.management import call_command
+from django.contrib.auth.decorators import user_passes_test
+import io
 
 def error_404_view(request, exception):
     return render(request, 'landing/404.html', status=404)
@@ -60,3 +63,30 @@ def home(request):
         'contact': contact,
     }
     return render(request, 'landing/index.html', context)
+
+def is_superuser(user):
+    return user.is_authenticated and user.is_superuser
+    
+@user_passes_test(is_superuser)
+def export_data_view(request):
+    """
+    Exporta los datos de las apps landing y gym a un JSON descargable.
+    Solo accesible por superusuarios.
+    """
+    buffer = io.StringIO()
+
+    call_command(
+        "dumpdata",
+        "landing",
+        "gym",
+        indent=2,
+        stdout=buffer,
+    )
+
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type="application/json"
+    )
+    response["Content-Disposition"] = 'attachment; filename="db_backup.json"'
+
+    return response
