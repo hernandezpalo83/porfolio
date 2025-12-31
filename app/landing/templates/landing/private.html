@@ -5,7 +5,10 @@
     <div class="row mb-5 align-items-center">
         <div class="col-md-8">
             <h1 class="display-4 fw-bold text-primary">Panel de Control</h1>
-            <p class="lead text-muted">Bienvenido, <strong>{{ user.username }}</strong>. Tienes acceso a los siguientes módulos privados.</p>
+            <p class="lead text-muted">
+                Bienvenido, <strong>{{ user.username }}</strong>.
+                Tienes acceso a los siguientes módulos privados.
+            </p>
         </div>
         <div class="col-md-4 text-md-end">
             <form action="{% url 'logout' %}" method="post" style="display:inline;">
@@ -27,11 +30,17 @@
                             <i class="bi {{ module.icon }} fs-4"></i>
                         </div>
                         <div>
-                            <span class="text-uppercase text-muted small fw-bold">{{ module.category }}</span>
-                            <h5 class="card-title mb-0 fw-bold">{{ module.title }}</h5>
+                            <span class="text-uppercase text-muted small fw-bold">
+                                {{ module.category }}
+                            </span>
+                            <h5 class="card-title mb-0 fw-bold">
+                                {{ module.title }}
+                            </h5>
                         </div>
                     </div>
-                    <p class="card-text text-muted">{{ module.description }}</p>
+                    <p class="card-text text-muted">
+                        {{ module.description }}
+                    </p>
                 </div>
                 <div class="card-footer bg-transparent border-0 p-4 pt-0">
                     <a href="{% url module.url_name %}" class="btn btn-primary w-100 fw-bold">
@@ -43,14 +52,41 @@
         {% endfor %}
     </div>
 
-    <div class="mt-5 p-4 bg-light rounded-3 border">
+    <!-- BLOQUE BACKUP -->
+    <div class="mt-5 p-4 bg-white rounded-3 border shadow-sm">
         <div class="row align-items-center">
-            <div class="col-md-9">
-                <h6 class="fw-bold mb-1 text-dark">¿Necesitas añadir un nuevo módulo?</h6>
-                <p class="mb-0 text-muted small">Configura nuevas URLs en el archivo de rutas y agrégalas al diccionario de la vista.</p>
+            <div class="col-md-8">
+                <h6 class="fw-bold mb-1 text-primary">
+                    <i class="bi bi-database-down me-1"></i> Copia de seguridad
+                </h6>
+                <p class="mb-0 text-muted small">
+                    Genera y consulta el backup completo de la base de datos
+                    (apps <strong>landing</strong> y <strong>gym</strong>).
+                    Acción restringida a superusuarios.
+                </p>
             </div>
-            <div class="col-md-3 text-end">
-                <a href="/admin/" class="btn btn-sm btn-dark">Acceso Admin</a>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <!-- POST: GENERAR BACKUP -->
+                <form action="{% url 'db_backup' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm me-2">
+                        <i class="bi bi-arrow-repeat"></i> Generar copia
+                    </button>
+                </form>
+
+                <!-- GET: DESCARGAR -->
+                <a href="{% url 'db_backup' %}?download=1"
+                   class="btn btn-outline-primary btn-sm me-2">
+                    <i class="bi bi-download"></i> Descargar
+                </a>
+
+                <!-- GET: VER -->
+                <a href="{% url 'db_backup' %}"
+                   target="_blank"
+                   class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-eye"></i> Ver JSON
+                </a>
             </div>
         </div>
     </div>
@@ -74,5 +110,6 @@
     }
 </style>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 {% endblock %}
