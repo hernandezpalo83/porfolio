@@ -3,16 +3,16 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.conf import settings
 
-from app.landing.models import Proyecto
-from app.gym.models import Ejercicio
+from app.landing.models import Project
+from app.gym.models import Product
 
 
 class Command(BaseCommand):
     help = "Inicializa la base de datos desde db_backup.json si está vacía"
 
     def handle(self, *args, **options):
-        has_landing_data = Proyecto.objects.exists()
-        has_gym_data = Ejercicio.objects.exists()
+        has_landing_data = Project.objects.exists()
+        has_gym_data = Product.objects.exists()
 
         if has_landing_data or has_gym_data:
             self.stdout.write(
