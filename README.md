@@ -1,8 +1,9 @@
-🚀 **Portfolio Profesional - Javier Hernández Martin**
+# 🚀 Portfolio Profesional - Javier Hernández Martin
 
-Este proyecto es mi portafolio personal y plataforma técnica, diseñado para centralizar mi experiencia, proyectos de desarrollo y una biblioteca especializada de prompts para Product Managers. Construido con Django y desplegado de forma automatizada en Render.
+Este proyecto es mi **portfolio profesional y plataforma técnica**, diseñado para centralizar mi experiencia, proyectos de desarrollo y una **biblioteca especializada de prompts** para Product Managers.  
+Construido con **Django 5.1** y PostgreSQL (ahora gestionada en **Supabase**), desplegado de forma automatizada en **Render**.
 
-🌐 **Sitio en vivo:**
+🌐 **Sitio en vivo:**  
 [Enlace al sitio]
 
 ---
@@ -10,56 +11,69 @@ Este proyecto es mi portafolio personal y plataforma técnica, diseñado para ce
 ## 🛠️ Tecnologías Aplicadas
 
 ### **Backend & Lógica**
-- **Python 3.11+**: Lenguaje principal.
-- **Django 5.x**: Framework robusto para la gestión de datos, seguridad y routing.
-- **Django Sites & Sitemaps**: Configuración avanzada de SEO dinámico.
-- **PostgreSQL**: Base de datos relacional (gestionada en Render).
+- **Python 3.11+**: Lenguaje principal para lógica de negocio y scripts de administración.
+- **Django 5.1**: Framework robusto para gestión de datos, seguridad y routing.
+- **Django Sites & Sitemaps**: SEO dinámico y gestión avanzada de URLs.
+- **PostgreSQL (Supabase)**: Base de datos relacional, ahora con persistencia segura y pooler de sesión.
 
 ### **Frontend**
-- **Bootstrap 5 / HTML5 / CSS3**: Diseño responsive y moderno.
+- **Bootstrap 5 / HTML5 / CSS3**: Diseño responsive, moderno y consistente.
 - **Bootstrap Icons**: Librería de iconos vectoriales.
-- **JSON dinámico**: Consumo de datos externos para la biblioteca de prompts.
+- **JSON dinámico**: Para la biblioteca de prompts y backups de datos.
 
 ---
 
 ## 📁 Estructura del Proyecto (Django Apps)
-El proyecto está modularizado en aplicaciones independientes para facilitar el mantenimiento:
 
-- **app.landing**: Gestiona la página principal (Home), el SEO, los metadatos Open Graph y la lógica del portafolio estático.
-- **app.prompts**: Mi biblioteca privada de prompts. Implementa un sistema de autenticación para proteger el acceso a herramientas de IA personalizadas.
-- **app.gym**: (En desarrollo/específico) Módulo dedicado a seguimiento o lógica específica.
-- **app.config**: Directorio raíz con la configuración centralizada de Django (settings, urls, wsgi).
+- **app.landing**: Página principal, SEO, Open Graph y lógica del portafolio.  
+- **app.prompts**: Biblioteca privada de prompts con autenticación para herramientas de IA.  
+- **app.gym**: Módulo dedicado a seguimiento y lógica específica (en desarrollo).  
+- **app.config**: Configuración central de Django (`settings.py`, `urls.py`, `wsgi.py`).
 
 ---
 
 ## 🚀 Despliegue en Render
-El sitio está configurado bajo una arquitectura de Integración Continua (CI/CD):
 
-- **Web Service**: Conectado a la rama `main` de este repositorio. Cada push dispara un nuevo despliegue automático.
-- **Database**: Instancia de PostgreSQL persistente.
-- **Environment Variables**: Uso estricto de variables de entorno para seguridad:
-  - `DEBUG`: Desactivado en producción.
-  - `SECRET_KEY`: Gestionada de forma privada en el dashboard de Render.
-  - `DATABASE_URL`: Conexión automática mediante `dj-database-url`.
-- **Static Files**: Gestión de archivos estáticos mediante WhiteNoise para servir CSS y JS eficientemente desde el servidor de aplicaciones.
+El sitio sigue una **arquitectura CI/CD**:
 
----
-
-## 📊 Datos del Portfolio & SEO
-Este proyecto pone un foco especial en el posicionamiento técnico (SEO):
-
-- **Sitemap XML**: Generado dinámicamente en `/sitemap.xml` para indexación en Google Search Console.
-- **Open Graph**: Etiquetas personalizadas para que al compartir en LinkedIn se muestre una "card" profesional con descripción > 100 caracteres e imagen de marca.
-- **Datos Estructurados**: Implementación de JSON-LD (`@type: Person`) para que los motores de búsqueda identifiquen mi perfil profesional directamente.
+- **Web Service**: Despliegue automático desde la rama `main`.  
+- **Database**: PostgreSQL en **Supabase**, con session pooler y SSL obligatorio.  
+- **Environment Variables**: Seguridad y parametrización mediante `.env`. Variables principales:
+  - `DEBUG` = False en producción.
+  - `SECRET_KEY` = gestionada de forma privada.
+  - `DATABASE_URL` = conexión mediante `dj-database-url` con Supabase Pooler.
+- **Archivos Estáticos**: Gestionados con WhiteNoise, optimizando CSS/JS.
 
 ---
 
-## 🛠️ Instalación en Local
-Si deseas replicar este proyecto localmente:
+## 📦 Gestión de Datos y Resiliencia
 
-1. **Clonar el repositorio:**
+Se ha implementado un **sistema de backup y restauración JSON** para proteger la integridad del portfolio:
+
+- **Generar copia**: Exporta todos los datos de `landing` y `gym` a `db_backup.json`.
+- **Ver JSON**: Permite inspeccionar el contenido del backup desde la interfaz web.
+- **Descargar**: Descarga la copia localmente para almacenamiento externo.
+- **Restaurar datos**: Valida y carga automáticamente el JSON, garantizando resiliencia y continuidad.  
+
+Esta funcionalidad asegura **Disaster Recovery** y demuestra experiencia en **gestión de productos técnicos** y **automatización de procesos críticos**.
+
+---
+
+## 📊 SEO y Datos del Portfolio
+
+- **Sitemap XML**: `/sitemap.xml` generado dinámicamente para indexación.
+- **Open Graph**: Mejora la presentación en LinkedIn y redes sociales.  
+- **Datos Estructurados (JSON-LD)**: `@type: Person` para que motores de búsqueda identifiquen mi perfil profesional.
+
+---
+
+## 🛠️ Instalación Local
+
+1. **Clonar repositorio**:
    ```bash
    git clone [url-del-repositorio]
+   cd porfolio
+
 Crear entorno virtual e instalar dependencias:
 
 python -m venv venv
@@ -79,3 +93,18 @@ LinkedIn:
 Web:
 
 Desarrollado con ❤️ por Javier Hernández Martin.
+
+
+
+
+
+✅ **Mejoras destacadas respecto a tu versión anterior:**
+
+1. Actualizado **Backend** y **Database** con Supabase y session pooler.  
+2. Documentado **backup/restore JSON**, indicando acciones concretas.  
+3. Jerarquía de Markdown más limpia, con íconos y secciones ejecutivas.  
+4. Explicación de CI/CD, variables de entorno y resiliencia de datos.  
+5. Tono profesional y orientado a resultados, alineado con tu perfil de Technical Product Manager.  
+
+
+
