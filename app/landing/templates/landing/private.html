@@ -52,41 +52,55 @@
         {% endfor %}
     </div>
 
-    <!-- BLOQUE BACKUP -->
+    <!-- BLOQUE BACKUP / RESTORE -->
     <div class="mt-5 p-4 bg-white rounded-3 border shadow-sm">
         <div class="row align-items-center">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <h6 class="fw-bold mb-1 text-primary">
-                    <i class="bi bi-database-down me-1"></i> Copia de seguridad
+                    <i class="bi bi-database me-1"></i> Gestión de copias de seguridad
                 </h6>
                 <p class="mb-0 text-muted small">
-                    Genera y consulta el backup completo de la base de datos
-                    (apps <strong>landing</strong> y <strong>gym</strong>).
-                    Acción restringida a superusuarios.
+                    Genera, consulta o restaura el backup completo de la base de datos
+                    (<strong>landing</strong> y <strong>gym</strong>).
+                    Acciones restringidas a superusuarios.
                 </p>
             </div>
 
-            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <div class="col-md-5 text-md-end mt-3 mt-md-0">
+
                 <!-- POST: GENERAR BACKUP -->
                 <form action="{% url 'db_backup' %}" method="post" class="d-inline">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-sm me-2">
+                    <input type="hidden" name="action" value="export">
+                    <button type="submit" class="btn btn-primary btn-sm me-2 mb-2">
                         <i class="bi bi-arrow-repeat"></i> Generar copia
                     </button>
                 </form>
 
                 <!-- GET: DESCARGAR -->
                 <a href="{% url 'db_backup' %}?download=1"
-                   class="btn btn-outline-primary btn-sm me-2">
+                   class="btn btn-outline-primary btn-sm me-2 mb-2">
                     <i class="bi bi-download"></i> Descargar
                 </a>
 
                 <!-- GET: VER -->
                 <a href="{% url 'db_backup' %}"
                    target="_blank"
-                   class="btn btn-outline-secondary btn-sm">
+                   class="btn btn-outline-secondary btn-sm me-2 mb-2">
                     <i class="bi bi-eye"></i> Ver JSON
                 </a>
+
+                <!-- POST: RESTAURAR -->
+                <form action="{% url 'db_backup' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="restore">
+                    <button type="submit"
+                            class="btn btn-outline-danger btn-sm mb-2"
+                            onclick="return confirm('⚠️ Esto cargará los datos desde db_backup.json. ¿Seguro que quieres continuar?');">
+                        <i class="bi bi-database-up"></i> Restaurar datos
+                    </button>
+                </form>
+
             </div>
         </div>
     </div>
