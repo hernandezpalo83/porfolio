@@ -3,8 +3,8 @@ from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.conf import settings
 
-from landing.models import Proyecto
-from gym.models import Ejercicio
+from app.landing.models import Proyecto
+from app.gym.models import Ejercicio
 
 
 class Command(BaseCommand):
