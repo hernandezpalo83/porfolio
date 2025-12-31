@@ -35,6 +35,7 @@ class Command(BaseCommand):
         # Posibles rutas donde buscar el backup
         posibles_rutas = [
             os.path.join(settings.BASE_DIR, "db_backup.json"),
+            os.path.join(settings.BASE_DIR, "app", "db_backup.json"),
             os.path.join(settings.BASE_DIR, "app", "landing", "db_backup.json"),
         ]
 
