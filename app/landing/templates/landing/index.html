@@ -113,7 +113,7 @@
    			<h5>Mi Historia</h5>
    			<h1>Un Viaje de Transformación y Crecimiento en el Sector Tecnológico</h1>
    			<div class="intro-info">
-   				<img src="images/profile-pic.jpg" alt="Profile Picture">
+				<img src="{{ BRAND.PROFILE_PICTURE }}" alt="Profile Picture">
 				<p class="lead">{{info.bio}}</p>
    			</div>   			
    		</div>   		
@@ -165,7 +165,7 @@
    	<div class="row button-section">
    		<div class="col-twelve">
    			<a href="#contact" title="Hire Me" class="button stroke smoothscroll">Contacto</a>
-   			<a href="#" title="Download CV" class="button button-primary">Descargar CV</a>
+   			<a href="{% static 'cv/CV_Javier_Hernandez.pdf' %}" title="Download CV" class="button button-primary">Descargar CV</a>
    		</div>   		
    	</div>
 

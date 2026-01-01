@@ -95,6 +95,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app.config.context_processors.brand_assets',
             ],
         },
     },
@@ -200,4 +201,16 @@ CKEDITOR_5_CONFIGS = {
         "width": "100%",
         "markdown": True,
     }
+}
+
+# Single Source of Truth para activos de marca
+BRAND_ASSETS_URL = "https://raw.githubusercontent.com/hernandezpalo83/cdn/main"
+
+
+# Diccionario de assets comunes para fácil acceso
+PERSONAL_BRAND = {
+    "PROFILE_PICTURE": f"{BRAND_ASSETS_URL}/profile/Foto_perfil2.jpeg",
+    "AVATAR": f"{BRAND_ASSETS_URL}/profile/avatar.png",
+    "LOGO": f"{BRAND_ASSETS_URL}/logos/logo-main.svg",
+    "BANNER": f"{BRAND_ASSETS_URL}/banners/linkedin-header.png",
 }
