@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5', 
     'django_ckeditor_5',
+    'django_recaptcha',
     'app.landing',
     'app.gym',
     'app.prompts',
@@ -214,3 +215,21 @@ PERSONAL_BRAND = {
     "LOGO": f"{BRAND_ASSETS_URL}/logos/logo-main.svg",
     "BANNER": f"{BRAND_ASSETS_URL}/banners/linkedin-header.png",
 }
+
+
+# Configuración de reCAPTCHA usando las variables de entorno
+RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'))
+RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY', '6LeIxAcTAAAAAL9F_q7uY7qc7atL7ia9n_1s_S6j'))
+
+
+
+
+
+# Opcional: Para que el captcha v3 no falle en local si el score es bajo
+RECAPTCHA_V3_ACTION = 'contact_form'
+# Esto es para que en desarrollo no sea un bloqueante si no tienes internet
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+
+# Esto permite que el captcha pase siempre como válido en desarrollo
+# Solo úsalo para probar que el guardado en base de datos funciona
+RECAPTCHA_TESTING = False

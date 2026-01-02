@@ -5,13 +5,15 @@ from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 from django.contrib.auth.decorators import user_passes_test
+from .forms import FormularioContacto
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
+
 import io
 
 def error_404_view(request, exception):
     return render(request, 'landing/404.html', status=404)
-
-def home(request):
-    return render(request, 'landing/index.html')
 
 @login_required
 def private_area(request):
@@ -48,20 +50,44 @@ def profile(request):
     return render(request, 'landing/profile.html')
 
 def home(request):
+    # 1. GESTIÓN DEL FORMULARIO (POST)
+    if request.method == 'POST':
+        form = FormularioContacto(request.POST)
+        if form.is_valid():
+            # Guardamos en la base de datos (Modelo Contacto)
+            form.save()
+            # Mensaje de éxito para el usuario
+            messages.success(request, '📩 ¡Tu mensaje está en camino! Te responderé lo antes posible.')
+            # Redirigimos al ancla de contacto para limpiar los campos y mostrar el mensaje
+            return redirect('/#contact')
+        else:
+            # Si el formulario no es válido (ej. fallo de reCAPTCHA), 
+            # imprimimos los errores en la terminal para que puedas debuguear
+            print("LOG DEBUG - Errores en el formulario:", form.errors)
+            messages.error(request, 'Hubo un problema con el envío. Por favor, revisa los campos y el captcha.')
+    else:
+        # Carga inicial de la página
+        form = FormularioContacto()
+
+    # 2. CARGA DE DATOS PARA LA LANDING (GET)
+    # Recuperamos todos los objetos necesarios de la base de datos
     info = Info.objects.first()
     skills = Skill.objects.all()
-    experiences = Experience.objects.all()
+    experiences = Experience.objects.all().order_by('-start_date') # Ordenados por fecha
     education = Education.objects.all()
     projects = Project.objects.all()
-    contact = Contact.objects.first()
+
+    # 3. CONSTRUCCIÓN DEL CONTEXTO
     context = {
         'info': info,
         'skills': skills,
         'experiences': experiences,
         'education': education,
         'projects': projects,
-        'contact': contact,
+        'form': form,  # Pasamos el objeto form (con o sin errores) al HTML
     }
+
+    # 4. RENDERIZADO
     return render(request, 'landing/index.html', context)
 
 def is_superuser(user):

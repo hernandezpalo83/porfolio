@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Info, Skill, Experience, Education, Project, Contact
+from .models import Info, Skill, Experience, Education, Project, Contact, Contacto
 
 @admin.register(Info)
 class InfoAdmin(admin.ModelAdmin):
@@ -48,4 +48,47 @@ class GlobalAdminMedia:
 for model, model_admin in admin.site._registry.items():
     if not hasattr(model_admin, 'Media'):
         model_admin.__class__.Media = GlobalAdminMedia.Media
-        
+
+@admin.register(Contacto)
+class ContactoAdmin(admin.ModelAdmin):
+    # Columnas que se verán en el listado principal
+    list_display = ('nombre', 'email', 'asunto', 'fecha_envio', 'leido')
+    
+    # Filtros laterales (muy útiles cuando tengas muchos mensajes)
+    list_filter = ('leido', 'fecha_envio')
+    
+    # Buscador para encontrar mensajes por nombre, email o contenido
+    search_fields = ('nombre', 'email', 'asunto', 'mensaje')
+    
+    # Orden predeterminado: los más nuevos primero
+    ordering = ('-fecha_envio',)
+    
+    # Campos que solo queremos leer (no editar la fecha de envío)
+    readonly_fields = ('fecha_envio',)
+    
+    # Acción personalizada para gestionar el flujo de trabajo (Workflow)
+    actions = ['marcar_como_leido', 'marcar_como_no_leido']
+
+    @admin.action(description="Marcar seleccionados como LEÍDOS")
+    def marcar_como_leido(self, request, queryset):
+        filas_actualizadas = queryset.update(leido=True)
+        self.message_user(request, f"{filas_actualizadas} mensajes han sido marcados como leídos.")
+
+    @admin.action(description="Marcar seleccionados como NO LEÍDOS")
+    def marcar_como_no_leido(self, request, queryset):
+        filas_actualizadas = queryset.update(leido=False)
+        self.message_user(request, f"{filas_actualizadas} mensajes han sido marcados como no leídos.")
+
+    # Esto hace que el panel sea más limpio
+    fieldsets = (
+        ('Información del Remitente', {
+            'fields': ('nombre', 'email')
+        }),
+        ('Contenido del Mensaje', {
+            'fields': ('asunto', 'mensaje')
+        }),
+        ('Estado y Registro', {
+            'fields': ('leido', 'fecha_envio')
+        }),
+    )
+            

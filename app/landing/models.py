@@ -1,7 +1,7 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 from django.urls import reverse
-
+from django.utils import timezone
 
 class Info(models.Model):
     name = models.CharField(max_length=100)
@@ -52,3 +52,20 @@ class Project(models.Model):
 class Contact(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
+    
+    
+class Contacto(models.Model):
+    nombre = models.CharField(max_length=100)
+    email = models.EmailField()
+    asunto = models.CharField(max_length=200)
+    mensaje = models.TextField()
+    fecha_envio = models.DateTimeField(default=timezone.now)
+    leido = models.BooleanField(default=False)  # Para tu gestión interna
+
+    class Meta:
+        verbose_name = "Mensaje de Contacto"
+        verbose_name_plural = "Mensajes de Contacto"
+        ordering = ['-fecha_envio']
+
+    def __str__(self):
+        return f"{self.nombre} - {self.asunto}"
