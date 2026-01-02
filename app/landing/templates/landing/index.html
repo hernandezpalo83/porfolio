@@ -5,98 +5,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>{% block title %}Javier Hernández Martin | Technical Product Manager & Developer | hernandezpalo{% endblock %}</title>
-    <meta name="description" content="Portafolio de Javier Hernández Martin: Technical Product Manager y Desarrollador Full Stack. Especialista en ciclo de vida de producto, Python, Django y optimización de sistemas con IA. Transformando visión técnica en valor de negocio.">
+    <title>{% block title %}Javier Hernández Martin | TPM & Developer | HernandezPalo{% endblock %}</title>
     
     <link rel="stylesheet" href="{% static 'landing/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'landing/css/modal.css' %}">
-    <link rel="icon" type="image/png" href="{% static 'landing/img/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'landing/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
     <link rel="stylesheet" href="{% static 'landing/css/vendor.css' %}">
 
-   <script src="{% static 'landing/js/modernizr.js' %}"></script>   
-   <script src="{% static 'landing/js/pace.min.js' %}"></script>
+    {% if form.media %}{{ form.media }}{% endif %}
+
+    <script src="{% static 'landing/js/modernizr.js' %}"></script>    
+    <script src="{% static 'landing/js/pace.min.js' %}"></script>
 
     <style>
-        /* --- ESTILOS DE MARCA HERNANDEZPALO --- */
-        .logo a {
-            color: #FFFFFF !important; /* Blanco por defecto */
-            font-family: "montserrat-bold", sans-serif;
-            font-size: 2.2rem;
-            text-transform: uppercase;
-            letter-spacing: .2rem;
-            transition: all 0.3s ease-in-out;
-            text-decoration: none;
+        /* --- UX REFINEMENT: HEADER FULL WIDTH --- */
+        header {
+            width: 100% !important;
+            background: #0c0c0c !important;
         }
 
-        .logo a:hover {
-            color: #CC0052 !important; /* Morado/Fucsia al pasar el ratón */
-        }
-
-        /* --- ESTILOS DEL FORMULARIO --- */
-        .django-contact-form input, .django-contact-form textarea {
-            width: 100%;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px;
-            color: #FFFFFF;
-        }
-
-        .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; text-align: center; font-weight: bold; }
-        .alert-success { background-color: #dff0d8; color: #3c763d; border: 1px solid #d6e9c6; }
-        .alert-error { background-color: #f2dede; color: #a94442; border: 1px solid #ebccd1; }
-
-        .submit-btn {
-            background: #CC0052;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-        .submit-btn:hover { background: #FF0033; }
-        
-        .captcha-container { margin-bottom: 20px; }
-
-        /* Alineación de la barra superior */
         .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
+            max-width: 100% !important; /* Ahora ocupa todo el espacio */
+            width: 100% !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 0 40px !important;
+            height: 80px !important;
         }
 
-        .login-icon i {
-            transition: all 0.3s ease-in-out;
+        /* --- BRANDING: HernandezPalo --- */
+        header .logo {
+            margin: 0 !important;
+            display: flex !important;
         }
-        .login-icon:hover i {
-            color: #CC0052 !important;
+
+        header .logo a {
+            font-family: "montserrat-bold", sans-serif !important;
+            color: #CC0052 !important; 
+            font-size: 2.4rem !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.05rem !important;
+            text-transform: none !important; 
+            white-space: nowrap !important;
+            background: none !important;
+            text-indent: 0 !important;
+        }
+
+        .topbar-right {
+            display: flex !important;
+            align-items: center !important;
+            gap: 25px !important;
+        }
+
+        .social-icons {
+            display: flex !important;
+            list-style: none !important;
+            margin: 0 !important;
+            gap: 20px !important;
+        }
+
+        .social-icons a, .login-icon {
+            color: #FFFFFF !important;
+            font-size: 2rem !important;
+            transition: color 0.3s ease;
+        }
+        .social-icons a:hover { color: #CC0052 !important; }
+
+        /* --- UX REFINEMENT: ABOUT SECTION LAYOUT --- */
+        .about-profile-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 40px;
+            align-items: flex-start;
+        }
+
+        .about-image-column {
+            flex: 1;
+            min-width: 280px;
+            text-align: center;
+        }
+
+        .about-text-column {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .profile-pic-ux {
+            width: 220px;
+            height: 220px;
+            border-radius: 15px; /* UX: Menos circular, más "tech" */
+            border: 4px solid #CC0052;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- FORM STYLING --- */
+        #contactForm .form-field input, #contactForm .form-field textarea {
+            background: rgba(255,255,255,0.03) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            color: #fff !important;
+            padding: 15px !important;
+        }
+        #contactForm .form-field input:focus { border-color: #CC0052 !important; }
+
+        .submitform {
+            background: #CC0052 !important;
+            color: #fff !important;
+            letter-spacing: 0.2rem;
+            font-weight: bold;
+            width: 100%;
+            height: 6rem !important;
         }
     </style>
 </head>
 
 <body id="top">
-
    <header>
     <div class="top-bar">
-        <a class="menu-toggle" href="#"><span>Menu</span></a>
-        
-        <div class="logo">
-            <a href="{% url 'home' %}">HERNANDEZPALO></a>
+        <div style="display: flex; align-items: center; gap: 30px;">
+            <a class="menu-toggle" href="#"><span>Menu</span></a>
+            <div class="logo">
+                <a href="{% url 'home' %}">HernandezPalo</a>
+            </div>
         </div>
 
         <nav id="main-nav-wrap">
             <ul class="main-navigation">
-                <li class="current"><a class="smoothscroll" href="#intro" title="">Home</a></li>
-                <li><a class="smoothscroll" href="#about" title="">Sobre mi</a></li>
-                <li><a class="smoothscroll" href="#resume" title="">Resumen</a></li>
-                <li><a class="smoothscroll" href="#portfolio" title="">Portfolio</a></li>
-                <li><a class="smoothscroll" href="#contact" title="">Contacto</a></li> 
+                <li class="current"><a class="smoothscroll" href="#intro">Home</a></li>
+                <li><a class="smoothscroll" href="#about">Sobre mi</a></li>
+                <li><a class="smoothscroll" href="#resume">Resumen</a></li>
+                <li><a class="smoothscroll" href="#portfolio">Portfolio</a></li>
+                <li><a class="smoothscroll" href="#contact">Contacto</a></li> 
             </ul>
         </nav>    
 
@@ -106,9 +148,7 @@
                 <li><a target="_blank" href="https://github.com/hernandezpalo83"><i class="fa fa-github"></i></a></li>
                 <li><a target="_blank" href="https://twitter.com/JHernandez14153"><i class="fa fa-twitter"></i></a></li>
             </ul>
-            <a href="{% url 'login' %}" class="login-icon" title="Login de Administrador" style="margin-left: 15px; color: #FFFFFF; font-size: 20px;">
-                <i class="fa fa-user-md"></i>
-            </a>
+            <a href="{% url 'login' %}" class="login-icon" title="Admin Login"><i class="fa fa-user-md"></i></a>
         </div>
     </div>
    </header>
@@ -132,75 +172,169 @@
         <div class="col-twelve">
             <h5>Mi Historia</h5>
             <h1>Un Viaje de Transformación y Crecimiento</h1>
-            <div class="intro-info">
-                <p class="lead">{{info.bio}}</p>
-            </div>              
         </div>          
     </div>
+
+    <div class="row">
+        <div class="about-profile-wrapper">
+            <div class="about-image-column">
+                <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" class="profile-pic-ux">
+                <ul class="info-list" style="text-align: left; margin-top: 30px;">
+                    <li><strong>Nombre:</strong> <span>{{info.name}}</span></li>
+                    <li><strong>Email:</strong> <span>{{info.email}}</span></li>
+                    <li><strong>Web:</strong> <span>{{info.web}}</span></li>
+                </ul>
+            </div>
+            
+            <div class="about-text-column">
+                <p class="lead">{{info.bio}}</p>
+                <p>{{info.perfil}}</p>
+                
+                <h3 style="color:#CC0052; margin-top: 30px;">Habilidades Clave</h3>
+                <ul class="skill-bars" style="margin-top: 20px;">
+                    {% for skill in skills %}
+                    <li>
+                        <div class="progress percent{{ skill.score }}"><span>{{ skill.score }}%</span></div>
+                        <strong>{{ skill.name }}</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div class="row button-section">
         <div class="col-twelve">
-            <a href="{% static 'assets/cv/CV_Javier_Hernandez.pdf' %}" download class="button button-primary">Descargar CV</a>
+            <a href="{% static 'cv/CV_Javier_Hernandez.pdf' %}" class="button button-primary large">Descargar CV</a>
         </div>          
     </div>
    </section>
 
-   <section id="contact">
-        <div class="row section-intro">
-            <div class="col-twelve">
-                <h5>Contacto</h5>
-                <h1>¡Me encantaría saber de ti!</h1>
-            </div> 
-        </div>
-
-        <div class="row">
-            <div class="col-twelve">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                <div class="django-contact-form">
-                    <form method="post" action="{% url 'home' %}#contact">
-                        {% csrf_token %}
-                        
-                        <div class="form-field">{{ form.nombre }}</div>
-                        <div class="form-field">{{ form.email }}</div>
-                        <div class="form-field">{{ form.asunto }}</div>                       
-                        <div class="form-field">{{ form.mensaje }}</div>                      
-                        
-                        <div class="captcha-container">
-                            {{ form.captcha }}
-                        </div>
-
-                        <div class="form-field">
-                            <button type="submit" class="submit-btn">Enviar Mensaje</button>
-                        </div>
-                        
-                        {{ form.media }}
-                    </form>
+   <section id="resume" class="grey-section">
+    <div class="row resume-timeline">
+       <div class="col-twelve resume-header"><h2>Experiencia Laboral</h2></div>
+       <div class="col-twelve">
+          <div class="timeline-wrap">
+             {% for experience in experiences %}
+             <div class="timeline-block">
+                <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
+                <div class="timeline-header">
+                   <h3>{{ experience.position }}</h3>
+                   <p>{{ experience.start_date }} - {{ experience.end_date|default:"Actualidad" }}</p>
                 </div>
-            </div>
+                <div class="timeline-content">
+                   <h4>{{ experience.company }}</h4>
+                   {{ experience.resumen|safe }}
+                </div>
+             </div>
+             {% endfor %}
+          </div>
+       </div>
+    </div>
+
+    <div class="row resume-timeline">
+       <div class="col-twelve resume-header"><h2>Formación Académica</h2></div>
+       <div class="col-twelve">
+          <div class="timeline-wrap">
+             {% for edu in education %}
+             <div class="timeline-block">
+                <div class="timeline-ico"><i class="fa fa-graduation-cap"></i></div>
+                <div class="timeline-header">
+                   <h3>{{ edu.degree }}</h3>
+                   <p>{{ edu.start_date }} - {{ edu.end_date }}</p>
+                </div>
+                <div class="timeline-content">
+                   <h4>{{ edu.institution }}</h4>
+                   <p>{{ edu.resumen }}</p>
+                </div>
+             </div>
+             {% endfor %}
+          </div>
+       </div>
+    </div>
+   </section>
+
+   <section id="portfolio">
+    <div class="row portfolio-content">
+       <div id="folio-wrapper" class="block-1-2 block-mob-full stack">
+          {% for project in projects %}
+          <div class="bgrid folio-item">
+             <div class="item-wrap">
+                <img src="{{ project.imagen.url }}" alt="{{ project.title }}">
+                <a href="#modal-{{ forloop.counter }}" class="overlay">
+                   <div class="folio-item-table">
+                      <div class="folio-item-cell">
+                         <h3 class="folio-title">{{ project.title }}</h3>
+                         <span class="folio-types">{{ project.description }}</span>
+                      </div>
+                   </div>
+                </a>
+             </div>
+          </div>
+
+          <div id="modal-{{ forloop.counter }}" class="popup-modal slider mfp-hide">   
+             <div class="media"><img src="{{ project.imagen.url }}" alt="" /></div>          
+             <div class="description-box">
+                <h4>{{ project.title }}</h4>            
+                <p>{{ project.descripcion }}</p>
+             </div>
+             <div class="link-box">
+                <a href="{{ project.link }}">Ver Proyecto</a>
+                <a href="#" class="popup-modal-dismiss">Cerrar</a>
+             </div>           
+          </div>
+          {% endfor %}
+       </div>
+    </div>
+   </section>
+
+   <section id="contact">
+    <div class="row section-intro">
+        <div class="col-twelve">
+            <h5>Contacto</h5>
+            <h1>¿Tienes un proyecto en mente?</h1>
+        </div> 
+    </div>
+    <div class="row contact-form">
+        <div class="col-twelve">
+            {% if messages %}
+                {% for message in messages %}
+                    <div style="background: #CC0052; color: white; padding: 15px; margin-bottom: 20px; text-align: center;">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form name="contactForm" id="contactForm" method="post" action="{% url 'home' %}#contact">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-field"><input name="nombre" type="text" placeholder="Tu Nombre" required></div>
+                    <div class="form-field"><input name="email" type="email" placeholder="Tu Email" required></div>
+                    <div class="form-field"><input name="asunto" type="text" placeholder="Asunto"></div>
+                    <div class="form-field"><textarea name="mensaje" placeholder="¿En qué puedo ayudarte?" rows="10" required></textarea></div>
+                    
+                    <div class="captcha-wrapper" style="margin-bottom: 30px;">
+                        {{ form.captcha }}
+                    </div>
+
+                    <div class="form-field">
+                        <button class="submitform" type="submit">ENVIAR MENSAJE</button>
+                    </div>
+                </fieldset>
+            </form>
         </div>
+    </div>
    </section>
 
    <footer>
         <div class="row">
             <div class="col-six tab-full">
-                <div class="copyright">
-                    <span>© Copyright Hernandezpalo 2026.</span> 
-                </div>                       
+                <div class="copyright"><span>© HernandezPalo 2026.</span></div>
             </div>
-            <div id="go-top">
-                <a class="smoothscroll" title="Back to Top" href="#top"><i class="fa fa-long-arrow-up"></i></a>
-            </div>
+            <div id="go-top"><a class="smoothscroll" href="#top"><i class="fa fa-long-arrow-up"></i></a></div>
         </div>
    </footer>  
 
    <script src="{% static 'landing/js/jquery-2.1.3.min.js' %}"></script>    
-   <script src="{% static 'landing/js/plugins.js' %}"></script> 
+   <script src="{% static 'landing/js/plugins.js' %}"></script>    
    <script src="{% static 'landing/js/main.js' %}"></script>    
 </body>
 </html>
