@@ -119,6 +119,116 @@
             width: 100%;
             height: 6rem !important;
         }
+        /* --- MOTOR DE ESTILOS PORTFOLIO HernandezPalo --- */
+            #portfolio { 
+                background-color: #0f0f0f; 
+                padding: 12rem 0; 
+                width: 100%;
+            }
+            
+            .portfolio-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+                gap: 40px;
+                padding: 0 40px;
+                max-width: 100%;
+            }
+
+            .project-card {
+                background: #161616;
+                border-radius: 12px;
+                overflow: hidden;
+                transition: all 0.4s ease;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .project-card:hover {
+                transform: translateY(-10px);
+                border-color: #CC0052;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            }
+
+            .project-img-box {
+                position: relative;
+                height: 250px;
+                width: 100%;
+            }
+
+            .project-img-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .project-badge {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: #CC0052;
+                color: white !important;
+                padding: 6px 15px;
+                border-radius: 4px;
+                font-size: 1.2rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                z-index: 10;
+            }
+
+            .project-info {
+                padding: 30px;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .project-info h3 {
+                color: #CC0052;
+                font-size: 2.4rem;
+                margin-bottom: 15px;
+                font-family: "montserrat-bold", sans-serif;
+            }
+
+            .project-excerpt {
+                color: #b1b1b1;
+                font-size: 1.5rem;
+                line-height: 1.6;
+                margin-bottom: 25px;
+            }
+
+            .btn-view-more {
+                background: #CC0052 !important;
+                color: white !important;
+                padding: 15px 25px;
+                border-radius: 4px;
+                font-weight: bold;
+                text-align: center;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: 0.3s;
+                display: block;
+                width: 100%;
+                border: none;
+                font-size: 1.3rem;
+            }
+
+            .btn-view-more:hover {
+                background: #a30042 !important;
+                transform: scale(1.02);
+            }
+
+            /* Estilos del Modal */
+            .popup-modal { max-width: 900px !important; background: #111 !important; padding: 0 !important; margin: 0 auto; position: relative; }
+            .modal-content-area { padding: 40px; color: #ccc; }
+            .modal-content-area h4 { color: #fff; font-size: 3rem; margin-bottom: 15px; }
+            .modal-cat { color: #CC0052; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; font-size: 1.4rem; }
+            
+            @media screen and (max-width: 600px) {
+                .portfolio-grid { grid-template-columns: 1fr; padding: 0 20px; }
+            }
     </style>
 </head>
 
@@ -254,37 +364,47 @@
     </div>
    </section>
 
-   <section id="portfolio">
-    <div class="row portfolio-content">
-       <div id="folio-wrapper" class="block-1-2 block-mob-full stack">
-          {% for project in projects %}
-          <div class="bgrid folio-item">
-             <div class="item-wrap">
-                <img src="{{ project.imagen.url }}" alt="{{ project.title }}">
-                <a href="#modal-{{ forloop.counter }}" class="overlay">
-                   <div class="folio-item-table">
-                      <div class="folio-item-cell">
-                         <h3 class="folio-title">{{ project.title }}</h3>
-                         <span class="folio-types">{{ project.description }}</span>
-                      </div>
-                   </div>
-                </a>
-             </div>
-          </div>
+<section id="portfolio">
+    <div class="row section-intro">
+        <div class="col-twelve">
+            <h5>Portfolio</h5>
+            <h1>Casos de Éxito y Proyectos</h1>
+        </div>
+    </div>
 
-          <div id="modal-{{ forloop.counter }}" class="popup-modal slider mfp-hide">   
-             <div class="media"><img src="{{ project.imagen.url }}" alt="" /></div>          
-             <div class="description-box">
-                <h4>{{ project.title }}</h4>            
-                <p>{{ project.descripcion }}</p>
-             </div>
-             <div class="link-box">
-                <a href="{{ project.link }}">Ver Proyecto</a>
-                <a href="#" class="popup-modal-dismiss">Cerrar</a>
-             </div>           
-          </div>
-          {% endfor %}
-       </div>
+    <div class="portfolio-grid">
+        {% for project in projects %}
+        <div class="project-card">
+            <div class="project-img-box">
+                {% if project.categoria %}
+                <span class="project-badge">{{ project.categoria }}</span>
+                {% endif %}
+                <img src="{{ project.imagen }}" alt="{{ project.title }}">
+            </div>
+            <div class="project-info">
+                <h3>{{ project.title }}</h3>
+                <p class="project-excerpt">{{ project.description|striptags|truncatewords:20 }}</p>
+                <a href="#modal-{{ forloop.counter }}" class="btn-view-more">Ver detalles del proyecto</a>
+            </div>
+        </div>
+
+        <div id="modal-{{ forloop.counter }}" class="popup-modal mfp-hide">
+            <img src="{{ project.imagen }}" alt="{{ project.title }}" style="width:100%;">
+            <div class="modal-content-area">
+                <span class="modal-cat">{{ project.categoria }}</span>
+                <h4>{{ project.title }}</h4>
+                <div style="margin-top: 20px; font-size: 1.6rem; line-height: 1.8;">
+                    {{ project.description|safe }}
+                </div>
+                <div style="margin-top: 40px; border-top: 1px solid #333; padding-top: 20px;">
+                    {% if project.link %}
+                    <a href="{{ project.link }}" target="_blank" class="button button-primary">Visitar Sitio</a>
+                    {% endif %}
+                    <a href="#" class="popup-modal-dismiss" style="margin-left: 20px; color: #888;">Cerrar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
    </section>
 
