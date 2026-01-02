@@ -19,20 +19,36 @@
    <script src="{% static 'landing/js/pace.min.js' %}"></script>
 
     <style>
-        /* Estilos para asegurar que el formulario se vea bien sin el JS de la plantilla */
+        /* Personalización de Marca HERNANDEZPALO */
+        .logo a {
+            color: #CC0052 !important; /* El color morado/fucsia del menú */
+            font-family: "montserrat-bold", sans-serif;
+            font-size: 2.4rem;
+            text-transform: uppercase;
+            letter-spacing: .2rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .logo a:hover {
+            color: #FFFFFF !important;
+        }
+
+        /* Estilos del Formulario */
         .django-contact-form input, .django-contact-form textarea {
             width: 100%;
             margin-bottom: 20px;
             background: rgba(0, 0, 0, 0.1);
-            border: none;
+            border: 1px solid rgba(255,255,255,0.1);
             padding: 15px;
             color: #FFFFFF;
         }
-        .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; text-align: center; }
+
+        .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; text-align: center; font-weight: bold; }
         .alert-success { background-color: #dff0d8; color: #3c763d; border: 1px solid #d6e9c6; }
         .alert-error { background-color: #f2dede; color: #a94442; border: 1px solid #ebccd1; }
+
         .submit-btn {
-            background: #FF0000; /* Ajusta a tu color primario */
+            background: #CC0052;
             color: white;
             padding: 15px 30px;
             border: none;
@@ -40,27 +56,52 @@
             width: 100%;
             font-weight: bold;
             text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .submit-btn:hover { background: #FF0033; }
+        
+        .captcha-container { margin-bottom: 20px; }
+
+        /* Ajuste para que el logo y la hamburguesa convivan bien */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
     </style>
 </head>
 
 <body id="top">
+
    <header>
     <div class="top-bar">
         <a class="menu-toggle" href="#"><span>Menu</span></a>
-            <div class="logo">
-                <a href="{% url 'home' %}">HERNANDEZPALO></a>
-            </div>
-            <nav id="main-nav-wrap">
-                <ul class="main-navigation">
-                    <li class="current"><a class="smoothscroll" href="#intro">Home</a></li>
-                    <li><a class="smoothscroll" href="#about">Sobre mi</a></li>
-                    <li><a class="smoothscroll" href="#resume">Resumen</a></li>
-                    <li><a class="smoothscroll" href="#portfolio">Portfolio</a></li>
-                    <li><a class="smoothscroll" href="#contact">Contacto</a></li> 
-                </ul>
-            </nav>    
+        
+        <div class="logo">
+            <a href="{% url 'home' %}">HERNANDEZPALO></a>
         </div>
+
+        <nav id="main-nav-wrap">
+            <ul class="main-navigation">
+                <li class="current"><a class="smoothscroll" href="#intro" title="">Home</a></li>
+                <li><a class="smoothscroll" href="#about" title="">Sobre mi</a></li>
+                <li><a class="smoothscroll" href="#resume" title="">Resumen</a></li>
+                <li><a class="smoothscroll" href="#portfolio" title="">Portfolio</a></li>
+                <li><a class="smoothscroll" href="#contact" title="">Contacto</a></li> 
+            </ul>
+        </nav>    
+
+        <div class="topbar-right">
+            <ul class="social-icons">
+                <li><a target="_blank" href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/"><i class="fa fa-linkedin"></i></a></li>
+                <li><a target="_blank" href="https://github.com/hernandezpalo83"><i class="fa fa-github"></i></a></li>
+                <li><a target="_blank" href="https://twitter.com/JHernandez14153"><i class="fa fa-twitter"></i></a></li>
+            </ul>
+            <a href="{% url 'login' %}" class="login-icon" title="Login de Administrador" style="margin-left: 15px; color: #FFFFFF; font-size: 20px;">
+                <i class="fa fa-user-md"></i>
+            </a>
+        </div>
+    </div>
    </header>
 
    <section id="intro">   
@@ -114,35 +155,24 @@
 
                 <div class="django-contact-form">
                     <form method="post" action="{% url 'home' %}#contact">
-						{% csrf_token %}
-						
-						<div class="form-field">{{ form.nombre }}</div>
-						<div class="form-field">{{ form.email }}</div>
-						<div class="form-field">{{ form.asunto }}</div>
-						<div class="form-field">{{ form.mensaje }}</div>
-						
-						<div class="form-field">
-							{{ form.captcha }}
-						</div>
-						
-						<button type="submit" class="submit-btn">Enviar Mensaje</button>
-						
-						{{ form.media }}
-					</form>
-                </div>
-                </div>
-        </div>
+                        {% csrf_token %}
+                        
+                        <div class="form-field">{{ form.nombre }}</div>
+                        <div class="form-field">{{ form.email }}</div>
+                        <div class="form-field">{{ form.asunto }}</div>                       
+                        <div class="form-field">{{ form.mensaje }}</div>                      
+                        
+                        <div class="captcha-container">
+                            {{ form.captcha }}
+                        </div>
 
-        <div class="row contact-info">
-            <div class="col-four tab-full">
-                <div class="icon"><i class="icon-pin"></i></div>
-                <h5>Web</h5>
-                <p>{{info.web}}</p>
-            </div>
-            <div class="col-four tab-full collapse">
-                <div class="icon"><i class="icon-mail"></i></div>
-                <h5>Email</h5>
-                <p>{{info.email}}</p>
+                        <div class="form-field">
+                            <button type="submit" class="submit-btn">Enviar Mensaje</button>
+                        </div>
+                        
+                        {{ form.media }}
+                    </form>
+                </div>
             </div>
         </div>
    </section>

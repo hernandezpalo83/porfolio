@@ -218,8 +218,8 @@ PERSONAL_BRAND = {
 
 
 # Configuración de reCAPTCHA usando las variables de entorno
-RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'))
-RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY', '6LeIxAcTAAAAAL9F_q7uY7qc7atL7ia9n_1s_S6j'))
+RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY', ''))
+RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY', ''))
 
 
 

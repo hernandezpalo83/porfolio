@@ -4,7 +4,7 @@ set -e
 
 echo "🔄 Subiendo nueva imagen a GitHub Container Registry..."
 
-echo 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 docker login ghcr.io -u TU_USUARIO --password-stdin
+echo  docker login ghcr.io -u TU_USUARIO --password-stdin
 
 docker buildx create --use
 docker buildx build \
