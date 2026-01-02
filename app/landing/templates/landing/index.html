@@ -19,21 +19,22 @@
    <script src="{% static 'landing/js/pace.min.js' %}"></script>
 
     <style>
-        /* Personalización de Marca HERNANDEZPALO */
+        /* --- ESTILOS DE MARCA HERNANDEZPALO --- */
         .logo a {
-            color: #CC0052 !important; /* El color morado/fucsia del menú */
+            color: #FFFFFF !important; /* Blanco por defecto */
             font-family: "montserrat-bold", sans-serif;
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             text-transform: uppercase;
             letter-spacing: .2rem;
             transition: all 0.3s ease-in-out;
+            text-decoration: none;
         }
 
         .logo a:hover {
-            color: #FFFFFF !important;
+            color: #CC0052 !important; /* Morado/Fucsia al pasar el ratón */
         }
 
-        /* Estilos del Formulario */
+        /* --- ESTILOS DEL FORMULARIO --- */
         .django-contact-form input, .django-contact-form textarea {
             width: 100%;
             margin-bottom: 20px;
@@ -62,11 +63,19 @@
         
         .captcha-container { margin-bottom: 20px; }
 
-        /* Ajuste para que el logo y la hamburguesa convivan bien */
+        /* Alineación de la barra superior */
         .top-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .login-icon i {
+            transition: all 0.3s ease-in-out;
+        }
+        .login-icon:hover i {
+            color: #CC0052 !important;
         }
     </style>
 </head>
