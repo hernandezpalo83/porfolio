@@ -52,7 +52,6 @@
         header .logo a {
             font-family: "montserrat-bold", sans-serif !important;
             color: #CC0052 !important; 
-            /* Clamp: min 1.8rem, ideal 4vw, max 2.4rem */
             font-size: clamp(1.8rem, 4vw, 2.4rem) !important;
             font-weight: 700 !important;
             text-decoration: none !important;
@@ -82,12 +81,10 @@
         }
         .social-icons a:hover, .login-icon:hover { color: #CC0052 !important; }
 
-        /* Mobile specific adjustments */
         @media screen and (max-width: 850px) {
             .topbar-right { display: none !important; }
             .top-bar { padding: 0 20px !important; }
             
-            /* Menú inyectado para móvil */
             .main-navigation li.nav-social-mobile {
                 display: block !important;
                 padding-top: 20px;
@@ -107,15 +104,62 @@
             .nav-social-mobile { display: none !important; }
         }
 
-        /* --- RESTO DE ESTILOS MANTENIDOS --- */
+        /* --- ESTILOS COMPONENTES --- */
         .about-profile-wrapper { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 40px; align-items: flex-start; }
         .profile-pic-ux { width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .submitform { background: #CC0052 !important; color: #fff !important; font-weight: bold; width: 100%; height: 6rem !important; border: none; cursor: pointer; }
+        
+        /* FIX: Portfolio responsive and layout */
         #portfolio { background-color: #0f0f0f; padding: 12rem 0; width: 100%; }
-        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 40px; padding: 0 40px; }
-        .project-card { background: #161616; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); height: 100%; position: relative;}
+        .portfolio-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 30px; 
+            padding: 0 25px; /* Margen lateral para evitar que toque bordes en móvil */
+        }
+        
+        .project-card { 
+            background: #161616; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            height: 100%; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Soporte para que el HTML renderizado no rompa el diseño */
+        .project-description-html {
+            color: #b1b1b1;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .project-description-html p { margin-bottom: 10px; }
+        .project-description-html ul { padding-left: 20px; margin-bottom: 10px; }
+
         .project-badge { position: absolute; top: 15px; right: 15px; background: #CC0052; color: white !important; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 1.1rem; z-index: 5; }
-        .btn-view-more { background: #CC0052 !important; color: white !important; padding: 15px; display: block; text-align: center; text-decoration: none; font-weight: bold; }
+        .btn-view-more { 
+            background: #CC0052 !important; 
+            color: white !important; 
+            padding: 15px; 
+            display: block; 
+            text-align: center; 
+            text-decoration: none !important; 
+            font-weight: bold; 
+            margin-top: auto; /* Empuja el botón al final de la card */
+            border-radius: 0 0 12px 12px;
+            transition: background 0.3s ease;
+        }
+        .btn-view-more:hover { background: #a30042 !important; }
+
+        @media screen and (max-width: 480px) {
+            .portfolio-grid {
+                padding: 0 15px; /* Ajuste fino para pantallas muy pequeñas */
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -246,10 +290,20 @@
                 {% if project.categoria %}<span class="project-badge">{{ project.categoria }}</span>{% endif %}
                 <img src="{{ project.imagen }}" alt="{{ project.title }}" style="width:100%; height:250px; object-fit:cover;">
             </div>
-            <div class="project-info" style="padding: 20px;">
-                <h3 style="color:#CC0052; font-size:2rem;">{{ project.title }}</h3>
-                <p style="color:#b1b1b1; font-size:1.4rem;">{{ project.description|striptags|truncatewords:15 }}</p>
-                <a href="#modal-{{ forloop.counter }}" class="btn-view-more" style="margin-top:15px;">Detalles</a>
+            <div class="project-info" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                <h3 style="color:#CC0052; font-size:2.2rem; margin-bottom: 10px;">{{ project.title }}</h3>
+                
+                <div class="project-description-html">
+                    {{ project.description|safe }}
+                </div>
+
+                {% if project.link %}
+                <a href="{{ project.link }}" target="_blank" rel="noopener noreferrer" class="btn-view-more">
+                    Ver Proyecto <i class="fa fa-external-link" style="margin-left: 5px;"></i>
+                </a>
+                {% else %}
+                <span class="btn-view-more" style="background: #444 !important; cursor: not-allowed;">Sin Link</span>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
