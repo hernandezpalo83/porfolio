@@ -1,0 +1,46 @@
+<section id="resume" class="grey-section">
+    <div class="row resume-timeline">
+       <div class="col-twelve resume-header"><h2>Experiencia Laboral</h2></div>
+       <div class="col-twelve">
+          <div class="timeline-wrap">
+             {% for experience in experiences %}
+             <div class="timeline-block">
+                <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
+                <div class="timeline-header">
+                   <h3>{{ experience.position }}</h3>
+                   <p>{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}</p>
+                </div>
+                <div class="timeline-content">
+                   <h4>{{ experience.company }}</h4>
+                   {{ experience.resumen|safe }}
+                </div>
+             </div>
+             {% endfor %}
+          </div>
+       </div>
+    </div>
+
+    <div class="row resume-timeline" style="margin-top: 6rem;">
+       <div class="col-twelve resume-header"><h2>Educación y Certificaciones</h2></div>
+       <div class="col-twelve">
+          <div class="timeline-wrap">
+             {% for edu in education %}
+             <div class="timeline-block">
+                <div class="timeline-ico"><i class="fa fa-graduation-cap"></i></div>
+                <div class="timeline-header">
+                   <h3>{{ edu.degree }}</h3>
+                   <p>{{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y"|default:"Actualidad" }}</p>
+                </div>
+                <div class="timeline-content">
+                   <h4>{{ edu.institution }}</h4>
+                   {{ edu.resumen|safe }}
+                   {% if edu.link %}
+                   <a href="{{ edu.link }}" target="_blank" style="color: #CC0052; font-weight: bold; display: block; margin-top: 10px;">Ver Credencial <i class="fa fa-external-link"></i></a>
+                   {% endif %}
+                </div>
+             </div>
+             {% endfor %}
+          </div>
+       </div>
+    </div>
+</section>

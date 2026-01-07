@@ -1,0 +1,22 @@
+<section id="portfolio">
+    <div class="row section-intro">
+        <div class="col-twelve"><h5>Portfolio</h5><h1>Casos de Éxito y Proyectos</h1></div>
+    </div>
+    <div class="portfolio-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding: 0 25px;">
+        {% for project in projects %}
+        <div class="project-card" style="background: #161616; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;">
+            <div style="position: relative;">
+                {% if project.categoria %}<span class="project-badge" style="position: absolute; top: 15px; right: 15px; background: #CC0052; color: white; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 1.1rem;">{{ project.categoria }}</span>{% endif %}
+                <img src="{{ project.imagen }}" alt="{{ project.title }}" style="width:100%; height:250px; object-fit:cover;">
+            </div>
+            <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                <h3 style="color:#CC0052; font-size:2.2rem; margin-bottom: 10px;">{{ project.title }}</h3>
+                <div style="color: #b1b1b1; font-size: 1.4rem; line-height: 1.6; margin-bottom: 20px;">{{ project.description|safe }}</div>
+                {% if project.link %}
+                <a href="{{ project.link }}" target="_blank" class="btn-view-more" style="background: #CC0052; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 6px; margin-top: auto;">Ver Proyecto</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

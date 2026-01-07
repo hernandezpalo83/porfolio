@@ -1,0 +1,34 @@
+
+<section id="about">  
+    <div class="row section-intro">
+        <div class="col-twelve">
+            <h5>Mi Historia</h5>
+            <h1>Un Viaje de Transformación y Crecimiento</h1>
+        </div>          
+    </div>
+    <div class="row">
+        <div class="about-profile-wrapper" style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 40px;">
+            <div class="about-image-column" style="flex: 1; min-width: 250px; text-align: center;">
+                <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" style="width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover;">
+                <ul class="info-list" style="text-align: left; margin-top: 30px; list-style: none; padding: 0;">
+                    <li><strong>Nombre:</strong> <span>{{info.name}}</span></li>
+                    <li><strong>Email:</strong> <span>{{info.email}}</span></li>
+                    <li><strong>Web:</strong> <span>{{info.web}}</span></li>
+                </ul>
+            </div>
+            <div class="about-text-column" style="flex: 2; min-width: 300px;">
+                <p class="lead">{{info.bio}}</p>
+                <p>{{info.perfil}}</p>
+                <h3 style="color:#CC0052; margin-top: 30px;">Habilidades Clave</h3>
+                <ul class="skill-bars" style="margin-top: 20px;">
+                    {% for skill in skills %}
+                    <li>
+                        <div class="progress percent{{ skill.score }}"><span>{{ skill.score }}%</span></div>
+                        <strong>{{ skill.name }}</strong>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

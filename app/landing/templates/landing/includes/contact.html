@@ -1,0 +1,19 @@
+<section id="contact">
+    <div class="row section-intro">
+        <div class="col-twelve"><h5>Contacto</h5><h1>¿Hablamos?</h1></div> 
+    </div>
+    <div class="row contact-form">
+        <div class="col-twelve">
+            <form name="contactForm" id="contactForm" method="post" action="{% url 'home' %}#contact">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-field"><input name="nombre" type="text" placeholder="Tu Nombre" required style="width:100%;"></div>
+                    <div class="form-field"><input name="email" type="email" placeholder="Tu Email" required style="width:100%;"></div>
+                    <div class="form-field"><textarea name="mensaje" placeholder="¿Cómo puedo ayudarte?" rows="10" required style="width:100%;"></textarea></div>
+                    <div style="margin: 20px 0;">{{ form.captcha }}</div>
+                    <button class="submitform" type="submit" style="background: #CC0052; color: white; width: 100%; height: 60px; font-weight: bold; border: none; cursor: pointer;">ENVIAR</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</section>
