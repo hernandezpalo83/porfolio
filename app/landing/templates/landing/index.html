@@ -48,7 +48,6 @@
             height: 80px !important;
         }
 
-        /* FIX: Logo responsivo para evitar amontonamiento */
         header .logo a {
             font-family: "montserrat-bold", sans-serif !important;
             color: #CC0052 !important; 
@@ -109,13 +108,12 @@
         .profile-pic-ux { width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .submitform { background: #CC0052 !important; color: #fff !important; font-weight: bold; width: 100%; height: 6rem !important; border: none; cursor: pointer; }
         
-        /* FIX: Portfolio responsive and layout */
         #portfolio { background-color: #0f0f0f; padding: 12rem 0; width: 100%; }
         .portfolio-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
             gap: 30px; 
-            padding: 0 25px; /* Margen lateral para evitar que toque bordes en móvil */
+            padding: 0 25px; 
         }
         
         .project-card { 
@@ -129,7 +127,6 @@
             flex-direction: column;
         }
 
-        /* Soporte para que el HTML renderizado no rompa el diseño */
         .project-description-html {
             color: #b1b1b1;
             font-size: 1.4rem;
@@ -148,15 +145,26 @@
             text-align: center; 
             text-decoration: none !important; 
             font-weight: bold; 
-            margin-top: auto; /* Empuja el botón al final de la card */
+            margin-top: auto; 
             border-radius: 0 0 12px 12px;
             transition: background 0.3s ease;
         }
         .btn-view-more:hover { background: #a30042 !important; }
 
+        /* Estilo para links en educación */
+        .edu-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #CC0052;
+            font-weight: bold;
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+        .edu-link:hover { text-decoration: underline; }
+
         @media screen and (max-width: 480px) {
             .portfolio-grid {
-                padding: 0 15px; /* Ajuste fino para pantallas muy pequeñas */
+                padding: 0 15px; 
                 grid-template-columns: 1fr;
             }
         }
@@ -257,8 +265,11 @@
    </section>
 
    <section id="resume" class="grey-section">
+    
     <div class="row resume-timeline">
-       <div class="col-twelve resume-header"><h2>Experiencia Laboral</h2></div>
+       <div class="col-twelve resume-header">
+           <h2>Experiencia Laboral</h2>
+       </div>
        <div class="col-twelve">
           <div class="timeline-wrap">
              {% for experience in experiences %}
@@ -266,7 +277,7 @@
                 <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
                 <div class="timeline-header">
                    <h3>{{ experience.position }}</h3>
-                   <p>{{ experience.start_date }} - {{ experience.end_date|default:"Actualidad" }}</p>
+                   <p>{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}</p>
                 </div>
                 <div class="timeline-content">
                    <h4>{{ experience.company }}</h4>
@@ -277,6 +288,39 @@
           </div>
        </div>
     </div>
+
+    <div class="row resume-timeline" style="margin-top: 6rem;">
+       <div class="col-twelve resume-header">
+           <h2>Educación y Certificaciones</h2>
+       </div>
+       <div class="col-twelve">
+          <div class="timeline-wrap">
+             {% for edu in education %}
+             <div class="timeline-block">
+                <div class="timeline-ico"><i class="fa fa-graduation-cap"></i></div>
+                <div class="timeline-header">
+                   <h3>{{ edu.degree }}</h3>
+                   <p>{{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y"|default:"Actualidad" }}</p>
+                </div>
+                <div class="timeline-content">
+                   <h4>{{ edu.institution }}</h4>
+                   {% if edu.resumen %}
+                        <div class="edu-description">
+                            {{ edu.resumen|safe }}
+                        </div>
+                   {% endif %}
+                   {% if edu.link %}
+                        <a href="{{ edu.link }}" target="_blank" rel="noopener noreferrer" class="edu-link">
+                            Ver Credencial <i class="fa fa-external-link"></i>
+                        </a>
+                   {% endif %}
+                </div>
+             </div>
+             {% endfor %}
+          </div>
+       </div>
+    </div>
+
    </section>
 
    <section id="portfolio">

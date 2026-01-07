@@ -160,9 +160,9 @@
   "pk": 1,
   "fields": {
     "title": "Portfolio Personal – Presentación profesional y showcase",
-    "description": "<p>Página web personal para mostrar trayectoria, habilidades y proyectos como Product Manager.<br><strong>Problema / necesidad:</strong> Necesitaba un espacio centralizado y profesional para presentar mi experiencia, metodología y proyectos, accesible para clientes y reclutadores.<br><strong>Mi rol:</strong></p><ul><li>Definí la propuesta de valor y estructura de contenido (qué mostrar y por qué)</li><li>Priorizé funcionalidades (presentación, experiencia, proyectos, contacto)</li><li>Diseñé y planifiqué roadmap de entregables</li><li>Medí mejoras de engagement desde métricas (tiempo medio en página, clics a contacto)<br><strong>Cómo se resolvió:</strong><br>Usando Django + React, se creó una SPA/PWA que permite navegar por secciones clave. Se usó metodología ágil para iterar contenido y mejorar la UX en función de feedback directo.<br><strong>Resultado / impacto:</strong></li><li>Reducción de bounce rate en perfiles profesionales</li><li>Claro soporte para candidaturas y networking</li><li>Herramienta recurrente para presentar propuestas comerciales<br><strong>Tecnologías:</strong> Django, React, API Rest, GitHub + CI/CD</li></ul>",
-    "imagen": "",
-    "categoria": "",
+    "description": "<p>Página web personal para mostrar trayectoria, habilidades y proyectos como Product Manager.<br><strong>Problema / necesidad:</strong> Necesitaba un espacio centralizado y profesional para presentar mi experiencia, metodología y proyectos, accesible para clientes y reclutadores.<br><strong>Mi rol:</strong></p><ul><li data-list-item-id=\"eaabe33544e5de69534738abb21737935\">Definí la propuesta de valor y estructura de contenido (qué mostrar y por qué)</li><li data-list-item-id=\"e4098ce31c262b2aedc8385bba5b98eda\">Priorizé funcionalidades (presentación, experiencia, proyectos, contacto)</li><li data-list-item-id=\"e8e49769d870ebae2e7907c3ff9a72187\">Diseñé y planifiqué roadmap de entregables</li><li data-list-item-id=\"ef88e46c31f8a0d62ae1c573dac0f7f2e\">Medí mejoras de engagement desde métricas (tiempo medio en página, clics a contacto)<br><strong>Cómo se resolvió:</strong><br>Usando Django + React, se creó una SPA/PWA que permite navegar por secciones clave. Se usó metodología ágil para iterar contenido y mejorar la UX en función de feedback directo.<br><strong>Resultado / impacto:</strong></li><li data-list-item-id=\"e763122f84a223b17947b4971473a8813\">Reducción de bounce rate en perfiles profesionales</li><li data-list-item-id=\"ef764a69637cf45370453ee9eb2166c1c\">Claro soporte para candidaturas y networking</li><li data-list-item-id=\"ecc6ec1bc58241721f06cc8f571d66f48\">Herramienta recurrente para presentar propuestas comerciales<br><strong>Tecnologías:</strong> Django, React, API Rest, GitHub + CI/CD</li></ul>",
+    "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/Proyecto Porfolio.png",
+    "categoria": "WEB, DJANGO",
     "link": ""
   }
 },
@@ -171,10 +171,21 @@
   "pk": 2,
   "fields": {
     "title": "Sitio “Restaurante”",
-    "description": "<p><strong>Título:</strong> Sitio web de ejemplo “Restaurante”<br><strong>Descripción:</strong> Web de ejemplo con catálogo, contacto y presentación de servicios.<br><strong>Problema / necesidad:</strong> Demostrar capacidad de digitalización de pequeños negocios (caso de uso real en contextos de negocio local).<br><strong>Mi rol:</strong></p><ul><li>Identifiqué requisitos del cliente ficticio: menú, contacto, mapas</li><li>Priorización de historias de usuario</li><li>Coordiné diseño, data y pruebas de usabilidad<br><strong>Cómo se resolvió:</strong><br>Se construyó con diseño responsive, funcionalidades claras (platos, secciones de contacto) y métricas de conversión para formularios.<br><strong>Resultado / impacto:</strong></li><li>Demostración real de un embudo básico (visitas → contacto)</li><li>Puede adaptarse a negocios reales como MVP<br><strong>Tecnologías:</strong> Reflex ( python )&nbsp;</li></ul>",
-    "imagen": "",
-    "categoria": "",
-    "link": ""
+    "description": "<p><strong>Título:</strong> Sitio web de ejemplo “Restaurante”<br><strong>Descripción:</strong> Web de ejemplo con catálogo, contacto y presentación de servicios.<br><strong>Problema / necesidad:</strong> Demostrar capacidad de digitalización de pequeños negocios (caso de uso real en contextos de negocio local).<br><strong>Mi rol:</strong></p><ul><li data-list-item-id=\"edea675e19f03791906e7c73bb52da80f\">Identifiqué requisitos del cliente ficticio: menú, contacto, mapas</li><li data-list-item-id=\"efbd58aac1b45d37380de1ff5b8b61d74\">Priorización de historias de usuario</li><li data-list-item-id=\"e22fc854110868290cc5cccb03505bcc2\">Coordiné diseño, data y pruebas de usabilidad<br><strong>Cómo se resolvió:</strong><br>Se construyó con diseño responsive, funcionalidades claras (platos, secciones de contacto) y métricas de conversión para formularios.<br><strong>Resultado / impacto:</strong></li><li data-list-item-id=\"ef07b27a00830ffdfd985d959ce075652\">Demostración real de un embudo básico (visitas → contacto)</li><li data-list-item-id=\"ef358d7d730982e4a8a1e8f22f775853f\">Puede adaptarse a negocios reales como MVP<br><strong>Tecnologías:</strong> Reflex ( python )&nbsp;</li></ul>",
+    "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/reflex-restaurante.png",
+    "categoria": "Reflex, Python, Web",
+    "link": "https://reflex-restaurante.hernandezpalo.es/"
+  }
+},
+{
+  "model": "landing.project",
+  "pk": 3,
+  "fields": {
+    "title": "Blob",
+    "description": "<p>&lt;p&gt;&lt;strong&gt;El Reto:&lt;/strong&gt; Crear una plataforma de comunicación propia para compartir conocimientos sobre la transición de perfiles técnicos a roles de gestión de producto (TPM), evitando la dependencia de plataformas externas.&lt;/p&gt;</p><p>&lt;ul style=\"margin-top: 10px; margin-bottom: 10px;\"&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;Arquitectura Django 6:&lt;/strong&gt; Implementación de un motor de contenidos optimizado para SEO y legibilidad.&lt;/li&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;Gestión de Contenidos:&lt;/strong&gt; Integración de editores enriquecidos para storytelling técnico avanzado.&lt;/li&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;UX Focus:&lt;/strong&gt; Diseño minimalista centrado en la experiencia de lectura (Typography-first).&lt;/li&gt;<br>&lt;/ul&gt;</p><p>&lt;p&gt;&lt;strong&gt;Resultado:&lt;/strong&gt; Un canal directo de &lt;em&gt;Thought Leadership&lt;/em&gt; que centraliza mi huella digital y demuestra mi capacidad para comunicar la visión técnica desde una perspectiva estratégica de producto.&lt;/p&gt;</p>",
+    "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/blog.png",
+    "categoria": "Blog, Django",
+    "link": "https://hernandezpalo.pythonanywhere.com/"
   }
 },
 {
