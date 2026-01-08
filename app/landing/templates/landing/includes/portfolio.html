@@ -7,9 +7,8 @@
         <div class="project-card" style="background: #161616; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;">
             <div style="position: relative;">
                 {% if project.categoria %}<span class="project-badge" style="position: absolute; top: 15px; right: 15px; background: #CC0052; color: white; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 1.1rem;">{{ project.categoria }}</span>{% endif %}
-                
                 {% if project.imagen %}
-                <img  project.imagen }}" alt="{{ project.title }}" style="width:100%; height:250px; object-fit:cover;">
+                <img src="{{ project.imagen }}"  alt="{{ project.title }}" style="width:100%; height:250px; object-fit:cover;">
                 {% endif %}
             
             </div>
