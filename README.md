@@ -4,7 +4,7 @@ Este proyecto es mi **portfolio profesional y plataforma técnica**, diseñado p
 Construido con **Django 5.1** y PostgreSQL (ahora gestionada en **Supabase**), desplegado de forma automatizada en **Render**.
 
 🌐 **Sitio en vivo:**  
-[Enlace al sitio]
+Hernandezpalo.es
 
 ---
 
