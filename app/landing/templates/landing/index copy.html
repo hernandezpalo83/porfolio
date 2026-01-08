@@ -316,7 +316,11 @@
     <div class="row">
         <div class="about-profile-wrapper">
             <div class="about-image-column">
+
+                {% if BRAND.PROFILE_PICTURE %}
                 <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" class="profile-pic-ux">
+                {% endif %}
+                
                 <ul class="info-list" style="text-align: left; margin-top: 30px;">
                     <li><strong>Nombre:</strong> <span>{{info.name}}</span></li>
                     <li><strong>Email:</strong> <span>{{info.email}}</span></li>
@@ -407,7 +411,9 @@
                 {% if project.categoria %}
                 <span class="project-badge">{{ project.categoria }}</span>
                 {% endif %}
+                {% if project.imagen %}
                 <img src="{{ project.imagen }}" alt="{{ project.title }}">
+                {% endif %}
             </div>
             <div class="project-info">
                 <h3>{{ project.title }}</h3>
@@ -417,7 +423,9 @@
         </div>
 
         <div id="modal-{{ forloop.counter }}" class="popup-modal mfp-hide">
+            {% if project.imagen %}
             <img src="{{ project.imagen }}" alt="{{ project.title }}" style="width:100%;">
+            {% endif %}
             <div class="modal-content-area">
                 <span class="modal-cat">{{ project.categoria }}</span>
                 <h4>{{ project.title }}</h4>

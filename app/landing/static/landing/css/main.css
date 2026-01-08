@@ -1170,8 +1170,7 @@ header .logo a {
     color: transparent;
     width: 92px;
     height: 15px;
-    background: url("../static/landing/img/logo.png") no-repeat center;
-    background-size: 92px 15px;
+	background-size: 92px 15px;
 }
 
 /**
@@ -1319,7 +1318,7 @@ header .logo a {
  * ------------------------------------------------------------------- 
  */
 #intro {
-	background: #151515 url(../images/intro-bg.jpg) no-repeat center bottom;
+	background: #151515 url(../img/intro-bg.jpg) no-repeat center bottom;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	background-size: cover;
@@ -2120,7 +2119,7 @@ header .logo a {
  * ------------------------------------------------------------------- 
  */
 #services {
-	background: #313131 url(../images/bg.jpg) no-repeat center;
+	background: #313131 url(../img/bg.jpg) no-repeat center;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	background-size: cover;
@@ -2621,4 +2620,3 @@ footer .copyright span:last-child::after {
 	background: #000000;
 }
 
-/*# sourceMappingURL=main.css.map */

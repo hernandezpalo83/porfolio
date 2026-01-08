@@ -64,7 +64,10 @@
 
     <main class="container">
         <section id="about" class="section about">
+            {% if info.photo.url %}
             <img src="{{ info.photo.url }}" alt="Javier Hernández Martin - Technical Product Manager" width="150" style="border-radius: 50%;">
+            {% endif %}
+           
             <h1>Javier Hernández Martin</h1>
             <p class="role-subtitle">Technical Product Manager & Developer</p>
             <div class="about-content">

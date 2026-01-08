@@ -9,7 +9,11 @@
     <div class="row">
         <div class="about-profile-wrapper" style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 40px;">
             <div class="about-image-column" style="flex: 1; min-width: 250px; text-align: center;">
+
+                {% if BRAND.PROFILE_PICTURE %}
                 <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" style="width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover;">
+                {% endif %}
+                
                 <ul class="info-list" style="text-align: left; margin-top: 30px; list-style: none; padding: 0;">
                     <li><strong>Nombre:</strong> <span>{{info.name}}</span></li>
                     <li><strong>Email:</strong> <span>{{info.email}}</span></li>
