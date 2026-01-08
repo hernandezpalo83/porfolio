@@ -27,7 +27,9 @@
                 <ul class="skill-bars" style="margin-top: 20px;">
                     {% for skill in skills %}
                     <li>
-                        <div class="progress percent{{ skill.score }}"><span>{{ skill.score }}%</span></div>
+                        <div class="progress" data-percent="{{ skill.score }}%" style="width: 0%;">
+                            <span>{{ skill.score }}%</span>
+                        </div>
                         <strong>{{ skill.name }}</strong>
                     </li>
                     {% endfor %}
