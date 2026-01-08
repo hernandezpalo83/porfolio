@@ -77,7 +77,9 @@ Esta funcionalidad asegura **Disaster Recovery** y demuestra experiencia en **ge
 Crear entorno virtual e instalar dependencias:
 
 python -m venv venv
+
 source venv/bin/activate  # En Windows: venv\Scripts\activate
+
 pip install -r requirements.txt
 
 Configurar variables de entorno: Crea un archivo .env en la raíz con tus credenciales locales.
@@ -85,26 +87,11 @@ Configurar variables de entorno: Crea un archivo .env en la raíz con tus creden
 Migraciones y ejecución:
 
 python manage.py migrate
+
 python manage.py runserver
 
-📧 Contacto
-LinkedIn:
-
-Web:
+Web:Hernandezpalo.es
 
 Desarrollado con ❤️ por Javier Hernández Martin.
-
-
-
-
-
-✅ **Mejoras destacadas respecto a tu versión anterior:**
-
-1. Actualizado **Backend** y **Database** con Supabase y session pooler.  
-2. Documentado **backup/restore JSON**, indicando acciones concretas.  
-3. Jerarquía de Markdown más limpia, con íconos y secciones ejecutivas.  
-4. Explicación de CI/CD, variables de entorno y resiliencia de datos.  
-5. Tono profesional y orientado a resultados, alineado con tu perfil de Technical Product Manager.  
-
 
 
