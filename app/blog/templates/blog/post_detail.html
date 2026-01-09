@@ -56,13 +56,12 @@
 <article style="padding-top: 120px; background: #fff; min-height: 100vh;">
     <div class="row">
         <div class="col-twelve">
-            <header style="margin-bottom: 4rem; text-align: center;">
-                <h1 style="font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; border:none; margin-bottom: 1rem;">{{ post.title }}</h1>
-                <p style="color: #999; font-size: 1.6rem;">
-                    Publicado el {{ post.publish|date:"d M Y" }} en 
-                    <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
-                </p>
-            </header>
+            <h1 style="font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; border:none; margin-bottom: 1rem;">{{ post.title }}</h1>
+            <p style="color: #999; font-size: 1.6rem;">
+                Publicado el {{ post.publish|date:"d M Y" }} en 
+                <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+            </p>
+
             
             <div style="font-family: 'lora-regular', serif; font-size: 2rem; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto;">
                 {{ post.content|safe }}
