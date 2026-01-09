@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'app.landing',
     'app.gym',
     'app.prompts',
+    'blog',
 ]
 
 SITE_ID = 1
@@ -194,7 +195,7 @@ CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
             "heading", "|",
-            "bold", "italic", "underline", "link", "bulletedList", "numberedList", "blockQuote", "|",
+            "bold", "italic", "underline", "link", "bulletedList", "numberedList", "blockQuote", "|", 'imageUpload',
             "undo", "redo", "|",
             "sourceEditing" 
         ],

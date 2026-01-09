@@ -32,6 +32,7 @@ urlpatterns = [
     path("admin/db-backup/", export_data_view, name="db_backup"),
     path('admin/', admin.site.urls),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('blog/', include('blog.urls', namespace='blog')),
     path('', include('app.landing.urls')),
     path('', include('app.gym.urls')),
     path('', include('app.prompts.urls')),

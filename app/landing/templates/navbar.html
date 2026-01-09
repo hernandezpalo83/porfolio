@@ -1,0 +1,49 @@
+<header id="header-nav" style="width: 100% !important; background: #0c0c0c !important; position: fixed !important; top: 0; left: 0; z-index: 1000; height: 80px !important;">
+    <div class="top-bar" style="max-width: 100% !important; width: 100% !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 40px !important; height: 80px !important;">
+        
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a class="menu-toggle" href="#"><span>Menu</span></a>
+            <div class="logo">
+                <a href="/" style="font-family: 'montserrat-bold', sans-serif !important; color: #CC0052 !important; font-size: clamp(1.8rem, 4vw, 2.4rem) !important; font-weight: 700 !important; text-decoration: none !important; white-space: nowrap !important; letter-spacing: -0.02em !important;">HernandezPalo</a>
+            </div>
+        </div>
+
+        <nav id="main-nav-wrap">
+            <ul class="main-navigation">
+                {% block nav_links %}
+                    {% if request.resolver_match.url_name == 'home' %}
+                        <li class="current"><a class="smoothscroll" href="#intro">Home</a></li>
+                        <li><a class="smoothscroll" href="#about">Sobre mi</a></li>
+                        <li><a class="smoothscroll" href="#resume">Resumen</a></li>
+                        <li><a class="smoothscroll" href="#portfolio">Portfolio</a></li>
+                        <li><a href="{% url 'blog:post_list' %}">Blog</a></li>
+                        <li><a class="smoothscroll" href="#contact">Contacto</a></li>
+                    {% else %}
+                        <li><a href="/#intro">Home</a></li>
+                        <li><a href="/#about">Sobre mi</a></li>
+                        <li><a href="/#resume">Resumen</a></li>
+                        <li><a href="/#portfolio">Portfolio</a></li>
+                        <li class="{% if '/blog/' in request.path %}current{% endif %}"><a href="{% url 'blog:post_list' %}">Blog</a></li>
+                        <li><a href="/#contact">Contacto</a></li>
+                    {% endif %}
+                {% endblock %}
+
+                <li class="nav-social-mobile">
+                    <a target="_blank" href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/"><i class="fa fa-linkedin"></i></a>
+                    <a target="_blank" href="https://github.com/hernandezpalo83"><i class="fa fa-github"></i></a>
+                    <a href="/login/"><i class="fa fa-user-md"></i></a>
+                </li>
+            </ul>
+        </nav>    
+
+        <div class="topbar-right" style="display: flex !important; align-items: center !important; gap: 20px !important;">
+            <ul class="social-icons" style="display: flex !important; list-style: none !important; margin: 0 !important; gap: 15px !important; padding-right: 15px !important;">
+                <li><a target="_blank" href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/" style="color: #FFFFFF !important; font-size: 1.8rem !important;"><i class="fa fa-linkedin"></i></a></li>
+                <li><a target="_blank" href="https://github.com/hernandezpalo83" style="color: #FFFFFF !important; font-size: 1.8rem !important;"><i class="fa fa-github"></i></a></li>
+            </ul>
+            <a href="/login/" class="login-icon" title="Admin Login" style="color: #FFFFFF !important; font-size: 1.8rem !important; border-left: 1px solid rgba(255,255,255,0.2) !important; padding-left: 20px !important; margin-left: 5px !important; display: block !important;">
+                <i class="fa fa-user-md"></i>
+            </a>
+        </div>
+    </div>
+</header>

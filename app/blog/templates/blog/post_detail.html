@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
+
+{% block extra_css %}
+{% endblock %}
+
+
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ post.title }}",
+  "image": "{{ post.image.url }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ post.author.get_full_name }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HernandezPalo",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{% static 'img/logo.png' %}"
+    }
+  },
+  "datePublished": "{{ post.publish|date:'Y-m-d' }}",
+  "description": "{{ post.meta_description }}"
+}
+</script>
+{% endblock %}    
+
+{% block content %}
+<div style="background-color: #eff0f1; padding-top: 120px; padding-bottom: 8rem; min-height: 100vh;">
+    
+    <div class="row">
+        <div class="col-ten tab-full stack-center" style="float: none; margin: 0 auto;">
+            
+            <article style="background: #ffffff; padding: 6rem; border-radius: 4px; box-shadow: 0 2px 15px rgba(0,0,0,0.05);">
+
+                {% if post.image %}
+                <div style="margin-bottom: 4rem;">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; border-radius: 4px;">
+                </div>
+                {% endif %}
+
+                <div class="post-content" style="font-size: 1.8rem; line-height: 1.9; color: #444;">
+                    {{ post.content|safe }}
+                </div>
+
+                <footer style="margin-top: 6rem; padding-top: 4rem; border-top: 1px solid #eff0f1;">
+                    <div style="display: flex; align-items: center; background: #f9f9f9; padding: 3rem; border-radius: 4px;">
+                        <img src="https://raw.githubusercontent.com/hernandezpalo83/cdn/main/profile/Foto_perfil2.jpeg" 
+                             style="width: 70px; height: 70px; border-radius: 50%; margin-right: 2rem; border: 2px solid #CC0052;">
+                        <div>
+                            <h4 style="margin: 0;">Javier Hernández Martin</h4>
+                            <p style="margin: 0; font-size: 1.4rem; color: #777;">Technical Product Manager Senior | Grupo B NI. Transformando visión técnica en resultados de negocio.</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 4rem;">
+                        <a href="{% url 'blog:post_list' %}" style="color: #CC0052; font-weight: bold; text-transform: uppercase; font-size: 1.2rem;">← Volver al listado</a>
+                    </div>
+                </footer>
+            </article>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

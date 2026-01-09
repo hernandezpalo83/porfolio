@@ -895,3 +895,78 @@ textarea {
     color: #ffffff;
     font-weight: bold;
 }
+
+/* --- Estilos para el Blog (CKEditor 5 Compatibility) --- */
+
+.post-content {
+    font-size: 1.8rem;
+    line-height: 1.8;
+    color: #333;
+    margin-top: 2rem;
+}
+
+.post-content h2, .post-content h3 {
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+    color: #111;
+    font-weight: 700;
+}
+
+/* Estilos para listas que CKEditor genera */
+.post-content ul, .post-content ol {
+    margin-left: 2rem;
+    margin-bottom: 3rem;
+    list-style-position: outside;
+}
+
+.post-content ul li {
+    list-style-type: disc;
+    margin-bottom: 1rem;
+}
+
+/* Bloques de código para tus posts técnicos */
+.post-content pre {
+    background: #f4f4f4;
+    padding: 2rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    border-left: 4px solid #0e75b6; /* Tu azul corporativo */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.5rem;
+}
+
+/* Citas (Blockquotes) - Ideal para frases de gestión */
+.post-content blockquote {
+    border-left: 5px solid #0e75b6;
+    padding-left: 2rem;
+    font-style: italic;
+    color: #555;
+    margin: 4rem 0;
+}
+
+/* Imágenes dentro del post */
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 3rem 0;
+    display: block;
+}
+
+/* SEO: Etiquetas de categoría */
+.cat-link {
+    display: inline-block;
+    background: rgba(14, 117, 182, 0.1);
+    color: #0e75b6;
+    padding: 0.3rem 1.2rem;
+    border-radius: 20px;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.cat-link:hover {
+    background: #0e75b6;
+    color: #fff;
+}

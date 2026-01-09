@@ -84,47 +84,12 @@
         /* Bloque para añadir CSS extra desde páginas hijas */
         {% block extra_css %}{% endblock %}
     </style>
+
+    {% block head %}{% endblock %}    
 </head>
 
 <body id="top">
-
-   <header>
-    <div class="top-bar">
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <a class="menu-toggle" href="#"><span>Menu</span></a>
-            <div class="logo">
-                <a href="{% url 'home' %}">HernandezPalo</a>
-            </div>
-        </div>
-
-        <nav id="main-nav-wrap">
-            <ul class="main-navigation">
-                {% block nav_links %}
-                <li class="current"><a class="smoothscroll" href="#intro">Home</a></li>
-                <li><a class="smoothscroll" href="#about">Sobre mi</a></li>
-                <li><a class="smoothscroll" href="#resume">Resumen</a></li>
-                <li><a class="smoothscroll" href="#portfolio">Portfolio</a></li>
-                <li><a class="smoothscroll" href="#contact">Contacto</a></li> 
-                {% endblock %}
-                
-                <li class="nav-social-mobile">
-                    <a target="_blank" href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/"><i class="fa fa-linkedin"></i></a>
-                    <a target="_blank" href="https://github.com/hernandezpalo83"><i class="fa fa-github"></i></a>
-                    <a href="{% url 'login' %}"><i class="fa fa-user-md"></i></a>
-                </li>
-            </ul>
-        </nav>    
-
-        <div class="topbar-right">
-            <ul class="social-icons">
-                <li><a target="_blank" href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/"><i class="fa fa-linkedin"></i></a></li>
-                <li><a target="_blank" href="https://github.com/hernandezpalo83"><i class="fa fa-github"></i></a></li>
-            </ul>
-            <a href="{% url 'login' %}" class="login-icon" title="Admin Login"><i class="fa fa-user-md"></i></a>
-        </div>
-    </div>
-   </header>
-
+    {% include "navbar.html" %}
    <main>
        {% block content %}
        {% endblock %}
