@@ -5,16 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>{% block title %}Javier Hernández Martin | Technical Product Manager & Developer{% endblock %}</title>
-    <meta name="description" content="Portafolio de Javier Hernández Martin: Technical Product Manager y Desarrollador Full Stack. Especialista en ciclo de vida de producto, Python, Django y optimización de sistemas con IA. Transformando visión técnica en valor de negocio.">
+    <title>{% block title %}Technical Product Manager | Javier Hernández Martin | Madrid{% endblock %}</title>
+    <meta name="description" content="Javier Hernández Martin: Technical Product Manager Senior (Grupo B NI) en Madrid. Experto en alinear visión de producto con ingeniería escalable, Python, Django y Agile. Transformando el ciclo de vida del software en valor de negocio real.">
+    <meta name="keywords" content="Technical Product Manager Madrid, TPM, Product Owner, Senior Developer, Gestión de Stakeholders, Product Roadmap, Metodologías Ágiles, Python, Django, IA">
     <meta name="author" content="Javier Hernández Martin">
     <link rel="canonical" href="https://hernandezpalo.es/">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://hernandezpalo.es/">
-    <meta property="og:title" content="Javier Hernández Martin | Technical Product Manager & Developer">
-    <meta property="og:description" content="Portafolio de Javier Hernández Martin: Technical Product Manager y Desarrollador Full Stack. Especialista en ciclo de vida de producto, Python, Django y optimización de sistemas con IA. Transformando visión técnica en valor de negocio.">
+    <meta property="og:title" content="Javier Hernández Martin | Technical Product Manager & Senior Developer">
+    <meta property="og:description" content="Estratega de producto con ADN técnico. Especialista en liderar equipos de ingeniería y gestionar roadmaps de producto complejos. Seniority Grupo B NI - Madrid.">
     <meta property="og:image" content="{% static 'landing/img/og-image.jpg' %}">
+    <meta property="og:site_name" content="HernandezPalo Portfolio">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Javier Hernández Martin | Technical Product Manager">
+    <meta name="twitter:description" content="Bridging the gap between Business and Technology. Technical Product Manager en Madrid.">
+    <meta name="twitter:image" content="{% static 'landing/img/og-image.jpg' %}">
 
     <link rel="stylesheet" href="{% static 'landing/css/styles.css' %}">
     <link rel="stylesheet" href="{% static 'landing/css/modal.css' %}">
@@ -25,15 +32,34 @@
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Javier Hernández Martin",
-      "alternateName": "HernandezPalo",
-      "jobTitle": "Technical Product Manager & Full Stack Developer",
       "url": "https://hernandezpalo.es",
-      "image": "{{ info.photo.url }}",
+      "image": "https://hernandezpalo.es/tu-foto.jpg",
       "sameAs": [
         "https://github.com/hernandezpalo83",
-        "https://www.linkedin.com/in/javier-hernandez-martin-6473b321/"
+        "https://www.linkedin.com/in/javier-hernandez-martin-6473b321/" 
       ],
-      "description": ""Portafolio de Javier Hernández Martin: Technical Product Manager y Desarrollador Full Stack. Especialista en ciclo de vida de producto, Python, Django y optimización de sistemas con IA. Transformando visión técnica en valor de negocio."
+      "jobTitle": "Technical Product Manager",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Sandav Consultores SL"
+      },
+      "description": "Technical Product Manager senior en Madrid. Especialista en la intersección entre desarrollo y estrategia de producto bajo el convenio de consultoría (Grupo B Nivel I).",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Madrid",
+        "addressRegion": "Madrid",
+        "addressCountry": "ES"
+      },
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "Technical Product Manager",
+        "occupationLocation": {
+          "@type": "City",
+          "name": "Madrid"
+        },
+        "description": "Responsable de definir el roadmap técnico, gestión de stakeholders y supervisión del ciclo de vida del producto.",
+        "skills": "Product Management, Agile Roadmap, Software Architecture, Technical Leadership, KPIs, User Stories, RICE Prioritization, Stakeholder Management, Python, Django"
+      }
     }
     </script>
 </head>
