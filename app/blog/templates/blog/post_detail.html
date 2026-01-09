@@ -3,70 +3,75 @@
 
 {% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
 
-{% block extra_css %}
-{% endblock %}
-
-
 {% block head %}
+{# Metadatos estándar para SEO #}
+<meta name="description" content="{{ post.excerpt|default:post.content|striptags|truncatewords:30 }}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+{# Open Graph para LinkedIn y Redes Sociales (Vital para un TPM) #}
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.content|striptags|truncatewords:25 }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% if post.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">
+{% endif %}
+<meta property="article:published_time" content="{{ post.publish|date:'c' }}">
+<meta property="article:author" content="Javier Hernández Martin">
+
+{# JSON-LD estructurado para Google Search #}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ request.build_absolute_uri }}"
+  },
   "headline": "{{ post.title }}",
-  "image": "{{ post.image.url }}",
+  "description": "{{ post.content|striptags|truncatewords:30 }}",
+  {% if post.image %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}",
+  {% endif %}
   "author": {
     "@type": "Person",
-    "name": "{{ post.author.get_full_name }}"
+    "name": "Javier Hernández Martin",
+    "url": "https://hernandezpalo.es"
   },
   "publisher": {
     "@type": "Organization",
     "name": "HernandezPalo",
     "logo": {
       "@type": "ImageObject",
-      "url": "{% static 'img/logo.png' %}"
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% static 'landing/img/favicon.png' %}"
     }
   },
-  "datePublished": "{{ post.publish|date:'Y-m-d' }}",
-  "description": "{{ post.meta_description }}"
+  "datePublished": "{{ post.publish|date:'c' }}",
+  "dateModified": "{{ post.updated|date:'c' }}"
 }
 </script>
-{% endblock %}    
+{% endblock %}
 
 {% block content %}
-<div style="background-color: #eff0f1; padding-top: 120px; padding-bottom: 8rem; min-height: 100vh;">
-    
+<article style="padding-top: 120px; background: #fff; min-height: 100vh;">
     <div class="row">
-        <div class="col-ten tab-full stack-center" style="float: none; margin: 0 auto;">
+        <div class="col-twelve">
+            <header style="margin-bottom: 4rem; text-align: center;">
+                <h1 style="font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; border:none; margin-bottom: 1rem;">{{ post.title }}</h1>
+                <p style="color: #999; font-size: 1.6rem;">
+                    Publicado el {{ post.publish|date:"d M Y" }} en 
+                    <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+                </p>
+            </header>
             
-            <article style="background: #ffffff; padding: 6rem; border-radius: 4px; box-shadow: 0 2px 15px rgba(0,0,0,0.05);">
+            <div style="font-family: 'lora-regular', serif; font-size: 2rem; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto;">
+                {{ post.content|safe }}
+            </div>
 
-                {% if post.image %}
-                <div style="margin-bottom: 4rem;">
-                    <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; border-radius: 4px;">
-                </div>
-                {% endif %}
-
-                <div class="post-content" style="font-size: 1.8rem; line-height: 1.9; color: #444;">
-                    {{ post.content|safe }}
-                </div>
-
-                <footer style="margin-top: 6rem; padding-top: 4rem; border-top: 1px solid #eff0f1;">
-                    <div style="display: flex; align-items: center; background: #f9f9f9; padding: 3rem; border-radius: 4px;">
-                        <img src="https://raw.githubusercontent.com/hernandezpalo83/cdn/main/profile/Foto_perfil2.jpeg" 
-                             style="width: 70px; height: 70px; border-radius: 50%; margin-right: 2rem; border: 2px solid #CC0052;">
-                        <div>
-                            <h4 style="margin: 0;">Javier Hernández Martin</h4>
-                            <p style="margin: 0; font-size: 1.4rem; color: #777;">Technical Product Manager Senior | Grupo B NI. Transformando visión técnica en resultados de negocio.</p>
-                        </div>
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 4rem;">
-                        <a href="{% url 'blog:post_list' %}" style="color: #CC0052; font-weight: bold; text-transform: uppercase; font-size: 1.2rem;">← Volver al listado</a>
-                    </div>
-                </footer>
-            </article>
-
+            <footer style="max-width: 800px; margin: 5rem auto; padding-top: 3rem; border-top: 1px solid #eee;">
+                <a href="{% url 'blog:post_list' %}" style="color: #CC0052; font-weight: bold; text-decoration: none;">← Volver al Blog</a>
+            </footer>
         </div>
     </div>
-</div>
+</article>
 {% endblock %}

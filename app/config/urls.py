@@ -17,13 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from django.contrib.sitemaps.views import sitemap
-from app.landing.sitemaps import StaticViewSitemap
+
 from django.conf.urls import handler404
 from app.landing.views import export_data_view
 
+from django.contrib.sitemaps.views import sitemap
+from app.landing.sitemaps import StaticViewSitemap
+from app.blog.sitemaps import PostSitemap
+
 sitemaps = {
     'static': StaticViewSitemap,
+    'blog': PostSitemap,
 }
 
 handler404 = 'app.landing.views.error_404_view'
