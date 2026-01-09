@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'app.landing',
     'app.gym',
     'app.prompts',
-    'blog',
+    'app.blog',
 ]
 
 SITE_ID = 1
