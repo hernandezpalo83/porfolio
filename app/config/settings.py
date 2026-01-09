@@ -217,14 +217,9 @@ PERSONAL_BRAND = {
     "BANNER": f"{BRAND_ASSETS_URL}/banners/linkedin-header.png",
 }
 
-
 # Configuración de reCAPTCHA usando las variables de entorno
 RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY', ''))
 RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY', ''))
-
-
-
-
 
 # Opcional: Para que el captcha v3 no falle en local si el score es bajo
 RECAPTCHA_V3_ACTION = 'contact_form'
@@ -234,3 +229,7 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # Esto permite que el captcha pase siempre como válido en desarrollo
 # Solo úsalo para probar que el guardado en base de datos funciona
 RECAPTCHA_TESTING = False
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CKEDITOR_5_UPLOAD_PATH = "uploads/"

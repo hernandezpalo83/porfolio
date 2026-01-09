@@ -3,54 +3,70 @@
 
 {% block title %}Blog | Javier Hernández Martin | TPM{% endblock %}
 
-{% block extra_css %}
-{% endblock %}
-
 {% block content %}
 <div style="background-color: #eff0f1; padding-top: 120px; min-height: 100vh;">
     
-    <section style="padding: 4rem 0; background-color: #eff0f1;">
-        <div class="row section-intro text-center">
+    <section style="padding: 4rem 0;">
+        <div class="row text-center">
             <div class="col-twelve">
                 <h5 style="color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; font-family: 'montserrat-bold', sans-serif; margin-bottom: 1rem;">Insights & Artículos</h5>
-                <h1 style="color: #313131; font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; line-height: 1.2; border: none;">Product Management & Tech</h1>
-                <p class="lead" style="max-width: 850px; margin: 2rem auto 0; color: #555; font-size: 1.9rem; font-family: 'lora-regular', serif;">Estrategia de producto y liderazgo técnico para el ecosistema digital.</p>
+                <h1 style="color: #313131; font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; line-height: 1.2; border: none; margin-bottom: 1rem;">Product Management & Tech</h1>
+                <p style="max-width: 850px; margin: 0 auto; color: #555; font-size: 1.9rem; font-family: 'lora-regular', serif;">Estrategia de producto y liderazgo técnico.</p>
             </div>
         </div>
     </section>
 
-    <section style="padding-bottom: 10rem; background-color: #eff0f1;">
+    <section style="padding-bottom: 10rem;">
         <div class="row">
             <div class="col-eight tab-full">
                 {% for post in posts %}
-                <article style="padding: 4.5rem; margin-bottom: 3.5rem; border-radius: 4px; border-left: 5px solid #CC0052;">
+                <article style="background: #fff; padding: 3rem; margin-bottom: 2.5rem; border-radius: 4px; border-left: 5px solid #CC0052; display: flex; gap: 3rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
                     
-                    <div style="font-size: 1.8rem; line-height: 1.8; color: #666; margin-top: 2.5rem; font-family: 'lora-regular', serif;">
-                        {{ post.content|striptags|truncatewords:45 }}
+                    {% if post.image %}
+                    <div style="flex: 0 0 200px; height: 140px; overflow: hidden; border-radius: 4px;">
+                        <a href="{{ post.get_absolute_url }}">
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        </a>
                     </div>
-                    
-                    <footer style="margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid #f0f0f0;">
-                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'montserrat-bold', sans-serif; text-decoration: none; display: inline-block;">Continuar leyendo →</a>
-                    </footer>
+                    {% endif %}
+
+                    <div style="flex: 1;">
+                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 0.5rem; font-family: 'montserrat-regular', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: block;">
+                            {{ post.publish|date:"d M Y" }} — <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+                        </div>
+
+                        <h2 style="margin: 0 0 1.5rem 0; border: none; padding: 0; line-height: 1.2;">
+                            <a href="{{ post.get_absolute_url }}" style="color: #313131; font-family: 'librebaskerville-bold', serif; font-size: 2.6rem; text-decoration: none;">
+                                {{ post.title }}
+                            </a>
+                        </h2>
+
+                        <div style="font-size: 1.6rem; line-height: 1.6; color: #555; font-family: 'lora-regular', serif; margin-bottom: 1.5rem;">
+                            {{ post.content|striptags|truncatewords:20|safe }}
+                        </div>
+                        
+                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'montserrat-bold', sans-serif; text-decoration: none;">
+                            Leer más →
+                        </a>
+                    </div>
                 </article>
                 {% empty %}
                 <div style="background: #fff; padding: 6rem; text-align: center; border-radius: 4px; border: 1px solid #e1e1e1;">
-                    <p style="font-size: 1.8rem; color: #777;">Aún no hay artículos en esta categoría.</p>
-                    <a href="{% url 'blog:post_list' %}" style="color: #CC0052; font-weight: bold;">Ver todos los artículos</a>
+                    <p style="font-size: 1.8rem; color: #777;">Próximamente nuevos artículos.</p>
                 </div>
                 {% endfor %}
             </div>
 
             <aside class="col-four tab-full">
-                <div style="background: #ffffff; padding: 3.5rem; border-radius: 4px; position: sticky; top: 120px; border: 1px solid #e1e1e1;">
-                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1.2rem; margin-bottom: 2.5rem; font-family: 'montserrat-bold', sans-serif; font-size: 1.9rem; color: #313131;">Categorías</h4>
+                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1;">
+                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'montserrat-bold', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase;">Categorías</h4>
                     <ul style="list-style: none; margin: 0; padding: 0;">
                         <li>
-                            <a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 1rem 0; font-weight: bold; text-decoration: none; font-family: 'montserrat-bold', sans-serif;">Todas las entradas</a>
+                            <a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 0.8rem 0; font-weight: bold; text-decoration: none;">Todas</a>
                         </li>
                         {% for cat in categories %}
                         <li>
-                            <a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 1rem 0; border-top: 1px solid #f5f5f5; text-decoration: none; transition: color 0.3s;">{{ cat.name }}</a>
+                            <a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none;">{{ cat.name }}</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -59,4 +75,12 @@
         </div>
     </section>
 </div>
+
+<style>
+    /* Ajuste para móviles */
+    @media (max-width: 768px) {
+        article { flex-direction: column !important; }
+        article div:first-child { width: 100% !important; flex: 0 0 auto !important; height: 180px !important; }
+    }
+</style>
 {% endblock %}

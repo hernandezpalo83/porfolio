@@ -8,7 +8,7 @@
 <meta name="description" content="{{ post.excerpt|default:post.content|striptags|truncatewords:30 }}">
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-{# Open Graph para LinkedIn y Redes Sociales (Vital para un TPM) #}
+{# Open Graph para LinkedIn y Redes Sociales #}
 <meta property="og:title" content="{{ post.title }}">
 <meta property="og:description" content="{{ post.content|striptags|truncatewords:25 }}">
 <meta property="og:type" content="article">
@@ -50,25 +50,54 @@
   "dateModified": "{{ post.updated|date:'c' }}"
 }
 </script>
+
+<style>
+    /* Corrección para que las imágenes del editor no desborden y se vean */
+    .post-content-body img {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block;
+        margin: 2.5rem auto;
+        border-radius: 8px;
+    }
+    .post-content-body figure {
+        margin: 0;
+        max-width: 100%;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<article style="padding-top: 120px; background: #fff; min-height: 100vh;">
+<article style="padding-top: 120px; background: #fff; min-height: 100vh; padding-bottom: 5rem;">
     <div class="row">
         <div class="col-twelve">
+            
             <h1 style="font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; border:none; margin-bottom: 1rem;">{{ post.title }}</h1>
             <p style="color: #999; font-size: 1.6rem;">
                 Publicado el {{ post.publish|date:"d M Y" }} en 
                 <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
             </p>
 
-            
-            <div style="font-family: 'lora-regular', serif; font-size: 2rem; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto;">
+            {% if post.image %}
+                <div style="margin: 0 auto 3rem auto; max-width: 600px; text-align: center;">
+                    <img src="{{ post.image.url }}" 
+                        alt="{{ post.title }}" 
+                        style="width: 100%; 
+                                max-height: 400px; 
+                                object-fit: cover; 
+                                border-radius: 8px; 
+                                box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                </div>
+            {% endif %}
+
+            <div class="post-content-body" style="font-family: 'lora-regular', serif; font-size: 2rem; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto;">
                 {{ post.content|safe }}
             </div>
 
             <footer style="max-width: 800px; margin: 5rem auto; padding-top: 3rem; border-top: 1px solid #eee;">
-                <a href="{% url 'blog:post_list' %}" style="color: #CC0052; font-weight: bold; text-decoration: none;">← Volver al Blog</a>
+                <a href="{% url 'blog:post_list' %}" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.6rem;">
+                    ← Volver al Blog
+                </a>
             </footer>
         </div>
     </div>

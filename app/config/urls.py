@@ -24,6 +24,8 @@ from app.landing.views import export_data_view
 from django.contrib.sitemaps.views import sitemap
 from app.landing.sitemaps import StaticViewSitemap
 from app.blog.sitemaps import PostSitemap
+from django.conf import settings
+from django.conf.urls.static import static
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -43,6 +45,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='landing/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
-    
-    
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
