@@ -224,7 +224,7 @@ BRAND_ASSETS_URL = "https://raw.githubusercontent.com/hernandezpalo83/cdn/main"
 
 # Diccionario de assets comunes para fácil acceso
 PERSONAL_BRAND = {
-    "PROFILE_PICTURE": f"{BRAND_ASSETS_URL}/profile/Foto_perfil2.jpeg",
+    "PROFILE_PICTURE": f"{BRAND_ASSETS_URL}/profile/Foto_perfil2.webp",
     "AVATAR": f"{BRAND_ASSETS_URL}/profile/avatar.png",
     "LOGO": f"{BRAND_ASSETS_URL}/logos/logo-main.svg",
     "BANNER": f"{BRAND_ASSETS_URL}/banners/linkedin-header.png",
