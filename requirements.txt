@@ -13,7 +13,4 @@ psycopg[binary]
 dj-database-url
 requests
 django-recaptcha
-django-cloudinary-storage
-six
-cloudinary
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python
