@@ -22,11 +22,11 @@
                 {% for post in posts %}
                 <article style="background: #fff; padding: 3rem; margin-bottom: 2.5rem; border-radius: 4px; border-left: 5px solid #CC0052; display: flex; gap: 3rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
                     
-                    {# Cambio: Comprobamos si existe la URL y la usamos directamente en el src #}
+                    {# Miniatura con aspecto fijo #}
                     {% if post.image_url %}
-                    <div style="flex: 0 0 200px; height: 140px; overflow: hidden; border-radius: 4px;">
+                    <div class="post-thumbnail-container">
                         <a href="{{ post.get_absolute_url }}">
-                            <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            <img src="{{ post.image_url }}" alt="{{ post.title }}" class="post-thumbnail-img">
                         </a>
                     </div>
                     {% endif %}
@@ -78,10 +78,31 @@
 </div>
 
 <style>
+    /* Forzamos el aspecto de la imagen independientemente de la URL */
+    .post-thumbnail-container {
+        flex: 0 0 200px; 
+        height: 140px; 
+        overflow: hidden; 
+        border-radius: 4px;
+        background-color: #f0f0f0; /* Fondo por si la imagen tarda en cargar */
+    }
+
+    .post-thumbnail-img {
+        width: 100% !important; 
+        height: 100% !important; 
+        object-fit: cover !important; /* Corta la imagen para llenar el contenedor sin deformar */
+        object-position: center;
+        display: block;
+    }
+
     /* Ajuste para móviles */
     @media (max-width: 768px) {
         article { flex-direction: column !important; }
-        article div:first-child { width: 100% !important; flex: 0 0 auto !important; height: 180px !important; }
+        .post-thumbnail-container { 
+            width: 100% !important; 
+            flex: 0 0 auto !important; 
+            height: 200px !important; 
+        }
     }
 </style>
 {% endblock %}
