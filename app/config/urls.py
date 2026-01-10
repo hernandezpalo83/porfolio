@@ -1,25 +1,7 @@
-"""
-URL configuration for app project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-
-from django.conf.urls import handler404
-from app.landing.views import export_data_view
+from django.http import HttpResponse # Importante añadir esto
 
 from django.contrib.sitemaps.views import sitemap
 from app.landing.sitemaps import StaticViewSitemap
@@ -27,15 +9,19 @@ from app.blog.sitemaps import PostSitemap
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Vista rápida para robots.txt
+def robots_txt(request):
+    content = "User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://hernandezpalo.es/sitemap.xml"
+    return HttpResponse(content, content_type="text/plain")
+
 sitemaps = {
     'static': StaticViewSitemap,
     'blog': PostSitemap,
 }
 
-handler404 = 'app.landing.views.error_404_view'
-
 urlpatterns = [
-    path("admin/db-backup/", export_data_view, name="db_backup"),
+    path("robots.txt", robots_txt), # Ruta para robots.txt
+    path("admin/db-backup/", include('app.landing.urls')), # Ajustado según tu estructura
     path('admin/', admin.site.urls),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('blog/', include('app.blog.urls', namespace='blog')),
