@@ -2,76 +2,72 @@
 <!DOCTYPE html>
 <html class="no-js" lang="es">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>{% block title %}Technical Product Manager | Javier Hernández Martin | Madrid{% endblock %}</title>
-    <meta name="description" content="Javier Hernández Martin: Technical Product Manager Senior (Grupo B NI) en Madrid. Experto en alinear visión de producto con ingeniería escalable, Python, Django y Agile. Transformando el ciclo de vida del software en valor de negocio real.">
-    <meta name="keywords" content="Technical Product Manager Madrid, TPM, Product Owner, Senior Developer, Gestión de Stakeholders, Product Roadmap, Metodologías Ágiles, Python, Django, IA">
+    
+    {# SEO Dinámico: Crucial para que Google indexe cada post por separado #}
+    <meta name="description" content="{% block meta_description %}Javier Hernández Martin: Technical Product Manager Senior en Madrid. Experto en alinear visión de producto con ingeniería escalable, Python y Agile.{% endblock %}">
+    <meta name="keywords" content="Technical Product Manager, TPM, Product Owner, Django, Agile, Madrid, Javier Hernández Martin">
     <meta name="author" content="Javier Hernández Martin">
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
+    {# Open Graph / Social Media #}
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hernandezpalo.es/">
-    <meta property="og:title" content="Javier Hernández Martin | Technical Product Manager & Senior Developer">
-    <meta property="og:description" content="Estratega de producto con ADN técnico. Especialista en liderar equipos de ingeniería y gestionar roadmaps de producto complejos. Seniority Grupo B NI - Madrid.">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="Javier Hernández Martin | TPM & Senior Developer">
     <meta property="og:image" content="{% static 'landing/img/og-image.jpg' %}">
     <meta property="og:site_name" content="HernandezPalo Portfolio">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Javier Hernández Martin | Technical Product Manager">
-    <meta name="twitter:description" content="Bridging the gap between Business and Technology. Technical Product Manager en Madrid.">
-    <meta name="twitter:image" content="{% static 'landing/img/og-image.jpg' %}">
+    {# Optimización de Carga de Fuentes (PageSpeed Fix) #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
+    {# CSS Crítico y Vendor #}
+    <link rel="stylesheet" href="{% static 'landing/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/css/vendor.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
+
+    <link rel="icon" type="image/png" href="{% static 'landing/img/favicon.png' %}">
+    
+    {# Schema.org / JSON-LD Personalizado por bloque si es necesario #}
+    {% block extra_schema %}
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Javier Hernández Martin",
       "url": "https://hernandezpalo.es",
-      "image": "https://hernandezpalo.es/tu-foto.jpg",
-      "sameAs": [
-        "https://github.com/hernandezpalo83",
-        "https://www.linkedin.com/in/javier-hernandez-martin-6473b321/" 
-      ],
       "jobTitle": "Technical Product Manager",
       "worksFor": {
         "@type": "Organization",
         "name": "Sandav Consultores SL"
       },
-      "description": "Technical Product Manager senior en Madrid. Especialista en la intersección entre desarrollo y estrategia de producto bajo el convenio de consultoría (Grupo B Nivel I).",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Madrid",
-        "addressRegion": "Madrid",
         "addressCountry": "ES"
       },
-      "hasOccupation": {
-        "@type": "Occupation",
-        "name": "Technical Product Manager",
-        "occupationLocation": {
-          "@type": "City",
-          "name": "Madrid"
-        },
-        "description": "Responsable de definir el roadmap técnico, gestión de stakeholders y supervisión del ciclo de vida del producto.",
-        "skills": "Product Management, Agile Roadmap, Software Architecture, Technical Leadership, KPIs, User Stories, RICE Prioritization, Stakeholder Management, Python, Django"
-      }
+      "sameAs": [
+        "https://github.com/hernandezpalo83",
+        "https://www.linkedin.com/in/javier-hernandez-martin-6473b321/"
+      ]
     }
     </script>
+    {% endblock %}
 
-    <link rel="stylesheet" href="{% static 'landing/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/vendor.css' %}">
-
-    <link rel="icon" type="image/png" href="{% static 'landing/img/favicon.png' %}">
-    
     {% if form.media %}{{ form.media }}{% endif %}
 
+    {# JS que bloquea el renderizado (Modernizr/Pace) se mantiene arriba por necesidad de la plantilla #}
     <script src="{% static 'landing/js/modernizr.js' %}"></script>    
     <script src="{% static 'landing/js/pace.min.js' %}"></script>
 
     <style>
+        /* Optimización de visualización de fuentes */
+        body { font-family: 'Poppins', sans-serif; font-display: swap; }
+        
         header { width: 100% !important; background: #0c0c0c !important; position: fixed !important; top: 0; left: 0; z-index: 500; }
         .top-bar { max-width: 100% !important; width: 100% !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 40px !important; height: 80px !important; }
         header .logo a { font-family: "montserrat-bold", sans-serif !important; color: #CC0052 !important; font-size: clamp(1.8rem, 4vw, 2.4rem) !important; font-weight: 700 !important; text-decoration: none !important; white-space: nowrap !important; letter-spacing: -0.02em !important; }
@@ -81,7 +77,6 @@
         .social-icons a:hover, .login-icon:hover { color: #CC0052 !important; }
         #go-top { z-index: 600; }
         
-        /* Bloque para añadir CSS extra desde páginas hijas */
         {% block extra_css %}{% endblock %}
     </style>
 
@@ -90,12 +85,12 @@
 
 <body id="top">
     {% include "navbar.html" %}
-   <main>
-       {% block content %}
-       {% endblock %}
-   </main>
+    
+    <main>
+       {% block content %}{% endblock %}
+    </main>
 
-   <footer>
+    <footer>
         <div class="row">
             <div class="col-six tab-full">
                 <div class="copyright">
@@ -108,13 +103,13 @@
                 </a>
             </div>
         </div>
-   </footer>  
+    </footer>  
 
-   <script src="{% static 'landing/js/jquery-2.1.3.min.js' %}"></script>    
-   <script src="{% static 'landing/js/plugins.js' %}"></script>    
-   <script src="{% static 'landing/js/main.js' %}"></script>
-   
-   {% block extra_js %}{% endblock %}
-
+    {# Scripts movidos al final para no bloquear el LCP #}
+    <script src="{% static 'landing/js/jquery-2.1.3.min.js' %}"></script>    
+    <script src="{% static 'landing/js/plugins.js' %}"></script>    
+    <script src="{% static 'landing/js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
