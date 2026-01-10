@@ -13,9 +13,12 @@
 <meta property="og:description" content="{{ post.content|striptags|truncatewords:25 }}">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-{% if post.image %}
-<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">
+
+{# Cambio: Usamos directamente la URL de texto del nuevo campo #}
+{% if post.image_url %}
+<meta property="og:image" content="{{ post.image_url }}">
 {% endif %}
+
 <meta property="article:published_time" content="{{ post.publish|date:'c' }}">
 <meta property="article:author" content="Javier Hernández Martin">
 
@@ -30,8 +33,8 @@
   },
   "headline": "{{ post.title }}",
   "description": "{{ post.content|striptags|truncatewords:30 }}",
-  {% if post.image %}
-  "image": "{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}",
+  {% if post.image_url %}
+  "image": "{{ post.image_url }}",
   {% endif %}
   "author": {
     "@type": "Person",
@@ -52,7 +55,7 @@
 </script>
 
 <style>
-    /* Corrección para que las imágenes del editor no desborden y se vean */
+    /* Corrección para que las imágenes del editor no desborden */
     .post-content-body img {
         max-width: 100% !important;
         height: auto !important;
@@ -78,9 +81,10 @@
                 <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
             </p>
 
-            {% if post.image %}
+            {# Cambio: Renderizado de la imagen destacada desde URL externa #}
+            {% if post.image_url %}
                 <div style="margin: 0 auto 3rem auto; max-width: 600px; text-align: center;">
-                    <img src="{{ post.image.url }}" 
+                    <img src="{{ post.image_url }}" 
                         alt="{{ post.title }}" 
                         style="width: 100%; 
                                 max-height: 400px; 
@@ -91,6 +95,7 @@
             {% endif %}
 
             <div class="post-content-body" style="font-family: 'lora-regular', serif; font-size: 2rem; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto;">
+                {# CKEditor inyectará aquí las etiquetas <img> con sus URLs de GitHub #}
                 {{ post.content|safe }}
             </div>
 

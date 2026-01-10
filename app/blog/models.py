@@ -33,7 +33,12 @@ class Post(models.Model):
     
     # SEO Meta Tags específicos por post
     meta_description = models.CharField(max_length=160, blank=True, help_text="Para Google Snippet")
-    image = models.ImageField(upload_to='blog/%Y/%m/%d/', blank=True, null=True)
+    imagen_url = models.URLField(
+        max_length=500, 
+        blank=True, 
+        null=True, 
+        help_text="Pega aquí la URL 'raw' de GitHub"
+    )
 
     class Meta:
         ordering = ('-publish',)

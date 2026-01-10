@@ -195,13 +195,26 @@ CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
             "heading", "|",
-            "bold", "italic", "underline", "link", "bulletedList", "numberedList", "blockQuote", "|", 'imageUpload',
+            "bold", "italic", "underline", "link", "|",
+            "bulletedList", "numberedList", "blockQuote", "|",
+            "insertImage",  # <-- CAMBIO CLAVE: Cambiamos imageUpload por insertImage
             "undo", "redo", "|",
             "sourceEditing" 
         ],
+        "image": {
+            "toolbar": [
+                "imageTextAlternative", "|", 
+                "imageStyle:alignLeft", "imageStyle:alignCenter", "imageStyle:alignRight"
+            ],
+            "styles": ["alignLeft", "alignCenter", "alignRight"],
+            "insert": {
+                "integrations": ["url"] # Esto permite que al pulsar el icono, te pida una URL de GitHub
+            }
+        },
         "height": 300,
         "width": "100%",
-        "markdown": True,
+        # Nota: 'markdown' en CKEditor 5 suele requerir un plugin extra, 
+        # pero lo mantenemos si tu build lo soporta.
     }
 }
 
