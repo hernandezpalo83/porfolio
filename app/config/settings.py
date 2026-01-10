@@ -10,21 +10,21 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-key')
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
-# --- SILENCIAR ERRORES DE SISTEMA (Esto soluciona tu fallo de runserver) ---
+# --- SILENCIAR ERRORES DE SISTEMA ---
 SILENCED_SYSTEM_CHECKS = [
     'django_recaptcha.recaptcha_test_key_error',
     'captcha.recaptcha_test_key_error'
 ]
 
-# --- APPS ---
+# --- APPS (Orden Crítico para evitar que Cloudinary rompa los CSS) ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage', 
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # 1. Cargamos estáticos primero
+    'cloudinary_storage',           # 2. Cloudinary después
     'cloudinary',
     'django.contrib.sitemaps',
     'django.contrib.sites',
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 # --- MIDDLEWARE ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Debe ir justo aquí
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,18 +63,28 @@ if database_url:
 else:
     DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 
-# --- STATIC & MEDIA ---
+# --- STATIC FILES (WhiteNoise) ---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Indicamos a Django dónde buscar los archivos fuente de tus apps
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'app/landing/static'),
+]
+
+# Forzamos a WhiteNoise a manejar los estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# --- MEDIA FILES (Cloudinary) ---
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'STATICFILES_STORAGE': None, # OBLIGATORIO: Evita que Cloudinary busque CSS/JS
 }
 
 if not DEBUG:
+    # Solo las imágenes subidas van a Cloudinary
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     MEDIA_URL = '/media/'
 else:
