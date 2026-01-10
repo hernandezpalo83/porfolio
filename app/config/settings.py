@@ -54,7 +54,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_tables2',
@@ -230,6 +232,24 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # Solo úsalo para probar que el guardado en base de datos funciona
 RECAPTCHA_TESTING = False
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-CKEDITOR_5_UPLOAD_PATH = "uploads/"
+
+# Configuración de Cloudinary (Usa variables de entorno en Render)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+# Lógica Híbrida: Local vs Producción
+if not DEBUG:
+    # En PRODUCCIÓN (Render), usamos Cloudinary
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # Si quieres que CKEditor también suba aquí:
+    CKEDITOR_5_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    # En DESARROLLO (Local), seguimos usando el disco duro
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    # El path de CKEditor se mantiene igual, se adaptará al Storage que toque
+    CKEDITOR_5_UPLOAD_PATH = "uploads/"
