@@ -51,12 +51,12 @@ class Post(models.Model):
         return reverse('blog:post_detail', args=[self.slug])
     
     def get_read_time(self):
-        """Calcula el tiempo de lectura estimado basado en 200 ppm"""
-        # Limpiamos el HTML para contar solo palabras reales
-        from django.utils.html import strip_tags
-        words = strip_tags(self.content).split()
-        word_count = len(words)
-        
-        # 200 palabras por minuto es la media de lectura
-        reading_time = math.ceil(word_count / 200)
-        return reading_time
+        try:
+            from django.utils.html import strip_tags
+            if not self.content:
+                return 1
+            texto_limpio = strip_tags(self.content)
+            conteo_palabras = len(texto_limpio.split())
+            return max(1, math.ceil(conteo_palabras / 200))
+        except Exception:
+            return 1 # Fallback seguro para que la web no se cuelgue

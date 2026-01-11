@@ -11,7 +11,7 @@ def post_list(request, category_slug=None):
     year = request.GET.get('year')
     
     # Base de posts publicados
-    posts_list = Post.objects.filter(status='published').order_by('-publish')
+    posts_list = Post.objects.filter(status='published').select_related('category').order_by('-publish')
     
     # Filtro por búsqueda
     if query:
