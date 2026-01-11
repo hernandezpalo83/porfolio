@@ -9,9 +9,9 @@
     <section style="padding: 4rem 0;">
         <div class="row text-center">
             <div class="col-twelve">
-                <h5 style="color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; font-family: 'montserrat-bold', sans-serif; margin-bottom: 1rem;">Insights & Artículos</h5>
-                <h1 style="color: #313131; font-family: 'librebaskerville-bold', serif; font-size: 4.5rem; line-height: 1.2; border: none; margin-bottom: 1rem;">Product Management & Tech</h1>
-                <p style="max-width: 850px; margin: 0 auto; color: #555; font-size: 1.9rem; font-family: 'lora-regular', serif;">Estrategia de producto y liderazgo técnico.</p>
+                <h5 style="color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; margin-bottom: 1rem;">Insights & Artículos</h5>
+                <h1 style="color: #313131; font-family: 'Montserrat', sans-serif; font-size: clamp(3rem, 8vw, 4.5rem); line-height: 1.2; border: none; margin-bottom: 1rem; font-weight: 700;">Product Management & Tech</h1>
+                <p style="max-width: 850px; margin: 0 auto; color: #555; font-size: 1.9rem; font-family: 'Lora', serif;">Estrategia de producto y liderazgo técnico.</p>
             </div>
         </div>
     </section>
@@ -25,31 +25,37 @@
                     {% if post.imagen_url %}
                         <div class="post-thumbnail-container">
                             <a href="{{ post.get_absolute_url }}">
+                                {# OPTIMIZACIÓN TPM: La primera imagen es crítica para el LCP #}
                                 <img src="{{ post.imagen_url }}" 
                                     alt="{{ post.title }}" 
                                     class="post-thumbnail-img" 
-                                    loading="lazy" 
+                                    {% if forloop.first %}
+                                        fetchpriority="high" 
+                                        loading="eager"
+                                    {% else %}
+                                        loading="lazy" 
+                                    {% endif %}
                                     decoding="async">
                             </a>
                         </div>
                     {% endif %}
 
                     <div style="flex: 1;">
-                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 0.5rem; font-family: 'montserrat-regular', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: block;">
+                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: block;">
                             {{ post.publish|date:"d M Y" }} — <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
                         </div>
 
                         <h2 style="margin: 0 0 1.5rem 0; border: none; padding: 0; line-height: 1.2;">
-                            <a href="{{ post.get_absolute_url }}" style="color: #313131; font-family: 'librebaskerville-bold', serif; font-size: 2.6rem; text-decoration: none;">
+                            <a href="{{ post.get_absolute_url }}" style="color: #313131; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.6rem; text-decoration: none;">
                                 {{ post.title }}
                             </a>
                         </h2>
 
-                        <div style="font-size: 1.6rem; line-height: 1.6; color: #555; font-family: 'lora-regular', serif; margin-bottom: 1.5rem;">
+                        <div style="font-size: 1.6rem; line-height: 1.6; color: #555; font-family: 'Lora', serif; margin-bottom: 1.5rem;">
                             {{ post.content|striptags|truncatewords:20|safe }}
                         </div>
                         
-                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'montserrat-bold', sans-serif; text-decoration: none;">
+                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'Poppins', sans-serif; text-decoration: none;">
                             Leer más →
                         </a>
                     </div>
@@ -63,14 +69,14 @@
 
             <aside class="col-four tab-full">
                 <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1;">
-                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'montserrat-bold', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase;">Categorías</h4>
+                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Categorías</h4>
                     <ul style="list-style: none; margin: 0; padding: 0;">
                         <li>
-                            <a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 0.8rem 0; font-weight: bold; text-decoration: none;">Todas</a>
+                            <a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 0.8rem 0; font-weight: bold; text-decoration: none; font-family: 'Poppins', sans-serif;">Todas</a>
                         </li>
                         {% for cat in categories %}
                         <li>
-                            <a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none;">{{ cat.name }}</a>
+                            <a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none; font-family: 'Poppins', sans-serif;">{{ cat.name }}</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -81,30 +87,27 @@
 </div>
 
 <style>
-    /* Forzamos el aspecto de la imagen independientemente de la URL */
     .post-thumbnail-container {
         flex: 0 0 200px; 
         height: 140px; 
         overflow: hidden; 
         border-radius: 4px;
-        background-color: #f0f0f0; /* Fondo por si la imagen tarda en cargar */
+        background-color: #f0f0f0; 
     }
 
     .post-thumbnail-img {
         width: 100% !important; 
         height: 100% !important; 
-        object-fit: cover !important; /* Corta la imagen para llenar el contenedor sin deformar */
-        object-position: center;
+        object-fit: cover !important;
         display: block;
     }
 
-    /* Ajuste para móviles */
     @media (max-width: 768px) {
-        article { flex-direction: column !important; }
+        article { flex-direction: column !important; padding: 2rem !important; gap: 2rem !important; }
         .post-thumbnail-container { 
             width: 100% !important; 
             flex: 0 0 auto !important; 
-            height: 200px !important; 
+            height: 180px !important; 
         }
     }
 </style>
