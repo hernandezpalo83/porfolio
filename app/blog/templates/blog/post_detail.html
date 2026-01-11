@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
+<nav style="margin-bottom: 2rem; font-family: 'Poppins', sans-serif; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">
+    <a href="/" style="color: #999; text-decoration: none;">Home</a> 
+    <span style="color: #ccc; margin: 0 10px;">/</span>
+    <a href="{% url 'blog:post_list' %}" style="color: #999; text-decoration: none;">Blog</a>
+    <span style="color: #ccc; margin: 0 10px;">/</span>
+    <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+</nav>
+
 {% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
 
 {% block head %}
@@ -42,14 +50,12 @@
     <div class="row">
         <div class="col-twelve">
             
-            <header style="max-width: 800px; margin: 0 auto 4rem auto; text-align: center;">
                 <h1 style="font-family: 'Montserrat', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.2; border:none; margin-bottom: 2rem; font-weight: 700;">{{ post.title }}</h1>
                 <p style="color: #888; font-size: 1.6rem; font-family: 'Poppins', sans-serif;">
                     {{ post.publish|date:"d M Y" }} · 
                     <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · 
                     <span>{{ post.get_read_time }} min lectura</span>
                 </p>
-            </header>
 
             {% if post.image_url %}
                 <div style="margin: 0 auto 4rem auto; max-width: 900px;">
@@ -91,4 +97,24 @@
         </div>
     </div>
 </article>
+
+<div style="background: #313131; color: #fff; padding: 4rem; border-radius: 8px; display: flex; gap: 3rem; align-items: center; margin-top: 6rem;">
+    <div style="flex: 0 0 100px;">
+        {% if BRAND.PROFILE_PICTURE %}
+            <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #CC0052;">
+        {% endif %}
+        
+    </div>
+    <div style="flex: 1;">
+        <h4 style="color: #fff; font-family: 'Montserrat', sans-serif; margin-bottom: 1rem; font-size: 2rem;">Javier Hernández Martin</h4>
+        <p style="font-size: 1.5rem; color: #ccc; line-height: 1.5; margin-bottom: 1.5rem;">
+            Technical Product Manager enfocado en cerrar la brecha entre la ingeniería y el negocio. Especialista en metodologías ágiles y desarrollo con Django.
+        </p>
+        <div style="display: flex; gap: 2rem;">
+            <a href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.3rem; text-transform: uppercase;">LinkedIn</a>
+            <a href="https://github.com/hernandezpalo83" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.3rem; text-transform: uppercase;">GitHub</a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
