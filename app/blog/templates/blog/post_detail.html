@@ -1,18 +1,49 @@
 {% extends "base.html" %}
 {% load static %}
 
-<nav style="margin-bottom: 2rem; font-family: 'Poppins', sans-serif; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">
-    <a href="/" style="color: #999; text-decoration: none;">Home</a> 
-    <span style="color: #ccc; margin: 0 10px;">/</span>
-    <a href="{% url 'blog:post_list' %}" style="color: #999; text-decoration: none;">Blog</a>
-    <span style="color: #ccc; margin: 0 10px;">/</span>
-    <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
-</nav>
-
 {% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
 
 {% block head %}
-{# ... Mantenemos tus metadatos SEO y JSON-LD actuales igual ... #}
+{# Metadatos estándar para SEO #}
+<meta name="description" content="{{ post.excerpt|default:post.content|striptags|truncatewords:30 }}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+{# Open Graph para LinkedIn y Redes Sociales #}
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.content|striptags|truncatewords:25 }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+{% if post.image_url %}
+<meta property="og:image" content="{{ post.image_url }}">
+{% endif %}
+
+<meta property="article:published_time" content="{{ post.publish|date:'c' }}">
+<meta property="article:author" content="Javier Hernández Martin">
+
+{# JSON-LD estructurado para Google Search #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ request.build_absolute_uri }}"
+  },
+  "headline": "{{ post.title }}",
+  "description": "{{ post.content|striptags|truncatewords:30 }}",
+  {% if post.image_url %}
+  "image": "{{ post.image_url }}",
+  {% endif %}
+  "author": {
+    "@type": "Person",
+    "name": "Javier Hernández Martin",
+    "url": "https://hernandezpalo.es"
+  },
+  "datePublished": "{{ post.publish|date:'c' }}",
+  "dateModified": "{{ post.updated|date:'c' }}"
+}
+</script>
 
 <style>
     .post-content-body img {
@@ -24,42 +55,64 @@
     }
     .post-content-body h2, .post-content-body h3 {
         font-family: 'Montserrat', sans-serif;
-        margin-top: 3rem;
+        margin-top: 4rem;
         font-weight: 700;
+        color: #313131;
     }
-    /* Estilos para las mini tarjetas relacionadas */
+    .post-content-body p {
+        margin-bottom: 2.5rem;
+    }
+
+    /* Estilos para las tarjetas relacionadas compactas */
     .related-card {
-        flex: 1;
+        flex: 1 1 calc(33.333% - 2rem);
         min-width: 250px;
         background: #f9f9f9;
-        border-radius: 8px;
-        overflow: hidden;
+        border-radius: 4px;
+        border-top: 3px solid #CC0052;
+        padding: 2.5rem;
         transition: 0.3s;
         text-decoration: none !important;
-        border: 1px solid #eee;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .related-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        background: #fff;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        border-top-color: #313131;
+    }
+
+    @media (max-width: 768px) {
+        .related-card { flex: 1 1 100%; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<article style="padding-top: 120px; background: #fff; min-height: 100vh; padding-bottom: 2rem;">
+<article style="padding-top: 120px; background: #fff; min-height: 100vh; padding-bottom: 5rem;">
     <div class="row">
         <div class="col-twelve">
             
-                <h1 style="font-family: 'Montserrat', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.2; border:none; margin-bottom: 2rem; font-weight: 700;">{{ post.title }}</h1>
-                <p style="color: #888; font-size: 1.6rem; font-family: 'Poppins', sans-serif;">
-                    {{ post.publish|date:"d M Y" }} · 
-                    <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · 
-                    <span>{{ post.get_read_time }} min lectura</span>
-                </p>
+            <nav style="margin-bottom: 3rem; font-family: 'Poppins', sans-serif; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">
+                <a href="/" style="color: #999; text-decoration: none;">Home</a> 
+                <span style="color: #ccc; margin: 0 10px;">/</span>
+                <a href="{% url 'blog:post_list' %}" style="color: #999; text-decoration: none;">Blog</a>
+                <span style="color: #ccc; margin: 0 10px;">/</span>
+                <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+            </nav>
+
+            <h1 style="font-family: 'Montserrat', sans-serif; font-size: clamp(2.8rem, 5vw, 4.5rem); line-height: 1.2; border:none; margin-bottom: 2rem; font-weight: 700; color: #313131;">{{ post.title }}</h1>
+            <p style="color: #888; font-size: 1.5rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px;">
+                {{ post.publish|date:"d M Y" }} · 
+                <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · 
+                <span>{{ post.get_read_time }} min lectura</span>
+            </p>
 
             {% if post.image_url %}
-                <div style="margin: 0 auto 4rem auto; max-width: 900px;">
-                    <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="margin: 0 auto 5rem auto; max-width: 900px;">
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
                 </div>
             {% endif %}
 
@@ -67,54 +120,47 @@
                 {{ post.content|safe }}
             </div>
 
+            <div style="background: #313131; color: #fff; padding: 4rem; border-radius: 4px; display: flex; gap: 3rem; align-items: center; margin: 8rem auto 4rem auto; max-width: 800px;">
+                <div style="flex: 0 0 80px;">
+                    {% if BRAND.PROFILE_PICTURE %}
+                        <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #CC0052;">
+                    {% endif %}
+                </div>
+                <div style="flex: 1;">
+                    <h4 style="color: #fff; font-family: 'Montserrat', sans-serif; margin-bottom: 0.5rem; font-size: 1.8rem;">Javier Hernández Martin</h4>
+                    <p style="font-size: 1.4rem; color: #ccc; line-height: 1.5; margin-bottom: 1.5rem; font-family: 'Lora', serif;">
+                        Technical Product Manager enfocado en cerrar la brecha entre la ingeniería y el negocio. Especialista en metodologías ágiles y desarrollo con Django.
+                    </p>
+                    <div style="display: flex; gap: 2rem;">
+                        <a href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">LinkedIn</a>
+                        <a href="https://github.com/hernandezpalo83" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">GitHub</a>
+                    </div>
+                </div>
+            </div>
+
             {% if related_posts %}
-            <div style="max-width: 800px; margin: 8rem auto 4rem auto; padding-top: 4rem; border-top: 2px solid #f0f0f0;">
-                <h3 style="font-family: 'Montserrat', sans-serif; font-size: 2.2rem; margin-bottom: 3rem;">Sigue leyendo sobre {{ post.category.name }}</h3>
+            <div style="max-width: 800px; margin: 6rem auto 4rem auto; padding-top: 4rem; border-top: 1px solid #eee;">
+                <h3 style="font-family: 'Montserrat', sans-serif; font-size: 2rem; margin-bottom: 3rem; text-transform: uppercase; letter-spacing: 1px; color: #888;">Seguir leyendo</h3>
                 <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
                     {% for r_post in related_posts %}
                     <a href="{{ r_post.get_absolute_url }}" class="related-card">
-                        <div style="height: 140px; background: #eee;">
-                            {% if r_post.image_url %}
-                            <img src="{{ r_post.image_url }}" style="width: 100%; height: 100%; object-fit: cover;">
-                            {% else %}
-                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #313131 0%, #CC0052 100%);"></div>
-                            {% endif %}
+                        <div>
+                            <span style="font-size: 1.1rem; color: #CC0052; font-family: 'Poppins', sans-serif; font-weight: 600; text-transform: uppercase;">{{ r_post.publish|date:"M Y" }}</span>
+                            <h4 style="font-size: 1.7rem; color: #313131; margin: 1rem 0 0 0; line-height: 1.3; font-family: 'Montserrat', sans-serif; font-weight: 700;">{{ r_post.title }}</h4>
                         </div>
-                        <div style="padding: 1.5rem;">
-                            <h4 style="font-size: 1.6rem; color: #313131; margin: 0; line-height: 1.3;">{{ r_post.title }}</h4>
-                        </div>
+                        <div style="margin-top: 2rem; color: #CC0052; font-weight: bold; font-size: 1.1rem; text-transform: uppercase;">Leer más →</div>
                     </a>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
 
-            <footer style="max-width: 800px; margin: 4rem auto; text-align: center;">
-                <a href="{% url 'blog:post_list' %}" class="button stroke" style="color: #CC0052; border-color: #CC0052;">
-                    ← Volver a la lista de artículos
+            <footer style="max-width: 800px; margin: 6rem auto 0 auto; text-align: center;">
+                <a href="{% url 'blog:post_list' %}" class="button stroke" style="color: #CC0052; border-color: #CC0052; font-size: 1.2rem;">
+                    ← Volver al listado completo
                 </a>
             </footer>
         </div>
     </div>
 </article>
-
-<div style="background: #313131; color: #fff; padding: 4rem; border-radius: 8px; display: flex; gap: 3rem; align-items: center; margin-top: 6rem;">
-    <div style="flex: 0 0 100px;">
-        {% if BRAND.PROFILE_PICTURE %}
-            <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #CC0052;">
-        {% endif %}
-        
-    </div>
-    <div style="flex: 1;">
-        <h4 style="color: #fff; font-family: 'Montserrat', sans-serif; margin-bottom: 1rem; font-size: 2rem;">Javier Hernández Martin</h4>
-        <p style="font-size: 1.5rem; color: #ccc; line-height: 1.5; margin-bottom: 1.5rem;">
-            Technical Product Manager enfocado en cerrar la brecha entre la ingeniería y el negocio. Especialista en metodologías ágiles y desarrollo con Django.
-        </p>
-        <div style="display: flex; gap: 2rem;">
-            <a href="https://www.linkedin.com/in/javier-hernandez-martin-6473b321/" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.3rem; text-transform: uppercase;">LinkedIn</a>
-            <a href="https://github.com/hernandezpalo83" style="color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.3rem; text-transform: uppercase;">GitHub</a>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
