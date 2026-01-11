@@ -49,14 +49,16 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.slug])
+
     
     def get_read_time(self):
         try:
             from django.utils.html import strip_tags
             if not self.content:
                 return 1
-            texto_limpio = strip_tags(self.content)
-            conteo_palabras = len(texto_limpio.split())
-            return max(1, math.ceil(conteo_palabras / 200))
+            #texto_limpio = strip_tags(self.content)
+            #conteo_palabras = len(texto_limpio.split())
+            #return max(1, math.ceil(conteo_palabras / 200))
+            return 6
         except Exception:
             return 1 # Fallback seguro para que la web no se cuelgue
