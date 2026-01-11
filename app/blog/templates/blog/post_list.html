@@ -6,12 +6,13 @@
 {% block content %}
 <div style="background-color: #eff0f1; padding-top: 120px; min-height: 100vh;">
     
-    <section style="padding: 4rem 0;">
+    <section style="padding: 4rem 0 2rem 0;">
         <div class="row text-center">
             <div class="col-twelve">
                 <h5 style="color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; margin-bottom: 1rem;">Insights & Artículos</h5>
-                <h1 style="color: #313131; font-family: 'Montserrat', sans-serif; font-size: clamp(3rem, 8vw, 4.5rem); line-height: 1.2; border: none; margin-bottom: 1rem; font-weight: 700;">Product Management & Tech</h1>
-                <p style="max-width: 850px; margin: 0 auto; color: #555; font-size: 1.9rem; font-family: 'Lora', serif;">Estrategia de producto y liderazgo técnico.</p>
+                <h1 style="color: #313131; font-family: 'Montserrat', sans-serif; font-size: clamp(3rem, 8vw, 4.5rem); line-height: 1.2; border: none; margin-bottom: 1rem; font-weight: 700;">
+                    {% if query %} Resultados para: "{{ query }}" {% elif category %} Categoría: {{ category.name }} {% elif current_year %} Archivo: {{ current_year }} {% else %} Product Management & Tech {% endif %}
+                </h1>
             </div>
         </div>
     </section>
@@ -21,62 +22,87 @@
             <div class="col-eight tab-full">
                 {% for post in posts %}
                 <article style="background: #fff; padding: 3rem; margin-bottom: 2.5rem; border-radius: 4px; border-left: 5px solid #CC0052; display: flex; gap: 3rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
-                    
                     {% if post.imagen_url %}
                         <div class="post-thumbnail-container">
                             <a href="{{ post.get_absolute_url }}">
-                                {# OPTIMIZACIÓN TPM: La primera imagen es crítica para el LCP #}
-                                <img src="{{ post.imagen_url }}" 
-                                    alt="{{ post.title }}" 
-                                    class="post-thumbnail-img" 
-                                    {% if forloop.first %}
-                                        fetchpriority="high" 
-                                        loading="eager"
-                                    {% else %}
-                                        loading="lazy" 
-                                    {% endif %}
-                                    decoding="async">
+                                <img src="{{ post.imagen_url }}" alt="{{ post.title }}" class="post-thumbnail-img" {% if forloop.first %}fetchpriority="high" loading="eager"{% else %}loading="lazy"{% endif %} decoding="async">
                             </a>
                         </div>
                     {% endif %}
 
                     <div style="flex: 1;">
-                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: block;">
-                            {{ post.publish|date:"d M Y" }} — <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;">
+                            <span>{{ post.publish|date:"d M Y" }}</span>
+                            <span style="color: #ccc;">|</span>
+                            <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+                            <span style="color: #ccc;">|</span>
+                            <span style="display: inline-flex; align-items: center; gap: 5px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                {{ post.get_read_time }} min lectura
+                            </span>
                         </div>
-
                         <h2 style="margin: 0 0 1.5rem 0; border: none; padding: 0; line-height: 1.2;">
-                            <a href="{{ post.get_absolute_url }}" style="color: #313131; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.6rem; text-decoration: none;">
-                                {{ post.title }}
-                            </a>
+                            <a href="{{ post.get_absolute_url }}" style="color: #313131; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.6rem; text-decoration: none;">{{ post.title }}</a>
                         </h2>
-
                         <div style="font-size: 1.6rem; line-height: 1.6; color: #555; font-family: 'Lora', serif; margin-bottom: 1.5rem;">
                             {{ post.content|striptags|truncatewords:20|safe }}
                         </div>
-                        
-                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'Poppins', sans-serif; text-decoration: none;">
-                            Leer más →
-                        </a>
+                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'Poppins', sans-serif; text-decoration: none;">Leer más →</a>
                     </div>
                 </article>
                 {% empty %}
-                <div style="background: #fff; padding: 6rem; text-align: center; border-radius: 4px; border: 1px solid #e1e1e1;">
-                    <p style="font-size: 1.8rem; color: #777;">Próximamente nuevos artículos.</p>
+                <div style="background: #fff; padding: 6rem; text-align: center; border-radius: 4px;">
+                    <p style="font-size: 1.8rem; color: #777;">No se han encontrado artículos con esos criterios.</p>
+                    <a href="{% url 'blog:post_list' %}" class="button stroke" style="margin-top: 2rem;">Ver todos los artículos</a>
                 </div>
                 {% endfor %}
+
+                {% if posts.has_other_pages %}
+                <nav class="pagination" style="text-align: center; margin-top: 4rem;">
+                    {% if posts.has_previous %}
+                        <a href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}" class="page-numbers prev">Prev</a>
+                    {% endif %}
+
+                    {% for i in posts.paginator.page_range %}
+                        {% if posts.number == i %}
+                            <span class="page-numbers current">{{ i }}</span>
+                        {% else %}
+                            <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}" class="page-numbers">{{ i }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if posts.has_next %}
+                        <a href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}" class="page-numbers next">Next</a>
+                    {% endif %}
+                </nav>
+                {% endif %}
             </div>
 
             <aside class="col-four tab-full">
-                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1;">
+                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1; margin-bottom: 3rem;">
+                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Buscar</h4>
+                    <form action="{% url 'blog:post_list' %}" method="get">
+                        <input type="text" name="q" placeholder="Ej: Django, Agile..." value="{{ query|default:'' }}" style="width: 100%; margin-bottom: 1rem; height: 5rem;">
+                        <button type="submit" class="button full-width" style="background: #CC0052; color: #fff; border: none;">Buscar Artículo</button>
+                    </form>
+                </div>
+
+                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1; margin-bottom: 3rem;">
                     <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Categorías</h4>
                     <ul style="list-style: none; margin: 0; padding: 0;">
-                        <li>
-                            <a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 0.8rem 0; font-weight: bold; text-decoration: none; font-family: 'Poppins', sans-serif;">Todas</a>
-                        </li>
+                        <li><a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 0.8rem 0; font-weight: bold; text-decoration: none;">Todas</a></li>
                         {% for cat in categories %}
+                        <li><a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none;">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1;">
+                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Archivo</h4>
+                    <ul style="list-style: none; margin: 0; padding: 0;">
+                        {% for y in archive_years %}
                         <li>
-                            <a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none; font-family: 'Poppins', sans-serif;">{{ cat.name }}</a>
+                            <a href="?year={{ y }}" style="color: {% if current_year == y|stringformat:'s' %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none;">Año {{ y }}</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -87,28 +113,17 @@
 </div>
 
 <style>
-    .post-thumbnail-container {
-        flex: 0 0 200px; 
-        height: 140px; 
-        overflow: hidden; 
-        border-radius: 4px;
-        background-color: #f0f0f0; 
-    }
-
-    .post-thumbnail-img {
-        width: 100% !important; 
-        height: 100% !important; 
-        object-fit: cover !important;
-        display: block;
-    }
+    .post-thumbnail-container { flex: 0 0 200px; height: 140px; overflow: hidden; border-radius: 4px; background-color: #f0f0f0; }
+    .post-thumbnail-img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; }
+    
+    /* Paginación */
+    .pagination .page-numbers { display: inline-block; padding: 0.5rem 1.5rem; margin: 0 0.3rem; border: 1px solid #e1e1e1; background: #fff; color: #313131; text-decoration: none; border-radius: 2px; font-family: 'Poppins', sans-serif; }
+    .pagination .page-numbers.current { background: #CC0052; color: #fff; border-color: #CC0052; }
+    .pagination .page-numbers:hover:not(.current) { background: #f5f5f5; }
 
     @media (max-width: 768px) {
         article { flex-direction: column !important; padding: 2rem !important; gap: 2rem !important; }
-        .post-thumbnail-container { 
-            width: 100% !important; 
-            flex: 0 0 auto !important; 
-            height: 180px !important; 
-        }
+        .post-thumbnail-container { width: 100% !important; flex: 0 0 auto !important; height: 180px !important; }
     }
 </style>
 {% endblock %}
