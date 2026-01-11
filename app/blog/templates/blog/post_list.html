@@ -4,14 +4,17 @@
 {% block title %}Blog | Javier Hernández Martin | TPM{% endblock %}
 
 {% block content %}
-<div style="background-color: #eff0f1; padding-top: 120px; min-height: 100vh;">
+<div class="blog-wrapper">
     
-    <section style="padding: 4rem 0 2rem 0;">
+    <section class="blog-hero">
         <div class="row text-center">
             <div class="col-twelve">
-                <h5 style="color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; margin-bottom: 1rem;">Insights & Artículos</h5>
-                <h1 style="color: #313131; font-family: 'Montserrat', sans-serif; font-size: clamp(3rem, 8vw, 4.5rem); line-height: 1.2; border: none; margin-bottom: 1rem; font-weight: 700;">
-                    {% if query %} Resultados para: "{{ query }}" {% elif category %} Categoría: {{ category.name }} {% elif current_year %} Archivo: {{ current_year }} {% else %} Product Management & Tech {% endif %}
+                <h5 class="hero-sub">Insights & Artículos</h5>
+                <h1 class="hero-title">
+                    {% if query %} Resultados para: "{{ query }}" 
+                    {% elif category %} Categoría: {{ category.name }} 
+                    {% elif current_year %} Archivo: {{ current_year }} 
+                    {% else %} Product Management & Tech {% endif %}
                 </h1>
             </div>
         </div>
@@ -21,44 +24,52 @@
         <div class="row">
             <div class="col-eight tab-full">
                 {% for post in posts %}
-                <article style="background: #fff; padding: 3rem; margin-bottom: 2.5rem; border-radius: 4px; border-left: 5px solid #CC0052; display: flex; gap: 3rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+                <article class="post-item">
                     {% if post.imagen_url %}
                         <div class="post-thumbnail-container">
                             <a href="{{ post.get_absolute_url }}">
-                                <img src="{{ post.imagen_url }}" alt="{{ post.title }}" class="post-thumbnail-img" {% if forloop.first %}fetchpriority="high" loading="eager"{% else %}loading="lazy"{% endif %} decoding="async">
+                                <img src="{{ post.imagen_url }}" 
+                                     alt="{{ post.title }}" 
+                                     class="post-thumbnail-img" 
+                                     loading="lazy"
+                                     decoding="async">
                             </a>
                         </div>
                     {% endif %}
 
-                    <div style="flex: 1;">
-                        <div style="font-size: 1.3rem; color: #888; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;">
+                    <div class="post-content">
+                        <div class="post-meta">
                             <span>{{ post.publish|date:"d M Y" }}</span>
-                            <span style="color: #ccc;">|</span>
-                            <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
-                            <span style="color: #ccc;">|</span>
-                            <span style="display: inline-flex; align-items: center; gap: 5px;">
+                            <span class="meta-sep">|</span>
+                            <span class="meta-cat">{{ post.category.name }}</span>
+                            <span class="meta-sep">|</span>
+                            <span class="meta-read">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                {{ post.get_read_time }} min lectura
+                                {{ post.get_read_time }} min
                             </span>
                         </div>
-                        <h2 style="margin: 0 0 1.5rem 0; border: none; padding: 0; line-height: 1.2;">
-                            <a href="{{ post.get_absolute_url }}" style="color: #313131; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.6rem; text-decoration: none;">{{ post.title }}</a>
+                        
+                        <h2 class="post-title-h2">
+                            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                         </h2>
-                        <div style="font-size: 1.6rem; line-height: 1.6; color: #555; font-family: 'Lora', serif; margin-bottom: 1.5rem;">
-                            {{ post.content|striptags|truncatewords:20|safe }}
+                        
+                        <div class="post-excerpt">
+                            {# Importante: truncatewords antes de safe para aligerar la carga #}
+                            {{ post.content|striptags|truncatewords:20 }}
                         </div>
-                        <a href="{{ post.get_absolute_url }}" style="color: #CC0052; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'Poppins', sans-serif; text-decoration: none;">Leer más →</a>
+                        
+                        <a href="{{ post.get_absolute_url }}" class="read-more-link">Leer más →</a>
                     </div>
                 </article>
                 {% empty %}
-                <div style="background: #fff; padding: 6rem; text-align: center; border-radius: 4px;">
-                    <p style="font-size: 1.8rem; color: #777;">No se han encontrado artículos con esos criterios.</p>
-                    <a href="{% url 'blog:post_list' %}" class="button stroke" style="margin-top: 2rem;">Ver todos los artículos</a>
+                <div class="empty-state">
+                    <p>No se han encontrado artículos con esos criterios.</p>
+                    <a href="{% url 'blog:post_list' %}" class="button stroke">Ver todos los artículos</a>
                 </div>
                 {% endfor %}
 
                 {% if posts.has_other_pages %}
-                <nav class="pagination" style="text-align: center; margin-top: 4rem;">
+                <nav class="pagination-nav">
                     {% if posts.has_previous %}
                         <a href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}" class="page-numbers prev">Prev</a>
                     {% endif %}
@@ -66,7 +77,7 @@
                     {% for i in posts.paginator.page_range %}
                         {% if posts.number == i %}
                             <span class="page-numbers current">{{ i }}</span>
-                        {% else %}
+                        {% elif i > posts.number|add:'-3' and i < posts.number|add:'3' %}
                             <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}" class="page-numbers">{{ i }}</a>
                         {% endif %}
                     {% endfor %}
@@ -79,31 +90,29 @@
             </div>
 
             <aside class="col-four tab-full">
-                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1; margin-bottom: 3rem;">
-                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Buscar</h4>
+                <div class="sidebar-widget">
+                    <h4>Buscar</h4>
                     <form action="{% url 'blog:post_list' %}" method="get">
-                        <input type="text" name="q" placeholder="Ej: Django, Agile..." value="{{ query|default:'' }}" style="width: 100%; margin-bottom: 1rem; height: 5rem;">
-                        <button type="submit" class="button full-width" style="background: #CC0052; color: #fff; border: none;">Buscar Artículo</button>
+                        <input type="text" name="q" placeholder="Ej: Django, Agile..." value="{{ query|default:'' }}" class="full-width">
+                        <button type="submit" class="button full-width btn-primary">Buscar</button>
                     </form>
                 </div>
 
-                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1; margin-bottom: 3rem;">
-                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Categorías</h4>
-                    <ul style="list-style: none; margin: 0; padding: 0;">
-                        <li><a href="{% url 'blog:post_list' %}" style="color: {% if not category %}#CC0052{% else %}#555{% endif %}; display: block; padding: 0.8rem 0; font-weight: bold; text-decoration: none;">Todas</a></li>
+                <div class="sidebar-widget">
+                    <h4>Categorías</h4>
+                    <ul class="widget-list">
+                        <li><a href="{% url 'blog:post_list' %}" class="{% if not category %}active{% endif %}">Todas</a></li>
                         {% for cat in categories %}
-                        <li><a href="{% url 'blog:post_list_by_category' cat.slug %}" style="color: {% if category.slug == cat.slug %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none;">{{ cat.name }}</a></li>
+                        <li><a href="{% url 'blog:post_list_by_category' cat.slug %}" class="{% if category.slug == cat.slug %}active{% endif %}">{{ cat.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
 
-                <div style="background: #ffffff; padding: 3rem; border-radius: 4px; border: 1px solid #e1e1e1;">
-                    <h4 style="border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 2rem; font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: #313131; text-transform: uppercase; font-weight: 700;">Archivo</h4>
-                    <ul style="list-style: none; margin: 0; padding: 0;">
+                <div class="sidebar-widget">
+                    <h4>Archivo</h4>
+                    <ul class="widget-list">
                         {% for y in archive_years %}
-                        <li>
-                            <a href="?year={{ y }}" style="color: {% if current_year == y|stringformat:'s' %}#CC0052{% else %}#313131{% endif %}; display: block; padding: 0.8rem 0; border-top: 1px solid #f5f5f5; text-decoration: none;">Año {{ y }}</a>
-                        </li>
+                        <li><a href="?year={{ y }}" class="{% if current_year == y|stringformat:'s' %}active{% endif %}">Año {{ y }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -113,17 +122,55 @@
 </div>
 
 <style>
-    .post-thumbnail-container { flex: 0 0 200px; height: 140px; overflow: hidden; border-radius: 4px; background-color: #f0f0f0; }
-    .post-thumbnail-img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; }
-    
-    /* Paginación */
-    .pagination .page-numbers { display: inline-block; padding: 0.5rem 1.5rem; margin: 0 0.3rem; border: 1px solid #e1e1e1; background: #fff; color: #313131; text-decoration: none; border-radius: 2px; font-family: 'Poppins', sans-serif; }
-    .pagination .page-numbers.current { background: #CC0052; color: #fff; border-color: #CC0052; }
-    .pagination .page-numbers:hover:not(.current) { background: #f5f5f5; }
+    /* Estilos estructurales para evitar bloqueos en móvil */
+    .blog-wrapper { background-color: #eff0f1; padding-top: 100px; min-height: 100vh; overflow-x: hidden; }
+    .blog-hero { padding: 4rem 0 2rem 0; }
+    .hero-sub { color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; margin-bottom: 1rem; }
+    .hero-title { color: #313131; font-family: 'Montserrat', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); border: none; font-weight: 700; }
 
+    .post-item { 
+        background: #fff; padding: 3rem; margin-bottom: 2.5rem; border-radius: 4px; 
+        border-left: 5px solid #CC0052; display: flex; gap: 3rem; 
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+        transition: transform 0.2s ease;
+    }
+    .post-item:hover { transform: translateX(5px); }
+
+    .post-thumbnail-container { flex: 0 0 180px; height: 130px; overflow: hidden; border-radius: 4px; }
+    .post-thumbnail-img { width: 100%; height: 100%; object-fit: cover; }
+
+    .post-content { flex: 1; min-width: 0; } /* min-width: 0 evita que el flexbox desborde */
+    
+    .post-meta { font-size: 1.2rem; color: #888; margin-bottom: 0.8rem; font-family: 'Poppins', sans-serif; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .meta-sep { color: #ccc; }
+    .meta-cat { color: #CC0052; font-weight: bold; }
+
+    .post-title-h2 { margin: 0 0 1rem 0; border: none; padding: 0; line-height: 1.2; }
+    .post-title-h2 a { color: #313131; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.4rem; text-decoration: none; }
+
+    .post-excerpt { font-size: 1.5rem; line-height: 1.6; color: #555; font-family: 'Lora', serif; margin-bottom: 1.5rem; }
+    .read-more-link { color: #CC0052; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; text-decoration: none; }
+
+    /* Sidebar */
+    .sidebar-widget { background: #ffffff; padding: 2.5rem; border-radius: 4px; border: 1px solid #e1e1e1; margin-bottom: 3rem; }
+    .sidebar-widget h4 { border-bottom: 2px solid #CC0052; padding-bottom: 1rem; margin-bottom: 1.5rem; font-family: 'Montserrat', sans-serif; font-size: 1.6rem; color: #313131; text-transform: uppercase; font-weight: 700; }
+    .widget-list { list-style: none; margin: 0; padding: 0; }
+    .widget-list a { color: #313131; display: block; padding: 0.8rem 0; border-bottom: 1px solid #f9f9f9; text-decoration: none; font-size: 1.4rem; }
+    .widget-list a.active { color: #CC0052; font-weight: bold; }
+
+    .btn-primary { background: #CC0052 !important; color: #fff !important; border: none !important; }
+
+    .pagination-nav { text-align: center; margin-top: 4rem; display: flex; justify-content: center; gap: 5px; }
+    .pagination-nav .page-numbers { padding: 0.8rem 1.4rem; border: 1px solid #e1e1e1; background: #fff; color: #313131; text-decoration: none; border-radius: 2px; }
+    .pagination-nav .page-numbers.current { background: #CC0052; color: #fff; border-color: #CC0052; }
+
+    /* RESPONSIVE MÓVIL (CRÍTICO) */
     @media (max-width: 768px) {
-        article { flex-direction: column !important; padding: 2rem !important; gap: 2rem !important; }
-        .post-thumbnail-container { width: 100% !important; flex: 0 0 auto !important; height: 180px !important; }
+        .blog-wrapper { padding-top: 80px; }
+        .post-item { flex-direction: column !important; padding: 2rem !important; gap: 1.5rem !important; }
+        .post-thumbnail-container { width: 100% !important; flex: 0 0 180px !important; }
+        .post-title-h2 a { font-size: 2rem; }
+        .sidebar-widget { padding: 2rem; }
     }
 </style>
 {% endblock %}
