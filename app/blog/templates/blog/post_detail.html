@@ -49,12 +49,10 @@
                 <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
             </nav>
 
-            <header style="max-width: 800px; margin: 0 auto;">
                 <h1 class="post-header-title">{{ post.title }}</h1>
                 <p class="post-main-meta">
                     {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · {{ post.get_read_time }} min lectura
                 </p>
-            </header>
 
             {% if post.image_url %}
             <div style="max-width: 900px; margin: 0 auto 5rem auto;">
