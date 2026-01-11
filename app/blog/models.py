@@ -27,6 +27,7 @@ class Post(models.Model):
     
     # Usamos CKEditor 5 para el cuerpo del post
     content = CKEditor5Field('Content', config_name='default')
+    excerpt = models.TextField(blank=True, help_text="Resumen automático para el listado")
     
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
@@ -44,6 +45,17 @@ class Post(models.Model):
     class Meta:
         ordering = ('-publish',)
 
+
+
+    def save(self, *args, **kwargs):
+        # Si el excerpt está vacío, lo generamos del contenido
+        if not self.excerpt and self.content:
+            # Quitamos etiquetas HTML y cortamos a 250 caracteres
+            texto_plano = strip_tags(self.content)
+            self.excerpt = Truncator(texto_plano).chars(250)
+        
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return self.title
 

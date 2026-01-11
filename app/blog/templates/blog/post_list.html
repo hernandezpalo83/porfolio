@@ -55,7 +55,7 @@
                         
                         <div class="post-excerpt">
                             {# Importante: truncatewords antes de safe para aligerar la carga #}
-                            {{ post.content|striptags|truncatewords:20 }}
+                            {{ post.excerpt }}
                         </div>
                         
                         <a href="{{ post.get_absolute_url }}" class="read-more-link">Leer más →</a>
