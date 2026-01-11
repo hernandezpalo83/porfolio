@@ -22,13 +22,16 @@
                 {% for post in posts %}
                 <article style="background: #fff; padding: 3rem; margin-bottom: 2.5rem; border-radius: 4px; border-left: 5px solid #CC0052; display: flex; gap: 3rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
                     
-                    {# Miniatura con aspecto fijo #}
                     {% if post.imagen_url %}
-                    <div class="post-thumbnail-container">
-                        <a href="{{ post.get_absolute_url }}">
-                            <img src="{{ post.imagen_url }}" alt="{{ post.title }}" class="post-thumbnail-img">
-                        </a>
-                    </div>
+                        <div class="post-thumbnail-container">
+                            <a href="{{ post.get_absolute_url }}">
+                                <img src="{{ post.imagen_url }}" 
+                                    alt="{{ post.title }}" 
+                                    class="post-thumbnail-img" 
+                                    loading="lazy" 
+                                    decoding="async">
+                            </a>
+                        </div>
                     {% endif %}
 
                     <div style="flex: 1;">
