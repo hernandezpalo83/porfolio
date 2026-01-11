@@ -54,4 +54,14 @@ def post_list(request, category_slug=None):
 
 def post_detail(request, post):
     post = get_object_or_404(Post, slug=post, status='published')
-    return render(request, 'blog/post_detail.html', {'post': post})
+    
+    # Lógica de Artículos Relacionados: misma categoría, excluir el actual, últimos 3
+    related_posts = Post.objects.filter(
+        category=post.category, 
+        status='published'
+    ).exclude(id=post.id).order_by('-publish')[:3]
+    
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'related_posts': related_posts
+    })
