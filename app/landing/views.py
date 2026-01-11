@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Info, Skill, Experience, Education, Project, Contact
+from app.blog.models import Post
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
@@ -76,7 +77,8 @@ def home(request):
     experiences = Experience.objects.all().order_by('-start_date') # Ordenados por fecha
     education = Education.objects.all()
     projects = Project.objects.all()
-
+    latest_posts = Post.objects.filter(status='published').order_by('-publish')[:5]
+    
     # 3. CONSTRUCCIÓN DEL CONTEXTO
     context = {
         'info': info,
@@ -84,6 +86,7 @@ def home(request):
         'experiences': experiences,
         'education': education,
         'projects': projects,
+        'latest_posts': latest_posts,
         'form': form,  # Pasamos el objeto form (con o sin errores) al HTML
     }
 
