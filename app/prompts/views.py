@@ -40,4 +40,4 @@ def prompt_library(request):
         'selected_category': category_filter,
     }
     
-    return render(request, 'prompts/prompt_list.html', context)
+    return render(request, 'landing/private/layauts/prompts.html', context)

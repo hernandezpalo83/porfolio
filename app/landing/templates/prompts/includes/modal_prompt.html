@@ -1,0 +1,68 @@
+<div class="modal fade" id="addPromptModal" tabindex="-1" aria-labelledby="addPromptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="addPromptModalLabel">
+                    <i class="bi bi-magic me-2 text-primary"></i> Gestionar Prompt
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form id="promptForm" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <input type="hidden" id="prompt_id" name="id">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold text-muted">TÍTULO DEL PROMPT</label>
+                            <input type="text" class="form-control border-light-subtle bg-light-subtle" 
+                                   id="title" name="title" placeholder="Ej: Optimizador de código Python" required>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">CATEGORÍA</label>
+                            <select class="form-select border-light-subtle bg-light-subtle" id="category" name="category" required>
+                                <option value="" selected disabled>Elegir...</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat }}">{{ cat|title }}</option>
+                                {% endfor %}
+                                <option value="new">+ Nueva categoría</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-muted">DESCRIPCIÓN CORTA</label>
+                            <input type="text" class="form-control border-light-subtle bg-light-subtle" 
+                                   id="description" name="description" placeholder="¿Para qué sirve este prompt?">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-muted">CUERPO DEL PROMPT (MARKDOWN)</label>
+                            <textarea class="form-control border-light-subtle bg-light-subtle" 
+                                      id="content" name="content" rows="8" 
+                                      placeholder="Escribe aquí las instrucciones para la IA..." required style="font-family: monospace; font-size: 0.9rem;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-link text-muted text-decoration-none" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        <i class="bi bi-cloud-arrow-up me-2"></i> Guardar en GitHub
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lógica básica para manejar el envío (Placeholder para la integración con GitHub)
+    document.getElementById('promptForm').addEventListener('submit', function(e) {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Sincronizando...';
+        // Aquí irá la llamada AJAX a tu vista de guardado
+    });
+</script>
