@@ -13,17 +13,17 @@
 <body class="bg-light">
 
     <div class="d-flex" id="wrapper">
-        {% include 'landing/includes/menu_int.html' %}
+        {% include 'landing/private/includes/menu_int.html' %}
 
         <div id="page-content-wrapper">
-            {% include 'landing/includes/navbar_int.html' %}
+            {% include 'landing/private/includes/navbar_int.html' %}
 
             <main class="container-fluid p-4">
                 {% block content %}
                 {% endblock %}
             </main>
 
-            {% include 'landing/includes/footer_int.html' %}
+            {% include 'landing/private/includes/footer_int.html' %}
         </div>
     </div>
 
