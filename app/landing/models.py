@@ -2,6 +2,7 @@ from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth.models import Group
 
 class Info(models.Model):
     name = models.CharField(max_length=100)
@@ -69,3 +70,15 @@ class Contacto(models.Model):
 
     def __str__(self):
         return f"{self.nombre} - {self.asunto}"
+    
+class MenuItem(models.Model):
+    title = models.CharField(max_length=100)
+    icon = models.CharField(max_length=50, help_text="Clase de FontAwesome o Bootstrap Icons")
+    url_name = models.CharField(max_length=100, blank=True, null=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='submenus')
+    order = models.IntegerField(default=0)
+    groups = models.ManyToManyField(Group, blank=True, help_text="Grupos que pueden ver esta opción")
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order']

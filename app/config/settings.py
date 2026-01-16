@@ -98,6 +98,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.config.context_processors.brand_assets',
+                'app.landing.context_processors.menu_int_processor',
             ],
         },
     },
@@ -178,7 +179,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'private' 
+LOGIN_REDIRECT_URL = 'landing:private_area'
+LOGOUT_REDIRECT_URL = 'landing:index'
 LOGIN_URL = 'login'
 
 STATIC_URL = '/static/'

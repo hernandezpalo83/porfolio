@@ -4,7 +4,7 @@
     </div>
     <div class="row contact-form">
         <div class="col-twelve">
-            <form name="contactForm" id="contactForm" method="post" action="{% url 'home' %}#contact">
+            <form name="contactForm" id="contactForm" method="post" action="{% url 'landing:index' %}#contact">
                 {% csrf_token %}
                 <fieldset>
                     <div class="form-field"><input name="nombre" type="text" placeholder="Tu Nombre" required style="width:100%;"></div>

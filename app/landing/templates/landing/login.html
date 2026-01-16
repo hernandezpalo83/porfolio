@@ -3,100 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Javier Hernandez Martin</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'landing/css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/modal.css' %}">
+    <title>Acceso | HernandezPalo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
     <style>
-        /* Ajustes específicos para centrar el formulario de login en una página limpia */
-        .login-container {
+        :root {
+            --google-blue: #1a73e8;
+            --google-gray-bg: #f8f9fa;
+            --text-main: #1f1f1f;
+            --text-secondary: #444746;
+            --border-color: #c4c7c5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--google-gray-bg);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 80vh;
-            padding-top: 100px; /* Espacio para el header fijo */
+            min-height: 100vh;
+            color: var(--text-main);
         }
+
         .login-card {
-            background: #FFFFFF;
+            background: #ffffff;
             padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            width: 100%;
             max-width: 400px;
-            width: 100%;
+            border: 1px solid #e3e3e3;
         }
-        .login-card h2 {
-            margin-bottom: 30px;
-            color: #313131;
+
+        .header-section {
             text-align: center;
-            font-weight: bold;
+            margin-bottom: 32px;
         }
-        .form-field { margin-bottom: 20px; }
-        .form-field label { display: block; margin-bottom: 8px; font-weight: bold; }
-        .form-field input {
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logo span {
+            color: var(--google-blue);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
             width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--google-blue);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        .error-message {
+            background-color: #fce8e6;
+            color: #d93025;
             padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Importante para el ancho */
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
         }
-        .btn-login {
+
+        .error-message i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .btn-submit {
             width: 100%;
-            background-color: #313131; /* Ajusta al color de tu marca */
+            background-color: var(--google-blue);
             color: white;
-            padding: 12px;
             border: none;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
+            transition: background-color 0.2s;
+            margin-top: 10px;
         }
-        .btn-login:hover { background-color: #111; }
-        .errorlist { color: #ff4d4d; list-style: none; padding: 0; font-size: 0.9em; }
+
+        .btn-submit:hover {
+            background-color: #1557b0;
+        }
+
+        .footer-links {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .footer-links a {
+            color: var(--google-blue);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Efecto de carga en el botón */
+        .btn-submit.loading {
+            background-color: #a8c7fa;
+            cursor: not-allowed;
+        }
     </style>
 </head>
-<body style="background-color: #f5f5f5;">
+<body>
 
-    <header style="background-color: #111; position: fixed; width: 100%; top: 0; z-index: 1000;">    
-        <div class="row">
-            <div class="top-bar">
-                <div class="logo">
-                  <a href="{% url 'home' %}" style="color: white;">HernandezPalo</a>
-               </div>             
-            </div>
+    <div class="login-card">
+        <div class="header-section">
+            <a href="{% url 'landing:index' %}" class="logo">Hernandez<span>Palo</span></a>
+            <div class="subtitle">Acceso al portal privado</div>
         </div>
-    </header>
 
-    <div class="login-container">
-        <div class="login-card">
-            <h2>Acceso Privado</h2>
-            
-            <form method="post">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                    <ul class="errorlist">
-                        <li>Usuario o contraseña incorrectos.</li>
-                    </ul>
-                {% endif %}
+        <form method="post" id="loginForm">
+            {% csrf_token %}
 
-                <div class="form-field">
-                    <label for="id_username">Usuario</label>
-                    <input type="text" name="username" id="id_username" required placeholder="Tu usuario">
+            {% if form.errors %}
+                <div class="error-message">
+                    <i class="bi bi-exclamation-circle"></i>
+                    Usuario o contraseña incorrectos.
                 </div>
+            {% endif %}
 
-                <div class="form-field">
-                    <label for="id_password">Contraseña</label>
-                    <input type="password" name="password" id="id_password" required placeholder="********">
-                </div>
-
-                <button type="submit" class="btn-login">ENTRAR</button>
-            </form>
-
-            <div style="margin-top: 20px; text-align: center;">
-                <a href="{% url 'home' %}" style="color: #777; font-size: 0.9em; text-decoration: none;">← Volver al inicio</a>
+            <div class="form-group">
+                <label for="id_username">Usuario</label>
+                <input type="text" name="username" id="id_username" required 
+                       placeholder="ej. javier83" autofocus>
             </div>
+
+            <div class="form-group">
+                <label for="id_password">Contraseña</label>
+                <input type="password" name="password" id="id_password" required 
+                       placeholder="Tu contraseña">
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                Siguiente
+            </button>
+        </form>
+
+        <div class="footer-links">
+            <a href="{% url 'landing:index' %}">
+                <i class="bi bi-arrow-left"></i> Volver al portfolio
+            </a>
         </div>
     </div>
 
+    <script>
+        // Mejora la UX: cambia el texto del botón al enviar para feedback instantáneo
+        const form = document.getElementById('loginForm');
+        const btn = document.getElementById('btnSubmit');
+
+        form.addEventListener('submit', function() {
+            btn.classList.add('loading');
+            btn.innerHTML = 'Iniciando sesión...';
+        });
+
+        // Limpieza automática de errores al empezar a escribir
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const error = document.querySelector('.error-message');
+                if (error) error.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>

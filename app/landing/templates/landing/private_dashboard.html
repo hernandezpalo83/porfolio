@@ -1,0 +1,65 @@
+{% extends 'landing/layouts/base_int.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <h2 class="fw-bold">Panel de Control</h2>
+        <p class="text-muted">Gestión técnica del ecosistema HernandezPalo.</p>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                        <i class="bi bi-database-fill-gear text-primary fs-4"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Base de Datos</h5>
+                </div>
+                <p class="card-text small text-muted">
+                    Genera una copia de seguridad completa (landing y gym). Acceso restringido a superusuarios.
+                </p>
+                
+                <form action="{% url 'landing:db_backup' %}" method="post" id="backupForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="export">
+                    <button type="submit" class="btn btn-outline-primary btn-sm w-100 py-2">
+                        <i class="bi bi-cloud-download me-2"></i> Generar Backup
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="mb-3">Estado del Sistema</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Blog Engine</td>
+                                <td><span class="badge bg-success-subtle text-success">Activo</span></td>
+                                <td><a href="{% url 'blog:post_list' %}" class="btn btn-sm btn-link">Ver posts</a></td>
+                            </tr>
+                            <tr>
+                                <td>Gym Tracker</td>
+                                <td><span class="badge bg-success-subtle text-success">Activo</span></td>
+                                <td><button class="btn btn-sm btn-link">Logs</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

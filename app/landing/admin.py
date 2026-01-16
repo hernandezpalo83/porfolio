@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Info, Skill, Experience, Education, Project, Contact, Contacto
+from .models import MenuItem
 
 @admin.register(Info)
 class InfoAdmin(admin.ModelAdmin):
@@ -91,4 +92,37 @@ class ContactoAdmin(admin.ModelAdmin):
             'fields': ('leido', 'fecha_envio')
         }),
     )
-            
+    
+@admin.register(MenuItem)
+class MenuItemAdmin(admin.ModelAdmin):
+    # Columnas visibles en la lista
+    list_display = ('title', 'parent', 'order', 'is_active', 'display_groups')
+    # Filtros laterales
+    list_filter = ('parent', 'is_active', 'groups')
+    # Buscador por título
+    search_fields = ('title', 'url_name')
+    # Permitir editar el orden y el estado activo directamente desde la lista
+    list_editable = ('order', 'is_active')
+    # Orden por defecto
+    ordering = ('parent__id', 'order')
+    
+    # Configuración de los campos al editar
+    filter_horizontal = ('groups',) # Interfaz mucho más cómoda para elegir grupos
+    
+    fieldsets = (
+        ('Información Principal', {
+            'fields': ('title', 'icon', 'url_name', 'is_active')
+        }),
+        ('Jerarquía y Orden', {
+            'fields': ('parent', 'order')
+        }),
+        ('Control de Acceso', {
+            'fields': ('groups',),
+            'description': 'Si no se selecciona ningún grupo, el ítem será visible para todos los usuarios logueados.'
+        }),
+    )
+
+    def display_groups(self, obj):
+        """Muestra los nombres de los grupos en la lista del admin."""
+        return ", ".join([g.name for g in obj.groups.all()])
+    display_groups.short_description = 'Grupos con acceso'

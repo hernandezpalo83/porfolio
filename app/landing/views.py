@@ -18,33 +18,11 @@ def error_404_view(request, exception):
 
 @login_required
 def private_area(request):
-    # Definimos los módulos que quieres mostrar en el Dashboard
-    # 'url_name' debe coincidir con el 'name' definido en tus urlpatterns
-    modules = [
-        {
-            'title': 'Biblioteca de Prompts',
-            'description': 'Gestor avanzado de prompts estructurados para Product Managers.',
-            'url_name': 'prompt_library',
-            'icon': 'bi-cpu-fill', # Iconos de Bootstrap
-            'category': 'AI & Strategy'
-        },
-        {
-            'title': 'Catálogo Gym',
-            'description': 'Gestión de productos y stock para el módulo de gimnasio.',
-            'url_name': 'lista_productos',
-            'icon': 'bi-cart-check-fill',
-            'category': 'Management'
-        },
-        {
-            'title': 'Tabla de Productos (HTMX)',
-            'description': 'Vista técnica avanzada con filtrado dinámico mediante HTMX.',
-            'url_name': 'product_list',
-            'icon': 'bi-table',
-            'category': 'Management'
-        },
-    ]
-
-    return render(request, 'landing/private.html', {'modules': modules})
+    # Aquí puedes añadir lógica para contar posts, ver fecha del último backup, etc.
+    context = {
+        'segment': 'dashboard', # Útil para marcar el menú activo
+    }
+    return render(request, 'landing/private_dashboard.html', context)
 
 @login_required
 def profile(request):
@@ -98,6 +76,8 @@ def is_superuser(user):
     
 @user_passes_test(is_superuser)
 def export_data_view(request):
+    
+
     """
     Exporta los datos de las apps landing y gym a un JSON descargable.
     Solo accesible por superusuarios.
@@ -119,3 +99,19 @@ def export_data_view(request):
     response["Content-Disposition"] = 'attachment; filename="db_backup.json"'
 
     return response
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser) # Seguridad: solo superusuarios
+def db_backup(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'export':
+            # TODO: Aquí programaremos la lógica de exportación real
+            # Por ahora, simulamos el éxito para validar la ruta
+            messages.success(request, "Copia de seguridad solicitada correctamente.")
+            
+        return redirect('landing:private_area')
+    
+    # Si alguien intenta entrar por GET, lo mandamos de vuelta
+    return redirect('landing:private_area')
