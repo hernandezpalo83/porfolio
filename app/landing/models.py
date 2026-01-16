@@ -74,6 +74,7 @@ class Contacto(models.Model):
 class MenuItem(models.Model):
     title = models.CharField(max_length=100)
     icon = models.CharField(max_length=50, help_text="Clase de FontAwesome o Bootstrap Icons")
+    app_name = models.CharField(max_length=50, default='landing', help_text="Ej: landing, prompts, blog")
     url_name = models.CharField(max_length=100, blank=True, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='submenus')
     order = models.IntegerField(default=0)

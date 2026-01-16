@@ -95,15 +95,10 @@ class ContactoAdmin(admin.ModelAdmin):
     
 @admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
-    # Columnas visibles en la lista
-    list_display = ('title', 'parent', 'order', 'is_active', 'display_groups')
-    # Filtros laterales
+    list_display = ('title', 'app_name', 'url_name', 'parent', 'order', 'is_active')
+    list_editable = ( 'app_name','url_name', 'order', 'is_active')
     list_filter = ('parent', 'is_active', 'groups')
-    # Buscador por título
     search_fields = ('title', 'url_name')
-    # Permitir editar el orden y el estado activo directamente desde la lista
-    list_editable = ('order', 'is_active')
-    # Orden por defecto
     ordering = ('parent__id', 'order')
     
     # Configuración de los campos al editar
@@ -111,7 +106,7 @@ class MenuItemAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Información Principal', {
-            'fields': ('title', 'icon', 'url_name', 'is_active')
+            'fields': ('title', 'icon', 'app_name','url_name', 'is_active')
         }),
         ('Jerarquía y Orden', {
             'fields': ('parent', 'order')
