@@ -1,68 +1,292 @@
+/* ==========================================================================
+   VARIABLES DE SISTEMA (Estilo Gemini / Material Design)
+   ========================================================================== */
 :root {
-    --sidebar-width: 260px;
-    --sidebar-collapsed-width: 70px;
-    --gemini-bg: #f8f9fa;
+    /* Dimensiones */
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 78px;
+    --navbar-height: 64px;
+    
+    /* Paleta de Colores Gemini */
+    --gemini-bg: #f8fafd;
+    --gemini-surface: #ffffff;
     --gemini-primary: #1a73e8;
+    --gemini-primary-soft: #e8f0fe;
+    --gemini-text-main: #1f1f1f;
+    --gemini-text-muted: #444746;
+    --gemini-border: #dee2e6;
+    
+    /* Efectos */
+    --transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
 }
 
+/* ==========================================================================
+   ESTILOS BASE
+   ========================================================================== */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--gemini-bg);
+    color: var(--gemini-text-main);
     overflow-x: hidden;
+    letter-spacing: -0.01em;
 }
 
 #wrapper {
+    display: flex;
+    width: 100%;
     min-height: 100vh;
 }
 
-/* Sidebar Styling */
+/* ==========================================================================
+   SIDEBAR (MENÚ LATERAL)
+   ========================================================================== */
 #sidebar {
     width: var(--sidebar-width);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 100vh;
+    background-color: var(--gemini-surface);
+    transition: var(--transition-standard);
+    border-right: 1px solid var(--gemini-border);
+    flex-shrink: 0;
+    z-index: 1050;
 }
 
+/* Encabezado del Logo */
 #sidebar .sidebar-heading {
-    height: 64px;
-}
-
-#sidebar .list-group-item {
-    color: #444746;
+    height: var(--navbar-height);
     display: flex;
     align-items: center;
-    white-space: nowrap;
+    padding: 0 1.5rem;
+    font-weight: 600;
+    background-color: var(--gemini-surface);
 }
 
-#sidebar .list-group-item:hover {
-    background-color: #f1f3f4;
-    color: var(--gemini-primary);
+/* Elementos de la lista */
+#sidebar .list-group-item {
+    color: var(--gemini-text-muted);
+    font-size: 0.925rem;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    margin: 0.2rem 0.75rem;
+    border-radius: 100px; /* Estilo píldora de Google */
+    border: none;
+    transition: var(--transition-standard);
+    display: flex;
+    align-items: center;
 }
 
 #sidebar .list-group-item i {
     font-size: 1.25rem;
-    min-width: 24px;
+    margin-right: 1rem;
+    width: 24px;
+    text-align: center;
 }
 
-/* Sidebar Collapsed State */
-#wrapper.toggled #sidebar {
-    width: var(--sidebar-collapsed-width);
+/* Estados Hover y Active */
+#sidebar .list-group-item:hover {
+    background-color: #f1f3f4;
+    color: var(--gemini-text-main);
 }
 
-#wrapper.toggled #sidebar .menu-text {
-    display: none;
+#sidebar .list-group-item.active {
+    background-color: var(--gemini-primary-soft);
+    color: var(--gemini-primary);
 }
 
-#wrapper.toggled #sidebar .sidebar-heading span {
-    display: none;
-}
-
+/* ==========================================================================
+   CONTENIDO PRINCIPAL
+   ========================================================================== */
 #page-content-wrapper {
     flex-grow: 1;
-    min-width: 0;
+    min-width: 0; /* Evita que el contenido desborde en flex */
+    display: flex;
+    flex-direction: column;
 }
 
-/* Footer style */
+/* Navbar Interna */
+.navbar-internal {
+    height: var(--navbar-height);
+    background-color: rgba(248, 250, 253, 0.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--gemini-border);
+}
+
+/* ==========================================================================
+   LÓGICA RESPONSIVA Y TOGGLES
+   ========================================================================== */
+
+/* --- ESCRITORIO --- */
+@media (min-width: 768px) {
+    /* Estado Colapsado (Desktop) */
+    #wrapper.toggled #sidebar {
+        width: var(--sidebar-collapsed-width);
+    }
+    
+    #wrapper.toggled #sidebar .menu-text,
+    #wrapper.toggled #sidebar .sidebar-heading span {
+        display: none;
+    }
+    
+    #wrapper.toggled #sidebar .list-group-item {
+        padding-left: 1.25rem;
+        justify-content: center;
+    }
+    
+    #wrapper.toggled #sidebar .list-group-item i {
+        margin-right: 0;
+    }
+}
+
+/* --- MÓVIL --- */
+@media (max-width: 767.98px) {
+    #sidebar {
+        position: fixed;
+        left: calc(var(--sidebar-width) * -1); /* Oculto a la izquierda */
+        height: 100vh;
+    }
+
+    /* Cuando se activa el toggle en móvil */
+    #wrapper.toggled #sidebar {
+        left: 0;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    }
+
+    /* Overlay para oscurecer el fondo al abrir menú en móvil */
+    #wrapper.toggled #page-content-wrapper {
+        opacity: 0.4;
+        pointer-events: none;
+        user-select: none;
+    }
+}
+
+/* ==========================================================================
+   COMPONENTES GENÉRICOS (CARDS)
+   ========================================================================== */
+.card-gemini {
+    background: var(--gemini-surface);
+    border: 1px solid var(--gemini-border);
+    border-radius: 16px;
+    transition: var(--transition-standard);
+}
+
+.card-gemini:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
 footer {
+    padding: 1.5rem;
+    color: var(--gemini-text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+}
+/* ==========================================================================
+   Navbar Internal Extensions
+   ========================================================================== */
+/* --- Navbar Internal Extensions --- */
+.btn-icon-gemini {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gemini-text-muted);
+    transition: background 0.2s;
+    border: none;
     background: transparent;
-    color: #70757a;
-    font-size: 0.85rem;
+}
+
+.btn-icon-gemini:hover {
+    background-color: rgba(0,0,0,0.05);
+    color: var(--gemini-text-main);
+}
+
+.bg-primary-soft {
+    background-color: var(--gemini-primary-soft);
+}
+
+.btn-profile-avatar {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.btn-profile-avatar::after {
+    display: none; /* Elimina la flecha del dropdown de perfil */
+}
+
+/* Ajustes de espaciado en Dropdowns */
+.dropdown-menu {
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+}
+
+/* ==========================================================================
+   Footer Internal Styles
+   ========================================================================== */
+/* --- Footer Internal Styles --- */
+.footer-internal {
+    background-color: transparent;
+    border-top: 1px solid var(--gemini-border);
+    margin-top: 2rem;
+}
+
+.footer-link-item {
+    text-decoration: none;
+    color: var(--gemini-text-muted);
+    transition: var(--transition-standard);
+}
+
+.footer-link-item:hover {
+    color: var(--gemini-primary);
+}
+
+.footer-copyright {
+    letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Dashboard Specific Extensions
+   ========================================================================== */
+/* --- Dashboard Specific Extensions --- */
+
+/* Colores de acento */
+.text-indigo { color: #6610f2 !important; }
+.bg-indigo-soft { background-color: rgba(102, 16, 242, 0.1); }
+
+.bg-success-soft { background-color: #e8f7ed; color: #1e8e3e; }
+
+/* Estilo para las tablas dentro de cards */
+.table-hover tbody tr:hover {
+    background-color: var(--gemini-bg);
+}
+
+.table thead th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: var(--gemini-text-muted);
+}
+
+/* --- Estilos para Alertas de Feedback --- */
+.alert {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.alert-success {
+    background-color: #e8f7ed;
+    color: #1e8e3e;
+}
+
+.alert-danger {
+    background-color: #fce8e6;
+    color: #d93025;
 }

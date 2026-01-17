@@ -22,7 +22,7 @@ def private_area(request):
     context = {
         'segment': 'dashboard', # Útil para marcar el menú activo
     }
-    return render(request, 'landing/private/layauts/private_dashboard.html', context)
+    return render(request, 'landing/private/layouts/private_dashboard.html', context)
 
 @login_required
 def profile(request):

@@ -1,0 +1,131 @@
+{% extends 'landing/private/base_int.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} alert-dismissible fade show rounded-pill px-4 shadow-sm border-0" role="alert">
+                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1">Biblioteca de Prompts</h2>
+        <p class="text-muted small mb-0">Gestión de activos de IA y repositorio de ingeniería de prompts.</p>
+    </div>
+    <button class="btn btn-primary rounded-pill px-4" onclick="openCreateModal()">
+        <i class="bi bi-plus-lg me-2"></i> Nuevo Prompt
+    </button>
+</div>
+
+<div class="card card-gemini mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-12 col-md-4">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Buscar prompt..." value="{{ query }}">
+                </div>
+            </div>
+            
+            <div class="col-12 col-md-8">
+                <div class="d-flex align-items-center overflow-auto pb-1">
+                    <span class="text-muted small me-3 fw-bold">CATEGORÍA:</span>
+                    <a href="?category=all{% if query %}&q={{ query }}{% endif %}" 
+                       class="btn btn-sm {% if selected_category == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %} rounded-pill me-2 px-3">
+                       Todos
+                    </a>
+                    {% for cat in categories %}
+                        <a href="?category={{ cat }}{% if query %}&q={{ query }}{% endif %}" 
+                           class="btn btn-sm {% if selected_category == cat %}btn-dark{% else %}btn-outline-secondary{% endif %} rounded-pill me-2 px-3">
+                           {{ cat|title }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4" id="promptsGrid">
+    {% for prompt in prompts %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card card-gemini h-100 shadow-sm" 
+             id="prompt-card-{{ forloop.counter }}"
+             data-id="{{ forloop.counter }}"
+             data-title="{{ prompt.title }}"
+             data-category="{{ prompt.category }}"
+             data-description="{{ prompt.description }}"
+             data-content="{{ prompt.prompt }}">
+            
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge bg-primary-soft text-primary rounded-pill px-3">{{ prompt.category }}</span>
+                    <div class="dropdown">
+                        <button class="btn btn-icon-gemini btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                            <li>
+                                <button class="dropdown-item d-flex align-items-center" onclick="prepareEdit('prompt-card-{{ forloop.counter }}')">
+                                    <i class="bi bi-pencil me-2"></i> Editar
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button class="dropdown-item text-danger d-flex align-items-center" 
+                                        onclick="confirmDelete('{{ forloop.counter }}', '{{ prompt.title|escapejs }}')">
+                                    <i class="bi bi-trash me-2"></i> Eliminar
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h5 class="card-title fw-bold text-dark">{{ prompt.title }}</h5>
+                <p class="card-text text-muted small flex-grow-1">
+                    {{ prompt.description|truncatechars:90 }}
+                </p>
+                
+                <div class="bg-light p-3 rounded-3 position-relative border border-light mt-3">
+                    <code class="text-dark small d-block mb-1" style="white-space: pre-wrap; word-break: break-all;">{{ prompt.prompt }}</code>
+                    <button class="btn btn-sm btn-icon-gemini position-absolute top-0 end-0 m-1" 
+                            onclick="copyPromptToClipboard(this, 'prompt-card-{{ forloop.counter }}')">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                <div class="d-flex align-items-center text-muted" style="font-size: 0.7rem;">
+                    <i class="bi bi-git me-1"></i> Sincronizado con Repositorio
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <div class="bg-light d-inline-block p-4 rounded-circle mb-3">
+            <i class="bi bi-search fs-1 text-muted"></i>
+        </div>
+        <h4 class="text-dark">No se encontraron prompts</h4>
+        <p class="text-muted">Prueba a cambiar los filtros o el término de búsqueda.</p>
+        <a href="?category=all" class="btn btn-primary rounded-pill px-4 mt-2">Ver todos los prompts</a>
+    </div>
+    {% endfor %}
+</div>
+
+{% include 'prompts/includes/modal_prompt.html' %}
+
+{% endblock %}
