@@ -27,7 +27,6 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # Ahora puedes usar las variables de entorno
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-
 ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
     "localhost,127.0.0.1"
