@@ -25,15 +25,23 @@
     <link rel="icon" type="image/x-icon" href="{% static 'landing/img/favicon.ico' %}">
     <link rel="apple-touch-icon" href="{% static 'landing/img/favicon.ico' %}">
     
-    {# 2. PRIORIDAD DE RED: Preconexión y Preload de recursos críticos #}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {# 🚀 FASE 2 OPTIMIZACIONES FUENTES (v2.3.0) - WOFF2 ONLY #}
+    {# Self-hosted fuentes optimizadas: 1.7 MB → ~190 KB (-89%) #}
+    <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-regular-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'landing/fonts/lora/lora-regular-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+    
+    {# 2. PRIORIDAD DE RED: Preload de CSS críticos #}
     <link rel="preload" href="{% static 'landing/css/base.css' %}" as="style">
     <link rel="preload" href="{% static 'landing/css/main.css' %}" as="style">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&display=swap" as="style">
     
-    {# 3. FUENTES: Con display=swap para evitar texto invisible (Critical CLS improvement) #}
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    {# 3. FUENTES: Self-hosted con WOFF2 only + font-display: swap #}
+    <link rel="stylesheet" href="{% static 'landing/fonts/poppins/stylesheet-optimized.css' %}">
+    <link rel="stylesheet" href="{% static 'landing/fonts/lora/stylesheet-optimized.css' %}">
+    
+    {# Montserrat desde Google Fonts CDN (fallback + no crítica) #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
     {# 4. CSS: Cargado de forma estándar pero después del preload #}
     <link rel="stylesheet" href="{% static 'landing/css/base.css' %}">

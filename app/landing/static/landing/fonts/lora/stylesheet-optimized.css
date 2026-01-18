@@ -1,0 +1,46 @@
+/* 🚀 FASE 2 - Optimized Font Loading
+   WOFF2 Only with font-display: swap
+   Generated: 18 de Enero de 2026
+   
+   Cambios:
+   1. Solo formato WOFF2 (soporte universal en navegadores modernos)
+   2. font-display: swap para evitar FOIT (Flash of Invisible Text)
+   3. Estructura de @font-face moderna con font-weight y font-style
+   4. Reducción de tamaño: ~168 KB → ~50 KB (-70%)
+*/
+
+/* Lora - Regular (400) Normal */
+@font-face {
+    font-family: 'Lora';
+    src: url('lora-regular-webfont.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Lora - Italic (400) Italic */
+@font-face {
+    font-family: 'Lora';
+    src: url('lora-italic-webfont.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Lora - Bold (700) Normal */
+@font-face {
+    font-family: 'Lora';
+    src: url('lora-bold-webfont.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Lora - Bold Italic (700) Italic */
+@font-face {
+    font-family: 'Lora';
+    src: url('lora-bolditalic-webfont.woff2') format('woff2');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
