@@ -29,7 +29,11 @@ def private_area(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def profile(request: HttpRequest) -> HttpResponse:
-    return render(request, 'landing/profile.html')
+    """
+    Perfil de usuario en zona privada.
+    Redirigimos a private_area que es la dashboard principal.
+    """
+    return redirect('private_area')
 
 def home(request: HttpRequest) -> HttpResponse:
     # 1. GESTIÓN DEL FORMULARIO (POST)
