@@ -10,9 +10,11 @@ class InfoAdmin(admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'score')
     search_fields = ('name',)
-    list_filter = ('name',)
+    list_filter = ('score',)
+    list_editable = ('score',)
+    ordering = ('-score',)
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
@@ -30,15 +32,41 @@ class EducationAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description')
-    search_fields = ('title', 'description')
-    list_filter = ('title',)
+    list_display = ('title', 'categoria', 'get_description_short')
+    search_fields = ('title', 'categoria', 'description')
+    list_filter = ('categoria',)
+    readonly_fields = ('get_description_preview',)
+    
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('title', 'categoria')
+        }),
+        ('Contenido', {
+            'fields': ('description', 'get_description_preview')
+        }),
+        ('Enlaces', {
+            'fields': ('imagen', 'link')
+        }),
+    )
+    
+    def get_description_short(self, obj):
+        """Mostrar descripción corta en el listado"""
+        from django.utils.html import strip_tags
+        texto = strip_tags(obj.description) if obj.description else ""
+        return texto[:50] + "..." if len(texto) > 50 else texto
+    get_description_short.short_description = "Descripción"
+    
+    def get_description_preview(self, obj):
+        """Preview HTML de la descripción en readonly"""
+        return obj.description if obj.description else "(vacío)"
+    get_description_preview.short_description = "Preview"
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone')
     search_fields = ('email', 'phone')
     list_filter = ('email',)
+    readonly_fields = ('email', 'phone')
 
 class GlobalAdminMedia:
     class Media:

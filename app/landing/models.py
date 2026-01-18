@@ -3,6 +3,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 
 class Info(models.Model):
     name = models.CharField(max_length=100)
@@ -34,6 +35,11 @@ class Skill(models.Model):
     def __str__(self):
         return f"{self.name} ({self.score}%)"
     
+    def clean(self):
+        """Validar que score esté entre 0 y 100"""
+        if not 0 <= self.score <= 100:
+            raise ValidationError("Score debe estar entre 0 y 100")
+    
 class Experience(models.Model):
     company = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
@@ -43,6 +49,11 @@ class Experience(models.Model):
 
     def __str__(self):
         return f"{self.position} @ {self.company}"
+    
+    def clean(self):
+        """Validar que end_date > start_date si está presente"""
+        if self.end_date and self.end_date < self.start_date:
+            raise ValidationError("La fecha de fin no puede ser anterior a la de inicio")
 
 class Education(models.Model):
     institution = models.CharField(max_length=100)
@@ -54,6 +65,11 @@ class Education(models.Model):
 
     def __str__(self):
         return f"{self.degree} @ {self.institution}"
+    
+    def clean(self):
+        """Validar que end_date > start_date"""
+        if self.end_date < self.start_date:
+            raise ValidationError("La fecha de fin no puede ser anterior a la de inicio")
 
 class Project(models.Model):
     title = models.CharField(max_length=100)

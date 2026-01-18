@@ -1,5 +1,6 @@
 
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Product(models.Model):
     class Status(models.IntegerChoices):
@@ -15,6 +16,11 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} (${self.price})"
+    
+    def clean(self):
+        """Validar que price >= cost"""
+        if self.price < self.cost:
+            raise ValidationError("El precio no puede ser menor al costo")
 
     class Meta:
         ordering = ['name']

@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django_tables2 import RequestConfig
 from django_tables2 import SingleTableMixin
 from django_filters.views import FilterView
+from django.http import HttpRequest, HttpResponse
+from typing import Any
 
 from app.gym.models import Product, Producto
 from app.gym.tables import ProductHTMxTable, ProductoTable
@@ -13,14 +15,14 @@ class ProductHTMxTableView(SingleTableMixin, FilterView):
     filterset_class = ProductFilter
     paginate_by = 15
 
-    def get_template_names(self):
+    def get_template_names(self) -> list[str]:
         if self.request.htmx:
             template_name = "product_table_partial.html"
         else:
             template_name = "product_table_htmx.html"
-        return template_name
+        return [template_name]
 
-def lista_productos(request):
+def lista_productos(request: HttpRequest) -> HttpResponse:
     queryset = Producto.objects.all()
     producto_filter = ProductoFilter(request.GET, queryset=queryset)
     table = ProductoTable(producto_filter.qs)

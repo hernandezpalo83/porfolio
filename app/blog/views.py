@@ -3,15 +3,19 @@ from .models import Post, Category
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.db.models.functions import ExtractYear
+from django.http import HttpRequest, HttpResponse
+from typing import Optional, Dict, Any, List
 
-def post_list(request, category_slug=None):
-    category = None
-    categories = Category.objects.all()
-    query = request.GET.get('q')
-    year = request.GET.get('year')
-    
+def post_list(request: HttpRequest, category_slug: Optional[str] = None) -> HttpResponse:
     # Base de posts publicados
     posts_list = Post.objects.filter(status='published').select_related('category').order_by('-publish')
+    
+    # Filtro por búsqueda
+    query: Optional[str] = request.GET.get('q')
+    year: Optional[str] = request.GET.get('year')
+    
+    category: Optional[Category] = None
+    categories: List[Category] = list(Category.objects.all())
     
     # Filtro por búsqueda
     if query:
@@ -52,16 +56,16 @@ def post_list(request, category_slug=None):
         'current_year': year
     })
 
-def post_detail(request, post):
-    post = get_object_or_404(Post, slug=post, status='published')
+def post_detail(request: HttpRequest, post: str) -> HttpResponse:
+    post_obj: Post = get_object_or_404(Post, slug=post, status='published')
     
     # Lógica de Artículos Relacionados: misma categoría, excluir el actual, últimos 3
     related_posts = Post.objects.filter(
-        category=post.category, 
+        category=post_obj.category, 
         status='published'
-    ).exclude(id=post.id).order_by('-publish')[:3]
+    ).exclude(id=post_obj.id).order_by('-publish')[:3]
     
     return render(request, 'blog/post_detail.html', {
-        'post': post,
+        'post': post_obj,
         'related_posts': related_posts
     })

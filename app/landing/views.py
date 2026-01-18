@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Info, Skill, Experience, Education, Project, Contact
 from app.blog.models import Post
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 from django.contrib.auth.decorators import user_passes_test
@@ -10,27 +10,28 @@ from .forms import FormularioContacto
 from django.contrib import messages
 from django.shortcuts import render, redirect
 import logging
+from typing import Optional, Dict, Any
 
 import io
 
 logger = logging.getLogger(__name__)
 
-def error_404_view(request, exception):
+def error_404_view(request: HttpRequest, exception: Exception) -> HttpResponse:
     return render(request, 'landing/404.html', status=404)
 
 @login_required
-def private_area(request):
+def private_area(request: HttpRequest) -> HttpResponse:
     # Aquí puedes añadir lógica para contar posts, ver fecha del último backup, etc.
-    context = {
+    context: Dict[str, Any] = {
         'segment': 'dashboard', # Útil para marcar el menú activo
     }
     return render(request, 'landing/private/layouts/private_dashboard.html', context)
 
 @login_required
-def profile(request):
+def profile(request: HttpRequest) -> HttpResponse:
     return render(request, 'landing/profile.html')
 
-def home(request):
+def home(request: HttpRequest) -> HttpResponse:
     # 1. GESTIÓN DEL FORMULARIO (POST)
     if request.method == 'POST':
         form = FormularioContacto(request.POST)
@@ -52,7 +53,7 @@ def home(request):
 
     # 2. CARGA DE DATOS PARA LA LANDING (GET)
     # Recuperamos todos los objetos necesarios de la base de datos
-    info = Info.objects.first()
+    info: Optional[Info] = Info.objects.first()
     skills = Skill.objects.all()
     experiences = Experience.objects.all().order_by('-start_date') # Ordenados por fecha
     education = Education.objects.all()
@@ -60,7 +61,7 @@ def home(request):
     latest_posts = Post.objects.filter(status='published').order_by('-publish')[:5]
     
     # 3. CONSTRUCCIÓN DEL CONTEXTO
-    context = {
+    context: Dict[str, Any] = {
         'info': info,
         'skills': skills,
         'experiences': experiences,
@@ -73,13 +74,11 @@ def home(request):
     # 4. RENDERIZADO
     return render(request, 'landing/index.html', context)
 
-def is_superuser(user):
+def is_superuser(user) -> bool:
     return user.is_authenticated and user.is_superuser
     
 @user_passes_test(is_superuser)
-def export_data_view(request):
-    
-
+def export_data_view(request: HttpRequest) -> HttpResponse:
     """
     Exporta los datos de las apps landing y gym a un JSON descargable.
     Solo accesible por superusuarios.
@@ -104,9 +103,9 @@ def export_data_view(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser) # Seguridad: solo superusuarios
-def db_backup(request):
+def db_backup(request: HttpRequest) -> HttpResponseRedirect | HttpResponse:
     if request.method == 'POST':
-        action = request.POST.get('action')
+        action: Optional[str] = request.POST.get('action')
         
         if action == 'export':
             # Exportar datos a JSON descargable
