@@ -153,6 +153,22 @@ body {
     border-radius: 0 4px 4px 0;
 }
 
+/* Botón estilo Gemini */
+.btn-icon-gemini {
+    background-color: var(--gemini-bg);
+    border: 1px solid var(--gemini-border);
+    color: var(--gemini-text-muted);
+    border-radius: 8px;
+    padding: 5px 10px;
+    transition: var(--transition-standard);
+}
+
+.btn-icon-gemini:hover {
+    background-color: var(--gemini-primary-soft);
+    color: var(--gemini-primary);
+    border-color: var(--gemini-primary);
+}
+
 /* ==========================================================================
    CONTENIDO PRINCIPAL Y RESPONSIVE
    ========================================================================== */

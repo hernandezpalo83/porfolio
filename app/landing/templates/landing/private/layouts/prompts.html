@@ -94,23 +94,30 @@
                 </div>
 
                 <h5 class="card-title fw-bold text-dark">{{ prompt.title }}</h5>
+                
                 <p class="card-text text-muted small flex-grow-1">
                     {{ prompt.description|truncatechars:90 }}
+                     
                 </p>
-                
+
+
+
                 <div class="bg-light p-3 rounded-3 position-relative border border-light mt-3">
-                    <code class="text-dark small d-block mb-1" style="white-space: pre-wrap; word-break: break-all;">{{ prompt.prompt }}</code>
-                    <button class="btn btn-sm btn-icon-gemini position-absolute top-0 end-0 m-1" 
-                            onclick="copyPromptToClipboard(this, 'prompt-card-{{ forloop.counter }}')">
-                        <i class="bi bi-clipboard"></i>
-                    </button>
+                    <code class="text-dark small d-block mb-1" style="white-space: pre-wrap; word-break: break-all;">{{ prompt.prompt|truncatechars:90 }}</code>
+                    <button class="btn btn-sm btn-icon-gemini position-absolute bottom-0 end-0 m-1" 
+                        onclick="copyPromptToClipboard(this, 'prompt-card-{{ forloop.counter }}')">
+                    <i class="bi bi-clipboard"></i>
+                </button>     
                 </div>
+                  
             </div>
             
             <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+               
                 <div class="d-flex align-items-center text-muted" style="font-size: 0.7rem;">
                     <i class="bi bi-git me-1"></i> Sincronizado con Repositorio
                 </div>
+               
             </div>
         </div>
     </div>
