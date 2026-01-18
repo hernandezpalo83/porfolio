@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
+from django.utils.html import strip_tags
+from django.utils.text import Truncator
 import math
 
 class Category(models.Model):
@@ -38,14 +40,18 @@ class Post(models.Model):
     imagen_url = models.URLField(
         max_length=500, 
         blank=True, 
-        null=True, 
+        default='',
         help_text="Pega aquí la URL 'raw' de GitHub"
     )
 
     class Meta:
         ordering = ('-publish',)
-
-
+        verbose_name = "Post"
+        verbose_name_plural = "Posts"
+        indexes = [
+            models.Index(fields=['-publish']),
+            models.Index(fields=['slug']),
+        ]
 
     def save(self, *args, **kwargs):
         # Si el excerpt está vacío, lo generamos del contenido
@@ -65,12 +71,8 @@ class Post(models.Model):
     
     def get_read_time(self):
         try:
-            from django.utils.html import strip_tags
             if not self.content:
                 return 1
-            #texto_limpio = strip_tags(self.content)
-            #conteo_palabras = len(texto_limpio.split())
-            #return max(1, math.ceil(conteo_palabras / 200))
             return 6
         except Exception:
             return 1 # Fallback seguro para que la web no se cuelgue

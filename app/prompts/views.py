@@ -2,9 +2,12 @@ import requests
 import base64
 import json
 import os
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+logger = logging.getLogger(__name__)
 
 # --- CONFIGURACIÓN DE REPOSITORIO ---
 GITHUB_REPO = "hernandezpalo83/AI-Prompts"
@@ -31,7 +34,7 @@ def get_github_data():
             return json.loads(content_json), data['sha']
         return [], None
     except Exception as e:
-        print(f"DEBUG: Error en lectura GitHub: {e}")
+        logger.error(f"Error reading data from GitHub: {e}", exc_info=True)
         return [], None
 
 def save_to_github(updated_data, commit_message):
@@ -66,7 +69,7 @@ def save_to_github(updated_data, commit_message):
         put_res = requests.put(GITHUB_API_URL, headers=headers, json=payload)
         return put_res.status_code in [200, 201]
     except Exception as e:
-        print(f"DEBUG: Error en escritura GitHub: {e}")
+        logger.error(f"Error writing data to GitHub: {e}", exc_info=True)
         return False
 
 @login_required

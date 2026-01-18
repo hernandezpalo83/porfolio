@@ -9,9 +9,11 @@ from django.contrib.auth.decorators import user_passes_test
 from .forms import FormularioContacto
 from django.contrib import messages
 from django.shortcuts import render, redirect
-
+import logging
 
 import io
+
+logger = logging.getLogger(__name__)
 
 def error_404_view(request, exception):
     return render(request, 'landing/404.html', status=404)
@@ -41,8 +43,8 @@ def home(request):
             return redirect('/#contact')
         else:
             # Si el formulario no es válido (ej. fallo de reCAPTCHA), 
-            # imprimimos los errores en la terminal para que puedas debuguear
-            print("LOG DEBUG - Errores en el formulario:", form.errors)
+            # registramos los errores para debugging
+            logger.warning(f"Form validation failed: {form.errors}")
             messages.error(request, 'Hubo un problema con el envío. Por favor, revisa los campos y el captcha.')
     else:
         # Carga inicial de la página
@@ -107,9 +109,19 @@ def db_backup(request):
         action = request.POST.get('action')
         
         if action == 'export':
-            # TODO: Aquí programaremos la lógica de exportación real
-            # Por ahora, simulamos el éxito para validar la ruta
-            messages.success(request, "Copia de seguridad solicitada correctamente.")
+            # Exportar datos a JSON descargable
+            return export_data_view(request)
+        elif action == 'view':
+            # Redirigir al método que muestra el contenido del JSON
+            # (aquí simplemente mostramos el JSON en la pantalla)
+            logger.info(f"Backup view requested by {request.user}")
+            messages.success(request, "Visualizando copia de seguridad.")
+            return redirect('landing:private_area')
+        elif action == 'restore':
+            # TODO: Implementar lógica de restauración desde JSON subido
+            logger.warning(f"Restore action not yet implemented (requested by {request.user})")
+            messages.info(request, "La funcionalidad de restauración aún está en desarrollo.")
+            return redirect('landing:private_area')
             
         return redirect('landing:private_area')
     

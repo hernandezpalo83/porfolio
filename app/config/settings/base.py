@@ -1,51 +1,50 @@
 """
-Django settings for app project.
-Optimized for Performance (TPM Standard) - HernandezPalo Portfolio
+Django Settings - Base configuration (shared across all environments).
+
+This file contains common settings used by all environments.
+Environment-specific overrides are in: development.py, production.py, testing.py
 """
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+import logging.config
 import dj_database_url
+from dotenv import load_dotenv
 
-# Build paths
-BASE_DIR = Path(__file__).resolve().parent.parent
+# ============================================================================
+# BUILD PATHS & ENVIRONMENT SETUP
+# ============================================================================
 
-# Load environment
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Load environment variables from .env file
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-# --- CORE SETTINGS ---
+# ============================================================================
+# LOGGING SETUP
+# ============================================================================
+
+from app.config.logging_config import setup_logging
+
+# DEBUG se define después, pero inicializamos logging aquí
+# (será sobrescrito en los settings específicos)
+_DEBUG_DEFAULT = os.getenv('DEBUG', 'False') == 'True'
+setup_logging(debug=_DEBUG_DEFAULT)
+
+# ============================================================================
+# CORE SETTINGS (COMMON)
+# ============================================================================
+
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key-change-in-prod')
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # --- SEO & LOCALIZATION ---
-# IMPORTANTE: Si tu contenido es en español, cámbialo a 'es'. Google lo usa para indexar.
-LANGUAGE_CODE = 'es-es' 
+LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_TZ = True
-
-# --- SECURITY (SEO BOOST) ---
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_SECONDS = 31536000  # 1 año
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-
-csrf_origins_env = os.getenv('CSRF_TRUSTED_ORIGINS', '')
-if csrf_origins_env:
-    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins_env.split(',')]
-else:
-    CSRF_TRUSTED_ORIGINS = [
-        "https://porfolio.hernandezpalo.es",
-        "https://porfolio-polished-water-5224.fly.dev",
-    ]
 
 # --- APPLICATION DEFINITION ---
 INSTALLED_APPS = [
@@ -73,9 +72,9 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
-    'django.middleware.gzip.GZipMiddleware', # 1. Comprime todo para ahorrar ancho de banda
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # 2. Sirve estáticos eficientemente
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -125,7 +124,7 @@ else:
         }
     }
 
-# --- STATIC & MEDIA FILES (PERFORMANCE CORE) ---
+# --- STATIC & MEDIA FILES ---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = []
@@ -133,7 +132,6 @@ STATICFILES_DIRS = []
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# WhiteNoise Optimization: Cache eterno para archivos con hash
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -143,7 +141,7 @@ STORAGES = {
     },
 }
 
-WHITENOISE_MAX_AGE = 31536000 # 1 año de caché
+WHITENOISE_MAX_AGE = 31536000
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # --- THIRD PARTY CONFIGS ---

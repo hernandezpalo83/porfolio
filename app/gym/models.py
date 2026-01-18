@@ -14,7 +14,10 @@ class Product(models.Model):
     status = models.PositiveSmallIntegerField(choices=Status.choices)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} (${self.price})"
+
+    class Meta:
+        ordering = ['name']
 
 
 class Producto(models.Model):
@@ -25,5 +28,9 @@ class Producto(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombre} (${self.precio})"
+
+    class Meta:
+        ordering = ['-fecha_creacion']
+        verbose_name_plural = "Productos"
 
