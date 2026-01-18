@@ -1,38 +1,58 @@
-<div class="bg-white border-end" id="sidebar">
-    <div class="sidebar-heading border-bottom">
-        <span class="text-primary fw-bold fs-5">Hernandez<span class="text-dark">Palo</span></span>
+<div class="bg-white" id="sidebar">
+    <div class="sidebar-heading">
+        <span class="text-primary fw-bold fs-5 logo-full">Hernandez<span class="text-dark">Palo</span></span>
+        <span class="text-primary fw-bold fs-5 logo-short">H<span class="text-dark">P</span></span>
     </div>
     
-    <div class="list-group list-group-flush mt-3">
-        {% for item in menu_items_int %}
-            {% if not item.submenus.all %}
-                <a href="{% if item.url_name %}{% url item.app_name|add:':'|add:item.url_name %}{% else %}#{% endif %}" 
-                   class="list-group-item list-group-item-action border-0 mb-1"
-                   data-bs-toggle="tooltip" data-bs-placement="right" title="{{ item.title }}">
-                    <i class="{{ item.icon }}"></i>
-                    <span class="menu-text">{{ item.title }}</span>
-                </a>
-            {% else %}
-                <div class="mb-1 px-1">
-                    <button class="list-group-item list-group-item-action border-0 w-100 justify-content-start" 
-                            data-bs-toggle="collapse" 
-                            data-bs-target="#sub-{{ item.id }}">
+    <div class="sidebar-content">
+        <div class="list-group list-group-flush">
+            {% for item in menu_items_int %}
+                
+                {% if not item.submenus.all %}
+                    {% if item.url_name %}
+                        {% url item.app_name|add:':'|add:item.url_name as current_url %}
+                    {% endif %}
+
+                    <a href="{% if current_url %}{{ current_url }}{% else %}#{% endif %}" 
+                       class="list-group-item list-group-item-action {% if current_url and request.path == current_url %}active{% endif %}"
+                       data-bs-toggle="tooltip" 
+                       data-bs-placement="right" 
+                       title="{{ item.title }}">
                         <i class="{{ item.icon }}"></i>
-                        <span class="menu-text flex-grow-1 text-start">{{ item.title }}</span>
-                        <i class="bi bi-chevron-down ms-auto menu-text small opacity-50"></i>
-                    </button>
-                    
-                    <div class="collapse ms-3 mt-1" id="sub-{{ item.id }}">
-                        {% for sub in item.submenus.all %}
-                            <a href="{% if sub.url_name %}{% url sub.app_name|add:':'|add:sub.url_name %}{% else %}#{% endif %}" 
-                               class="list-group-item list-group-item-action border-0 py-2 small rounded-pill">
-                                <i class="{{ sub.icon }} fs-6"></i>
-                                <span class="menu-text">{{ sub.title }}</span>
-                            </a>
-                        {% endfor %}
+                        <span class="menu-text">{{ item.title }}</span>
+                    </a>
+
+                {% else %}
+                    <div class="menu-group">
+                        <button class="list-group-item list-group-item-action w-100 justify-content-start border-0" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#sub-{{ item.id }}"
+                                aria-expanded="false"
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="right" 
+                                title="{{ item.title }}">
+                            <i class="{{ item.icon }}"></i>
+                            <span class="menu-text flex-grow-1 text-start">{{ item.title }}</span>
+                            <i class="bi bi-chevron-down ms-auto small opacity-50"></i>
+                        </button>
+                        
+                        <div class="collapse {% if active_submenu %}show{% endif %} ms-2" id="sub-{{ item.id }}">
+                            {% for sub in item.submenus.all %}
+                                {% if sub.url_name %}
+                                    {% url sub.app_name|add:':'|add:sub.url_name as sub_url %}
+                                {% endif %}
+                                <a href="{% if sub_url %}{{ sub_url }}{% else %}#{% endif %}" 
+                                   class="list-group-item list-group-item-action py-2 {% if sub_url and request.path == sub_url %}active{% endif %}"
+                                   style="font-size: 0.88rem;">
+                                    <i class="{{ sub.icon }} fs-6"></i>
+                                    <span class="menu-text">{{ sub.title }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+
+            {% endfor %}
+        </div>
     </div>
 </div>

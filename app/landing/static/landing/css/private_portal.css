@@ -1,35 +1,28 @@
 /* ==========================================================================
-   VARIABLES DE SISTEMA (Estilo Gemini / Material Design)
+   VARIABLES DE SISTEMA (Evolución UI/UX estilo Gemini)
    ========================================================================== */
 :root {
-    /* Dimensiones */
-    --sidebar-width: 280px;
-    --sidebar-collapsed-width: 78px;
-    --navbar-height: 64px;
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px; /* Ancho para modo iconos */
+    --navbar-height: 70px;
     
-    /* Paleta de Colores Gemini */
     --gemini-bg: #f8fafd;
     --gemini-surface: #ffffff;
     --gemini-primary: #1a73e8;
     --gemini-primary-soft: #e8f0fe;
     --gemini-text-main: #1f1f1f;
     --gemini-text-muted: #444746;
-    --gemini-border: #dee2e6;
+    --gemini-border: #e0e4e9;
     
-    /* Efectos */
     --transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-sm: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    --shadow-hover: 0 4px 12px rgba(60,64,67,0.1);
 }
 
-/* ==========================================================================
-   ESTILOS BASE
-   ========================================================================== */
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: var(--gemini-bg);
-    color: var(--gemini-text-main);
+    margin: 0;
     overflow-x: hidden;
-    letter-spacing: -0.01em;
 }
 
 #wrapper {
@@ -39,254 +32,154 @@ body {
 }
 
 /* ==========================================================================
-   SIDEBAR (MENÚ LATERAL)
+   SIDEBAR ESTILO GEMINI
    ========================================================================== */
 #sidebar {
     width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    height: 100vh;
+    position: sticky;
+    top: 0;
     background-color: var(--gemini-surface);
-    transition: var(--transition-standard);
     border-right: 1px solid var(--gemini-border);
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
     z-index: 1050;
+    transition: var(--transition-standard);
 }
 
-/* Encabezado del Logo */
+/* --- ESTADO COLAPSADO (Sincronizado con wrapper.toggled de tu JS) --- */
+#wrapper.toggled #sidebar {
+    width: var(--sidebar-collapsed-width);
+    min-width: var(--sidebar-collapsed-width);
+}
+
+/* Ocultar elementos cuando el wrapper tiene la clase .toggled */
+#wrapper.toggled .menu-text,
+#wrapper.toggled .sidebar-heading .logo-full,
+#wrapper.toggled .bi-chevron-down {
+    display: none !important;
+}
+
+/* Mostrar logo corto solo cuando está colapsado */
+.logo-short { display: none; }
+#wrapper.toggled .logo-short { display: inline-block !important; }
+
+/* Centrar iconos en modo colapsado */
+#wrapper.toggled .list-group-item {
+    justify-content: center;
+    padding: 12px 0;
+    margin: 4px 12px;
+}
+
+#wrapper.toggled .list-group-item i {
+    margin-right: 0;
+    font-size: 1.3rem;
+}
+
+/* --- CABECERA Y CONTENIDO --- */
 #sidebar .sidebar-heading {
     height: var(--navbar-height);
+    min-height: var(--navbar-height);
     display: flex;
     align-items: center;
     padding: 0 1.5rem;
-    font-weight: 600;
-    background-color: var(--gemini-surface);
+    border-bottom: 1px solid var(--gemini-border);
+    overflow: hidden;
+    white-space: nowrap;
 }
 
-/* Elementos de la lista */
+.sidebar-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem 0;
+}
+
+/* Personalización del Scrollbar */
+.sidebar-content::-webkit-scrollbar { width: 4px; }
+.sidebar-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+/* ==========================================================================
+   ITEMS DEL MENÚ
+   ========================================================================== */
 #sidebar .list-group-item {
     color: var(--gemini-text-muted);
-    font-size: 0.925rem;
     font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    margin: 0.2rem 0.75rem;
-    border-radius: 100px; /* Estilo píldora de Google */
-    border: none;
+    margin: 4px 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: transparent;
     transition: var(--transition-standard);
     display: flex;
     align-items: center;
+    text-decoration: none;
+    position: relative;
+    white-space: nowrap;
 }
 
 #sidebar .list-group-item i {
-    font-size: 1.25rem;
-    margin-right: 1rem;
+    font-size: 1.1rem;
     width: 24px;
+    margin-right: 12px;
+    flex-shrink: 0;
     text-align: center;
 }
 
-/* Estados Hover y Active */
 #sidebar .list-group-item:hover {
-    background-color: #f1f3f4;
-    color: var(--gemini-text-main);
+    background-color: var(--gemini-bg);
+    color: var(--gemini-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
 }
 
+/* ESTADO ACTIVO */
 #sidebar .list-group-item.active {
-    background-color: var(--gemini-primary-soft);
-    color: var(--gemini-primary);
+    background-color: var(--gemini-primary-soft) !important;
+    color: var(--gemini-primary) !important;
+    border-color: rgba(26, 115, 232, 0.1);
+}
+
+#sidebar .list-group-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 4px;
+    background-color: var(--gemini-primary);
+    border-radius: 0 4px 4px 0;
 }
 
 /* ==========================================================================
-   CONTENIDO PRINCIPAL
+   CONTENIDO PRINCIPAL Y RESPONSIVE
    ========================================================================== */
 #page-content-wrapper {
     flex-grow: 1;
-    min-width: 0; /* Evita que el contenido desborde en flex */
+    min-width: 0;
     display: flex;
     flex-direction: column;
 }
 
-/* Navbar Interna */
-.navbar-internal {
-    height: var(--navbar-height);
-    background-color: rgba(248, 250, 253, 0.8);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--gemini-border);
-}
-
-/* ==========================================================================
-   LÓGICA RESPONSIVA Y TOGGLES
-   ========================================================================== */
-
-/* --- ESCRITORIO --- */
-@media (min-width: 768px) {
-    /* Estado Colapsado (Desktop) */
-    #wrapper.toggled #sidebar {
-        width: var(--sidebar-collapsed-width);
-    }
-    
-    #wrapper.toggled #sidebar .menu-text,
-    #wrapper.toggled #sidebar .sidebar-heading span {
-        display: none;
-    }
-    
-    #wrapper.toggled #sidebar .list-group-item {
-        padding-left: 1.25rem;
-        justify-content: center;
-    }
-    
-    #wrapper.toggled #sidebar .list-group-item i {
-        margin-right: 0;
-    }
-}
-
-/* --- MÓVIL --- */
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
     #sidebar {
         position: fixed;
-        left: calc(var(--sidebar-width) * -1); /* Oculto a la izquierda */
-        height: 100vh;
+        left: -260px; /* Fuera de pantalla */
     }
-
-    /* Cuando se activa el toggle en móvil */
+    
     #wrapper.toggled #sidebar {
         left: 0;
-        box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+        width: var(--sidebar-width) !important;
+        min-width: var(--sidebar-width) !important;
     }
 
-    /* Overlay para oscurecer el fondo al abrir menú en móvil */
-    #wrapper.toggled #page-content-wrapper {
-        opacity: 0.4;
-        pointer-events: none;
-        user-select: none;
+    #wrapper.toggled .menu-text {
+        display: inline-block !important;
     }
-}
-
-/* ==========================================================================
-   COMPONENTES GENÉRICOS (CARDS)
-   ========================================================================== */
-.card-gemini {
-    background: var(--gemini-surface);
-    border: 1px solid var(--gemini-border);
-    border-radius: 16px;
-    transition: var(--transition-standard);
-}
-
-.card-gemini:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-footer {
-    padding: 1.5rem;
-    color: var(--gemini-text-muted);
-    font-size: 0.8rem;
-    text-align: center;
-}
-/* ==========================================================================
-   Navbar Internal Extensions
-   ========================================================================== */
-/* --- Navbar Internal Extensions --- */
-.btn-icon-gemini {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--gemini-text-muted);
-    transition: background 0.2s;
-    border: none;
-    background: transparent;
-}
-
-.btn-icon-gemini:hover {
-    background-color: rgba(0,0,0,0.05);
-    color: var(--gemini-text-main);
-}
-
-.bg-primary-soft {
-    background-color: var(--gemini-primary-soft);
-}
-
-.btn-profile-avatar {
-    border: none;
-    background: none;
-    padding: 0;
-}
-
-.btn-profile-avatar::after {
-    display: none; /* Elimina la flecha del dropdown de perfil */
-}
-
-/* Ajustes de espaciado en Dropdowns */
-.dropdown-menu {
-    border-radius: 12px;
-    padding: 0.5rem;
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-}
-
-.dropdown-item {
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-}
-
-/* ==========================================================================
-   Footer Internal Styles
-   ========================================================================== */
-/* --- Footer Internal Styles --- */
-.footer-internal {
-    background-color: transparent;
-    border-top: 1px solid var(--gemini-border);
-    margin-top: 2rem;
-}
-
-.footer-link-item {
-    text-decoration: none;
-    color: var(--gemini-text-muted);
-    transition: var(--transition-standard);
-}
-
-.footer-link-item:hover {
-    color: var(--gemini-primary);
-}
-
-.footer-copyright {
-    letter-spacing: 0.02em;
-}
-
-/* ==========================================================================
-   Dashboard Specific Extensions
-   ========================================================================== */
-/* --- Dashboard Specific Extensions --- */
-
-/* Colores de acento */
-.text-indigo { color: #6610f2 !important; }
-.bg-indigo-soft { background-color: rgba(102, 16, 242, 0.1); }
-
-.bg-success-soft { background-color: #e8f7ed; color: #1e8e3e; }
-
-/* Estilo para las tablas dentro de cards */
-.table-hover tbody tr:hover {
-    background-color: var(--gemini-bg);
-}
-
-.table thead th {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-    color: var(--gemini-text-muted);
-}
-
-/* --- Estilos para Alertas de Feedback --- */
-.alert {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-}
-
-.alert-success {
-    background-color: #e8f7ed;
-    color: #1e8e3e;
-}
-
-.alert-danger {
-    background-color: #fce8e6;
-    color: #d93025;
+    
+    #wrapper.toggled .logo-full {
+        display: inline-block !important;
+    }
 }
