@@ -84,6 +84,28 @@
     }
 }
 
+/* DARK MODE SUPPORT FOR BLOG CARDS */
+@media (prefers-color-scheme: dark) {
+    .blog-card {
+        background: #1e1e1e;
+        border-color: #CC0052;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .blog-card:hover {
+        background: #252525;
+        border-top-color: #fff;
+    }
+
+    .card-title {
+        color: #eee !important;
+    }
+
+    .card-excerpt {
+        color: #bbb;
+    }
+}
+
 /* Centering & Layout Helpers */
 .contact-form {
     max-width: 1100px;

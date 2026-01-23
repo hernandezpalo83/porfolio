@@ -7,20 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.2.1] - 2026-01-23
+## [2.2.2] - 2026-01-23
 
-### 🍎 Safari & Webkit Compatibility Fixes
+### 📰 Safari Compatibility & UI Polishing
 
-This patch release addresses specific rendering issues in Safari mobile (iOS) and improves cross-browser consistency for newly redesigned sections.
+This release focuses on cross-browser compatibility (especially for Safari/iOS) and UI refinements across the landing and blog sections.
 
 #### Fixed
-- 📱 **Intro Background (Safari Mobile)**: Resolved issue where the intro background image was invisible on iOS. Disabled `background-attachment: fixed` for mobile devices (scroll fallback) as required by Webkit.
-- 📐 **Education Grid (Webkit)**: Added `-webkit-flex` and related prefixes to ensure the education cards maintain their 2-column layout and equal heights in Safari.
-- 🖼️ **Background Fitting**: Changed `#intro` background size to `cover` for better image scaling across different mobile aspect ratios.
+- 📱 **Safari Mobile Compatibility**: Resolved invisible background issue in the Intro section on iOS. Added Webkit-specific flexbox prefixes to ensure Education cards maintain their layout in Safari.
+- 🌓 **Blog Dark Mode**: Implemented a higher-contrast dark theme for the blog (list and detail) specifically optimized for Safari Mac, ensuring readability when system dark mode is active.
+- 🐛 **Template Syntax**: Fixed a critical syntax error in `base.html` that was affecting CSS parsing.
 
-#### Technical
-- Added Webkit-specific flexbox declarations in `centering_fixes.css` and `components.css`.
-- Standardized `background-position` for hero sections to ensure focal points remain visible on vertical screens.
+#### Changed
+- 📋 **Blog Section Limit**: Restricted the number of featured blog posts on the landing page to 3 for a cleaner, balanced 3-column layout.
+- 🖼️ **Hero Optimization**: Set Intro background to `cover` and centered position for a better visual experience on mobile devices.
 
 ---
 

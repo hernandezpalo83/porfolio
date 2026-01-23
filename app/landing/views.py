@@ -62,7 +62,7 @@ def home(request: HttpRequest) -> HttpResponse:
     experiences = Experience.objects.all().order_by('-start_date') # Ordenados por fecha
     education = Education.objects.all()
     projects = Project.objects.all()
-    latest_posts = Post.objects.filter(status='published').order_by('-publish')[:5]
+    latest_posts = Post.objects.filter(status='published').order_by('-publish')[:3]
     
     # 3. CONSTRUCCIÓN DEL CONTEXTO
     context: Dict[str, Any] = {

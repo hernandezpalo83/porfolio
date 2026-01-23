@@ -2,7 +2,7 @@
 
 **Portfolio Django** - Documentación Completa y Profesional  
 **Última actualización**: 23 de Enero de 2026  
-**Versión del proyecto**: 2.2.1
+**Versión del proyecto**: 2.2.2
 
 ---
 
@@ -11,7 +11,7 @@
 ### Para Diferentes Roles
 
 #### 👨‍💼 **Project Manager / Stakeholder**
-1. Leer: [CHANGELOG.md](CHANGELOG.md) (Sección v2.2.1)
+1. Leer: [CHANGELOG.md](CHANGELOG.md) (Sección v2.2.2)
 2. Revisar: [docs/changelog/v2.1.0/LIMPIEZA_RESUMEN.txt](docs/changelog/v2.1.0/LIMPIEZA_RESUMEN.txt)
 3. **Tiempo**: 10 minutos
 
