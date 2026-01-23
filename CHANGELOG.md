@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.1] - 2026-01-23
+
+### 🍎 Safari & Webkit Compatibility Fixes
+
+This patch release addresses specific rendering issues in Safari mobile (iOS) and improves cross-browser consistency for newly redesigned sections.
+
+#### Fixed
+- 📱 **Intro Background (Safari Mobile)**: Resolved issue where the intro background image was invisible on iOS. Disabled `background-attachment: fixed` for mobile devices (scroll fallback) as required by Webkit.
+- 📐 **Education Grid (Webkit)**: Added `-webkit-flex` and related prefixes to ensure the education cards maintain their 2-column layout and equal heights in Safari.
+- 🖼️ **Background Fitting**: Changed `#intro` background size to `cover` for better image scaling across different mobile aspect ratios.
+
+#### Technical
+- Added Webkit-specific flexbox declarations in `centering_fixes.css` and `components.css`.
+- Standardized `background-position` for hero sections to ensure focal points remain visible on vertical screens.
+
+---
+
 ## [2.2.0] - 2026-01-23
 
 ### ✨ UI/UX Redesign & Layout Optimization

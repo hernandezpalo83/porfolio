@@ -39,7 +39,9 @@
 
 /* Education Cards Equal Width/Height and Grid centering */
 .education-grid {
+    display: -webkit-flex !important;
     display: flex !important;
+    -webkit-flex-wrap: wrap !important;
     flex-wrap: wrap !important;
     gap: 30px !important;
     max-width: 1200px !important;
@@ -47,14 +49,17 @@
 }
 
 .education-grid .col-six {
+    -webkit-flex: 1 1 calc(50% - 30px);
     flex: 1 1 calc(50% - 30px);
     max-width: calc(50% - 15px);
+    display: -webkit-flex !important;
     display: flex !important;
     padding: 0 !important;
 }
 
 @media (max-width: 768px) {
     .education-grid .col-six {
+        -webkit-flex: 1 1 100%;
         flex: 1 1 100%;
         max-width: 100%;
     }
