@@ -267,6 +267,7 @@ git diff v2.0.0 v2.1.0 -- docs/
 
 | Version | Type | Date | Status |
 |---------|------|------|--------|
+| 2.2.0 | Layout & UI | 2026-01-23 | ✅ Released |
 | 2.1.0 | Cleanup | 2026-01-18 | ✅ Released |
 | 2.0.0 | Architecture | 2026-01-18 | ✅ Released |
 | 1.0.0 | Initial | 2025-12-21 | ✅ Released |
@@ -288,6 +289,6 @@ Documentation is provided as-is. Subject to same license as the project.
 
 ---
 
-**Last Updated**: 2026-01-18  
+**Last Updated**: 2026-01-23  
 **Maintained By**: System Automatic (Javier Hernández Martin)  
 **Next Review**: 2026-02-18

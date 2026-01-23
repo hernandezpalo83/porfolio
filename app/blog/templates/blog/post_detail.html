@@ -3,60 +3,83 @@
 
 {% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
 
-{% block head %}
-{# ... Tus metadatos SEO se mantienen igual ... #}
+{# SEO Blocks #}
+{% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+{% block meta_keywords %}Blog, Technical Product Manager, {{ post.category.name }}, {{ post.title }}{% endblock %}
+{% block canonical %}
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}">{% endblock %}
 
-<style>
-    .post-detail-wrapper { padding-top: 100px; background: #fff; min-height: 100vh; padding-bottom: 5rem; overflow-x: hidden; }
-    .breadcrumb-nav { margin-bottom: 3rem; font-family: 'Poppins', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
-    .post-header-title { font-family: 'Montserrat', sans-serif; font-size: clamp(2.6rem, 5vw, 4.5rem); line-height: 1.2; border: none; margin-bottom: 2rem; font-weight: 700; color: #313131; }
-    .post-main-meta { color: #888; font-size: 1.4rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; margin-bottom: 3rem; }
-    
-    .post-content-body { font-family: 'Lora', serif; font-size: 1.8rem; line-height: 1.8; color: #333; max-width: 800px; margin: 0 auto; word-wrap: break-word; }
-    .post-content-body img { max-width: 100% !important; height: auto !important; border-radius: 8px; margin: 3rem auto; display: block; }
-    
-    .author-card { background: #313131; color: #fff; padding: 3.5rem; border-radius: 4px; display: flex; gap: 3rem; align-items: center; margin: 6rem auto; max-width: 800px; }
-    .author-card img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #CC0052; object-fit: cover; flex-shrink: 0; }
-    .author-info h4 { color: #fff; margin-bottom: 0.8rem; font-size: 1.8rem; border: none; }
-    .author-info p { font-size: 1.4rem; color: #ccc; margin-bottom: 1.5rem; }
-    .author-links { display: flex; gap: 2rem; }
-    .author-links a { color: #CC0052; font-weight: bold; text-decoration: none; font-size: 1.2rem; text-transform: uppercase; }
+{# Open Graph Overrides #}
+{% block og_type %}article{% endblock %}
+{% block og_url %}{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}{% endblock %}
+{% block og_title %}{{ post.title }} | HernandezPalo{% endblock %}
+{% block og_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+{% block og_image %}{% if post.imagen_url %}{{ post.imagen_url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 
-    .related-section { max-width: 800px; margin: 6rem auto; padding-top: 4rem; border-top: 1px solid #eee; }
-    .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2.5rem; margin-top: 3rem; }
-    .related-item { background: #f9f9f9; padding: 2.5rem; border-top: 3px solid #CC0052; text-decoration: none !important; transition: 0.3s; }
-    .related-item:hover { background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-    .related-item h4 { font-size: 1.6rem; color: #313131; margin-top: 1rem; font-weight: 700; border: none; }
+{# Twitter Card Overrides #}
+{% block twitter_title %}{{ post.title }}{% endblock %}
+{% block twitter_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+{% block twitter_image %}{% if post.imagen_url %}{{ post.imagen_url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 
-    @media (max-width: 600px) {
-        .author-card { flex-direction: column; text-align: center; padding: 2.5rem; }
-        .author-links { justify-content: center; }
-        .post-detail-wrapper { padding-top: 80px; }
+{% block extra_schema %}
+{{ block.super }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}"
+  },
+  "headline": "{{ post.title }}",
+  "description": "{{ post.meta_description|default:post.excerpt }}",
+  "image": "{% if post.imagen_url %}{{ post.imagen_url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'landing/img/og-image.webp' %}{% endif %}",  
+  "author": {
+    "@type": "Person",
+    "name": "Javier Hernández Martin",
+    "url": "https://hernandezpalo.es"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Javier Hernández Martin",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% static 'landing/img/favicon.ico' %}"
     }
-</style>
+  },
+  "datePublished": "{{ post.publish|date:'Y-m-d' }}",
+  "dateModified": "{{ post.publish|date:'Y-m-d' }}"
+}
+</script>
 {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'blog/css/blog_detail.css' %}">
+{% endblock %}
+
 
 {% block content %}
 <div class="post-detail-wrapper">
     <div class="row">
         <div class="col-twelve">
-            
+
             <nav class="breadcrumb-nav">
-                <a href="/" style="color: #999; text-decoration: none;">Home</a> 
+                <a href="/" style="color: #999; text-decoration: none;">Home</a>
                 <span style="color: #eee; margin: 0 5px;">/</span>
                 <a href="{% url 'blog:post_list' %}" style="color: #999; text-decoration: none;">Blog</a>
                 <span style="color: #eee; margin: 0 5px;">/</span>
                 <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
             </nav>
 
-                <h1 class="post-header-title">{{ post.title }}</h1>
-                <p class="post-main-meta">
-                    {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · {{ post.get_read_time }} min lectura
-                </p>
+            <h1 class="post-header-title">{{ post.title }}</h1>
+            <p class="post-main-meta">
+                {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · {{ post.get_read_time }} min lectura
+            </p>
 
             {% if post.image_url %}
             <div style="max-width: 900px; margin: 0 auto 5rem auto;">
-                <img src="{{ post.image_url }}" alt="{{ post.title }}" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px;">
+                <img src="{{ post.image_url }}" alt="{{ post.title }}" loading="lazy"
+                    style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px;">
             </div>
             {% endif %}
 
@@ -66,7 +89,7 @@
 
             <div class="author-card">
                 {% if BRAND.PROFILE_PICTURE %}
-                    <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández">
+                <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández">
                 {% endif %}
                 <div class="author-info">
                     <h4>Javier Hernández Martin</h4>
@@ -80,13 +103,16 @@
 
             {% if related_posts %}
             <div class="related-section">
-                <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.8rem; text-transform: uppercase; color: #888;">Seguir leyendo</h3>
+                <h3
+                    style="font-family: 'Montserrat', sans-serif; font-size: 1.8rem; text-transform: uppercase; color: #888;">
+                    Seguir leyendo</h3>
                 <div class="related-grid">
                     {% for r_post in related_posts %}
                     <a href="{{ r_post.get_absolute_url }}" class="related-item">
                         <span style="font-size: 1rem; color: #CC0052; font-weight: bold; text-transform: uppercase;">{{ r_post.publish|date:"M Y" }}</span>
                         <h4>{{ r_post.title }}</h4>
-                        <div style="margin-top: 1.5rem; color: #CC0052; font-weight: bold; font-size: 1.1rem;">LEER MÁS →</div>
+                        <div style="margin-top: 1.5rem; color: #CC0052; font-weight: bold; font-size: 1.1rem;">LEER MÁS
+                            →</div>
                     </a>
                     {% endfor %}
                 </div>
@@ -94,7 +120,8 @@
             {% endif %}
 
             <footer style="text-align: center; margin-top: 4rem;">
-                <a href="{% url 'blog:post_list' %}" class="button stroke" style="width: 100%; max-width: 300px;">← Volver al Blog</a>
+                <a href="{% url 'blog:post_list' %}" class="button stroke" style="width: 100%; max-width: 300px;">←
+                    Volver al Blog</a>
             </footer>
         </div>
     </div>

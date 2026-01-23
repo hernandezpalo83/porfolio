@@ -1,0 +1,256 @@
+/* Blog List Styles */
+
+/* Estilos estructurales para evitar bloqueos en móvil */
+.blog-wrapper {
+    background-color: #eff0f1;
+    padding-top: 100px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.blog-wrapper .row {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+.blog-hero {
+    padding: 4rem 0 2rem 0;
+}
+
+.hero-sub {
+    color: #CC0052;
+    letter-spacing: .2rem;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 1rem;
+}
+
+.hero-title {
+    color: #313131;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    border: none;
+    font-weight: 700;
+}
+
+.post-item {
+    background: #fff;
+    padding: 3rem;
+    margin-bottom: 2.5rem;
+    border-radius: 4px;
+    border-left: 5px solid #CC0052;
+    display: flex;
+    gap: 3rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease;
+}
+
+.post-item:hover {
+    transform: translateX(5px);
+}
+
+.post-thumbnail-container {
+    flex: 0 0 180px;
+    height: 130px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.post-thumbnail-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-content {
+    flex: 1;
+    min-width: 0;
+    /* min-width: 0 evita que el flexbox desborde */
+}
+
+.post-meta {
+    font-size: 1.2rem;
+    color: #888;
+    margin-bottom: 0.8rem;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.meta-sep {
+    color: #ccc;
+}
+
+.meta-cat {
+    color: #CC0052;
+    font-weight: bold;
+}
+
+.post-title-h2 {
+    margin: 0 0 1rem 0;
+    border: none;
+    padding: 0;
+    line-height: 1.2;
+}
+
+.post-title-h2 a {
+    color: #313131;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 2.4rem;
+    text-decoration: none;
+}
+
+.post-excerpt {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: #555;
+    font-family: 'Lora', serif;
+    margin-bottom: 1.5rem;
+}
+
+.read-more-link {
+    color: #CC0052;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+/* Main Containers */
+.blog-wrapper .row {
+    max-width: 1300px;
+    /* Slightly wider overall container */
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+.col-nine.tab-full {
+    width: 75%;
+    /* More width for main content */
+    float: left;
+    padding: 0 20px;
+}
+
+.col-three.tab-full {
+    width: 25%;
+    /* Slightly narrower sidebar */
+    float: left;
+    padding: 0 20px;
+}
+
+@media (max-width: 1024px) {
+
+    .col-nine.tab-full,
+    .col-three.tab-full {
+        width: 100%;
+        float: none;
+    }
+}
+
+/* Sidebar Widget Styles */
+.sidebar-widget {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 4px;
+    border: 1px solid #e1e1e1;
+    margin-bottom: 3rem;
+}
+
+.sidebar-widget h4 {
+    border-bottom: 2px solid #CC0052;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.6rem;
+    color: #313131;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.widget-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.widget-list a {
+    color: #313131;
+    display: block;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #f9f9f9;
+    text-decoration: none;
+    font-size: 1.4rem;
+}
+
+.widget-list a.active {
+    color: #CC0052;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #CC0052 !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.pagination-nav {
+    text-align: center;
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination-nav .page-numbers {
+    padding: 0.8rem 1.4rem;
+    border: 1px solid #e1e1e1;
+    background: #fff;
+    color: #313131;
+    text-decoration: none;
+    border-radius: 2px;
+}
+
+.pagination-nav .page-numbers.current {
+    background: #CC0052;
+    color: #fff;
+    border-color: #CC0052;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+/* RESPONSIVE MÓVIL (CRÍTICO) */
+@media (max-width: 768px) {
+    .blog-wrapper {
+        padding-top: 80px;
+    }
+
+    .post-item {
+        flex-direction: column !important;
+        padding: 2rem !important;
+        gap: 1.5rem !important;
+    }
+
+    .post-thumbnail-container {
+        width: 100% !important;
+        flex: 0 0 180px !important;
+    }
+
+    .post-title-h2 a {
+        font-size: 2rem;
+    }
+
+    .sidebar-widget {
+        padding: 2rem;
+    }
+}

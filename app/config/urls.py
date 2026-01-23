@@ -9,10 +9,7 @@ from app.blog.sitemaps import PostSitemap
 from django.conf import settings
 from django.conf.urls.static import static
 
-# Vista rápida para robots.txt
-def robots_txt(request):
-    content = "User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: https://hernandezpalo.es/sitemap.xml"
-    return HttpResponse(content, content_type="text/plain")
+from django.views.generic import TemplateView
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -20,7 +17,7 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path("robots.txt", robots_txt),
+    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
     path("private/", include('app.landing.urls')),

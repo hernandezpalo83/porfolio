@@ -1,46 +1,57 @@
 <section id="resume" class="grey-section">
-    <div class="row resume-timeline">
-       <div class="col-twelve resume-header"><h2>Experiencia Laboral</h2></div>
-       <div class="col-twelve">
-          <div class="timeline-wrap">
-             {% for experience in experiences %}
-             <div class="timeline-block">
-                <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
-                <div class="timeline-header">
-                   <h3>{{ experience.position }}</h3>
-                   <p>{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}</p>
-                </div>
-                <div class="timeline-content">
-                   <h4>{{ experience.company }}</h4>
-                   {{ experience.resumen|safe }}
-                </div>
-             </div>
-             {% endfor %}
-          </div>
-       </div>
-    </div>
+   <div class="row resume-timeline">
+      <div class="col-twelve resume-header">
+         <h2>Experiencia Laboral</h2>
+      </div>
+      <div class="col-twelve">
+         <div class="timeline-wrap">
+            {% for experience in experiences %}
+            <div class="timeline-block">
+               <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
+               <div class="timeline-header">
+                  <h3>{{ experience.position }}</h3>
+                  <p>{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}
+                  </p>
+               </div>
+               <div class="timeline-content">
+                  <h4>{{ experience.company }}</h4>
+                  {{ experience.resumen|safe }}
+               </div>
+            </div>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
+</section>
 
-    <div class="row resume-timeline" style="margin-top: 6rem;">
-       <div class="col-twelve resume-header"><h2>Educación y Certificaciones</h2></div>
-       <div class="col-twelve">
-          <div class="timeline-wrap">
-             {% for edu in education %}
-             <div class="timeline-block">
-                <div class="timeline-ico"><i class="fa fa-graduation-cap"></i></div>
-                <div class="timeline-header">
-                   <h3>{{ edu.degree }}</h3>
-                   <p>{{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y"|default:"Actualidad" }}</p>
-                </div>
-                <div class="timeline-content">
-                   <h4>{{ edu.institution }}</h4>
-                   {{ edu.resumen|safe }}
-                   {% if edu.link %}
-                   <a href="{{ edu.link }}" target="_blank" style="color: #CC0052; font-weight: bold; display: block; margin-top: 10px;">Ver Credencial <i class="fa fa-external-link"></i></a>
-                   {% endif %}
-                </div>
-             </div>
-             {% endfor %}
-          </div>
-       </div>
-    </div>
+<section id="education" class="edu-section-dark">
+   <div class="row section-intro">
+      <div class="col-twelve">
+         <h5 style="color: #CC0052; letter-spacing: 2px;">Formación</h5>
+         <h1 style="color: #fff;">Educación y Certificaciones</h1>
+      </div>
+   </div>
+
+   <div class="row education-grid">
+      {% for edu in education %}
+      <div class="col-six tab-full">
+         <div class="edu-card">
+            <div class="edu-card-icon"><i class="fa fa-graduation-cap"></i></div>
+            <div class="edu-card-header">
+               <span class="edu-date">{{ edu.start_date|date:"Y" }} - {{ edu.end_date|date:"Y"|default:"Actualidad" }}</span>
+               <h3>{{ edu.degree }}</h3>
+               <h4>{{ edu.institution }}</h4>
+            </div>
+            <div class="edu-card-content">
+               {{ edu.resumen|safe }}
+               {% if edu.link %}
+               <a href="{{ edu.link }}" target="_blank" class="credential-btn">
+                  Ver Credencial <i class="fa fa-external-link"></i>
+               </a>
+               {% endif %}
+            </div>
+         </div>
+      </div>
+      {% endfor %}
+   </div>
 </section>

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /login/
+Disallow: /logout/
+
+Sitemap: https://hernandezpalo.es/sitemap.xml

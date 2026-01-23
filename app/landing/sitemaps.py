@@ -7,7 +7,7 @@ class StaticViewSitemap(Sitemap):
 
     def items(self):
         # Aquí solo ponemos las páginas que tienen su propia URL real
-        return ['home', 'login'] 
+        return ['landing:index', 'login'] 
 
     def location(self, item):
         return reverse(item)

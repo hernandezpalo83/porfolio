@@ -1,28 +1,28 @@
-
-<section id="about">  
+<section id="about">
     <div class="row section-intro">
         <div class="col-twelve">
             <h5>Mi Historia</h5>
             <h1>Un Viaje de Transformación y Crecimiento</h1>
-        </div>          
+        </div>
     </div>
     <div class="row">
         <div class="about-profile-wrapper" style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 40px;">
             <div class="about-image-column" style="flex: 1; min-width: 250px; text-align: center;">
 
                 {% if BRAND.PROFILE_PICTURE %}
-                <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" style="width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover;">
+                <img src="{{ BRAND.PROFILE_PICTURE }}" alt="Javier Hernández" loading="lazy"
+                    style="width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover;">
                 {% endif %}
-                
+
                 <ul class="info-list" style="text-align: left; margin-top: 30px; list-style: none; padding: 0;">
-                    <li><strong>Nombre:</strong> <span>{{info.name}}</span></li>
-                    <li><strong>Email:</strong> <span>{{info.email}}</span></li>
-                    <li><strong>Web:</strong> <span>{{info.web}}</span></li>
+                    <li><strong>Nombre:</strong> <span>{{ info.name }}</span></li>
+                    <li><strong>Email:</strong> <span>{{ info.email }}</span></li>
+                    <li><strong>Web:</strong> <span>{{ info.web }}</span></li>
                 </ul>
             </div>
             <div class="about-text-column" style="flex: 2; min-width: 300px;">
-                <p class="lead">{{info.bio}}</p>
-                <p>{{info.perfil}}</p>
+                <p class="lead">{{ info.bio }}</p>
+                <p>{{ info.perfil }}</p>
                 <h3 style="color:#CC0052; margin-top: 30px;">Habilidades Clave</h3>
                 <p> </p>
                 <ul class="skill-bars" style="margin-top: 50px;">

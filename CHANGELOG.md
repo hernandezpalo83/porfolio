@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.0] - 2026-01-23
+
+### ✨ UI/UX Redesign & Layout Optimization
+
+This release introduces a major aesthetic overhaul of key landing page sections and fixes several long-standing layout and template rendering issues.
+
+#### Added
+- 🎨 **New Education Design**: Premium dark-themed, card-based layout for "Educación y Certificaciones" with modern hover effects and radial gradients.
+- 🖼️ **Enhanced Portfolio Cards**: Redesigned project cards with explicit "Ver Proyecto" buttons, high-contrast badges, and smooth image zoom transitions.
+- 📐 **New Centering System**: Created `app/landing/static/landing/css/centering_fixes.css` to unify row widths and centering across all sections.
+
+#### Changed
+- 📏 **Blog List Optimization**: Increased content area width to 1300px (75% column) for better readability on large screens.
+- 📨 **Contact Form Overhaul**: Standardized form width to 1200px, aligning perfectly with section headers.
+- 📱 **Mobile Responsiveness**: Re-optimized card stacking and padding for small devices across redesigned sections.
+
+#### Fixed
+- 🐛 **Template Tag Brokenness**: Joined split Django template tags (`{{ ... }}`) in `resume.html`, `portfolio.html`, and `base.html` that were causing hardcoded-like text rendering in the UI.
+- 📐 **Education Grid Alignment**: Fixed inconsistent card heights and widths in the formation section using flexbox.
+- 🔲 **Layout Mismatches**: Resolved 100px width difference between section intros and their content blocks.
+
+#### Technical
+- 🏗️ Modernized `components.css` with cleaner, class-based styles instead of inline template styling.
+- 🧹 Removed redundant and conflicting layout constraints.
+
+---
+
 ## [2.1.0] - 2026-01-18
 
 ### 🎯 Project Cleanup & Code Quality

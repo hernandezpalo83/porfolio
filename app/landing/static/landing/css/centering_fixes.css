@@ -1,0 +1,67 @@
+/* Standardize row and col-twelve behavior across all sections */
+.row {
+    max-width: 1200px !important;
+    /* Unified width for all rows */
+    width: 94% !important;
+    margin: 0 auto !important;
+    float: none !important;
+    display: block !important;
+}
+
+.col-twelve {
+    width: 100% !important;
+    float: left !important;
+    padding: 0 20px !important;
+}
+
+/* Ensure centering for main containers */
+.blog-wrapper,
+.post-detail-wrapper,
+#portfolio,
+#contact,
+#education {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Remove specific overrides that were causing mismatches */
+#contact .contact-form {
+    max-width: 1200px !important;
+    /* Match standard row width */
+}
+
+#contactForm {
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* Education Cards Equal Width/Height and Grid centering */
+.education-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 30px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+.education-grid .col-six {
+    flex: 1 1 calc(50% - 30px);
+    max-width: calc(50% - 15px);
+    display: flex !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 768px) {
+    .education-grid .col-six {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .row {
+        width: auto !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
