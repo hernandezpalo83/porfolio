@@ -1,28 +1,23 @@
-<section id="blog-preview" style="padding: 8rem 0; background-color: #f9f9f9;">
+<section id="blog-preview">
     <div class="row">
         <div class="col-twelve text-center">
-            <h5 style="color: #CC0052; letter-spacing: .2rem; text-transform: uppercase; margin-bottom: 1rem;">Insights
-            </h5>
-            <h2 style="font-family: 'Montserrat', sans-serif; font-weight: 700; margin-bottom: 4rem;">Últimos Artículos
-            </h2>
+            <h5 class="section-subtitle">Insights</h5>
+            <h2 class="section-title">Últimos Artículos</h2>
         </div>
     </div>
 
-    <div class="row" style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;">
+    <div class="blog-grid">
         {% for post in latest_posts %}
         <div class="blog-card">
-            <a href="{{ post.get_absolute_url }}"
-                style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
+            <a href="{{ post.get_absolute_url }}" class="blog-card-link">
                 <div class="card-content">
                     <span class="card-meta">
                         {{ post.publish|date:"d M Y" }} ·
-                        <span style="color: #313131;">{{ post.get_read_time }} min lectura</span>
+                        <span class="read-time">{{ post.get_read_time }} min lectura</span>
                     </span>
                     <h4 class="card-title">{{ post.title }}</h4>
-                    <p class="card-excerpt">{{ post.excerpt }}</p>
 
-                    <div
-                        style="margin-top: auto; padding-top: 2rem; color: #CC0052; font-weight: 700; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">
+                    <div class="read-more">
                         Leer más →
                     </div>
                 </div>
@@ -30,14 +25,12 @@
         </div>
         {% empty %}
         <div class="col-twelve text-center">
-            <p style="font-size: 1.8rem; color: #777;">Próximamente más contenido técnico sobre Product Management.</p>
+            <p class="empty-msg">Próximamente más contenido técnico sobre Product Management.</p>
         </div>
         {% endfor %}
     </div>
 
-    <div class="row text-center" style="margin-top: 5rem;">
-        <a href="{% url 'blog:post_list' %}" class="button stroke"
-            style="border-color: #CC0052; color: #CC0052; font-size: 1.2rem; height: 5.5rem; line-height: 5.3rem;">Explorar
-            el Blog Completo</a>
+    <div class="row text-center blog-view-more-container">
+        <a href="{% url 'blog:post_list' %}" class="button stroke blog-btn">Explorar el Blog Completo</a>
     </div>
 </section>

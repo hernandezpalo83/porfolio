@@ -13,6 +13,7 @@
     <meta name="keywords"
         content="{% block meta_keywords %}Technical Product Manager, TPM, Product Owner, Django, Agile, Madrid, Javier Hernández Martin{% endblock %}">
     <meta name="author" content="Javier Hernández Martin">
+
     {% block canonical %}
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
     {% endblock %}
@@ -35,37 +36,30 @@
     <meta name="twitter:description" content="{% block twitter_description %}{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}{% endblock %}">
 
-    {# 🚀 FASE 1 OPTIMIZACIONES MOBILE (v2.2.0) #}
-
-    {# 1. FAVICON OPTIMIZADO: 5KB en lugar de 825KB #}
+    {# 🚀 FAVICON #}
     <link rel="icon" type="image/x-icon" href="{% static 'landing/img/favicon.ico' %}">
     <link rel="apple-touch-icon" href="{% static 'landing/img/favicon.ico' %}">
 
-    {# 🚀 FASE 2 OPTIMIZACIONES FUENTES (v2.3.0) - WOFF2 ONLY #}
-    {# Self-hosted fuentes optimizadas: 1.7 MB → ~190 KB (-89%) #}
+    {# 🚀 FUENTES PRELOAD #}
     <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-regular-webfont.woff2' %}" as="font"
         type="font/woff2" crossorigin>
     <link rel="preload" href="{% static 'landing/fonts/lora/lora-regular-webfont.woff2' %}" as="font" type="font/woff2"
         crossorigin>
 
-    {# 2. PRIORIDAD DE RED: Preload de CSS críticos #}
-    <link rel="preload" href="{% static 'landing/css/base.css' %}" as="style">
-    <link rel="preload" href="{% static 'landing/css/main.css' %}" as="style">
-
-    {# 3. FUENTES: Self-hosted con WOFF2 only + font-display: swap #}
     <link rel="stylesheet" href="{% static 'landing/fonts/poppins/stylesheet-optimized.css' %}">
     <link rel="stylesheet" href="{% static 'landing/fonts/lora/stylesheet-optimized.css' %}">
 
-    {# Montserrat desde Google Fonts CDN (fallback + no crítica) #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Raleway:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 
-    {# 4. CSS: Cargado de forma estándar pero después del preload #}
-    <link rel="stylesheet" href="{% static 'landing/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/components.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/centering_fixes.css' %}">
+    {# 🚀 CSS CON CACHE BUSTING #}
+    <link rel="stylesheet" href="{% static 'landing/css/base.css' %}?v=1.6">
+    <link rel="stylesheet" href="{% static 'landing/css/main.css' %}?v=1.6">
+    <link rel="stylesheet" href="{% static 'landing/css/components.css' %}?v=1.6">
+    <link rel="stylesheet" href="{% static 'landing/css/centering_fixes.css' %}?v=1.6">
 
     {% block extra_schema %}
     <script type="application/ld+json">
@@ -94,83 +88,7 @@
 
     {% if form.media %}{{ form.media }}{% endif %}
 
-    <style>
-        /* 🚀 FASE 1: Critical CSS Inline para mejorar LCP
-           Este CSS crítico se renderiza inmediatamente sin esperar a base.css/main.css */
-
-        /* Reservar espacio para fuentes y evitar CLS (Cumulative Layout Shift) */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            padding-top: 80px;
-        }
-
-        /* Header crítico - Evitar reflow al cargar */
-        header {
-            width: 100%;
-            background: #0c0c0c;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 500;
-            height: 80px;
-            display: flex;
-            align-items: center;
-        }
-
-        .top-bar {
-            max-width: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 40px;
-            height: 80px;
-            margin: 0;
-        }
-
-        header .logo a {
-            font-family: "Montserrat", sans-serif;
-            color: #CC0052;
-            font-size: clamp(1.8rem, 4vw, 2.4rem);
-            font-weight: 700;
-            text-decoration: none;
-            white-space: nowrap;
-            letter-spacing: -0.02em;
-        }
-
-        /* Prevenir CLS en nav */
-        nav {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Mobile-first responsive: Ocultar elementos innecesarios en móvil */
-        @media (max-width: 768px) {
-            .top-bar {
-                padding: 0 20px;
-            }
-
-            header .logo a {
-                font-size: clamp(1.4rem, 3vw, 1.8rem);
-            }
-        }
-
-            {
-            % block extra_css %
-        }
-
-            {
-            % endblock %
-        }
-    </style>
+    {% block extra_css %}{% endblock %}
 
     {% block head %}{% endblock %}
 </head>
@@ -197,8 +115,6 @@
         </div>
     </footer>
 
-    {# 5. SCRIPTS CON DEFER: Se cargan asíncronamente sin bloquear el render #}
-    {# IMPORTANTE: jQuery y plugins SIN async para mantener el orden de carga #}
     <script src="{% static 'landing/js/jquery-2.1.3.min.js' %}" defer></script>
     <script src="{% static 'landing/js/plugins.js' %}" defer></script>
     <script src="{% static 'landing/js/main.js' %}" defer></script>

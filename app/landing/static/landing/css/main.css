@@ -75,7 +75,7 @@ body {
 
 body {
 	background: #151515;
-	font-family: "lora-regular", serif;
+	font-family: "Lora", serif;
 	font-size: 1.7rem;
 	line-height: 3rem;
 	color: #6e6e6e;
@@ -118,16 +118,15 @@ h6,
 .h02,
 .h03,
 .h04,
-.h05,
-h3,
-.h03,
-h4,
-h5,
-.h05,
-h6,
-h1,
+.h05 {
+	margin-top: 0;
+	font-family: 'Raleway', sans-serif;
+}
+
 @media only screen and (max-width:600px) {
-	h1,
+	h1 {
+		font-size: 3rem;
+	}
 }
 
 h2,
@@ -140,7 +139,7 @@ p img {
 }
 
 p.lead {
-	font-family: "lora-regular", serif;
+	font-family: "Lora", serif;
 	font-size: 2rem;
 	line-height: 1.8;
 	color: #888888;
@@ -989,7 +988,6 @@ input::-moz-focus-inner {
 	content: "";
 }
 
-.skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li .skill-bars li
 
 /** 
  * ===================================================================
@@ -998,7 +996,7 @@ input::-moz-focus-inner {
  * ------------------------------------------------------------------- 
  */
 .grey-section {
-	background: #ebebeb;
+	background: #ffffff !important;
 }
 
 .grey-section p.lead {
@@ -1537,9 +1535,9 @@ header .logo a {
  * ------------------------------------------------------------------- 
  */
 #about {
-	background: #FFFFFF;
+	background: #f7f7f7;
 	padding-top: 12rem;
-	padding-bottom: 15rem;
+	padding-bottom: 12rem;
 }
 
 #about .section-intro {
@@ -1664,6 +1662,7 @@ header .logo a {
 #resume {
 	padding-top: 12rem;
 	padding-bottom: 12rem;
+	background: #ffffff !important;
 }
 
 #resume .resume-header {
@@ -1687,9 +1686,9 @@ header .logo a {
 #resume .timeline-wrap::before {
 	content: "";
 	display: block;
-	width: 1px;
+	width: 2px;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.1);
+	background: rgba(204, 0, 82, 0.15);
 	position: absolute;
 	left: 35%;
 	top: 0;
@@ -1704,7 +1703,7 @@ header .logo a {
 	height: 4.8rem;
 	width: 4.8rem;
 	line-height: 4.8rem;
-	background: #313131;
+	background: #CC0052;
 	border-radius: 50%;
 	text-align: center;
 	color: #FFFFFF;
@@ -1712,6 +1711,7 @@ header .logo a {
 	left: 35%;
 	top: .9rem;
 	margin-left: -2.4rem;
+	box-shadow: 0 0 0 8px #ffffff;
 }
 
 #resume .timeline-ico i {
@@ -1885,17 +1885,11 @@ header .logo a {
  * portfolio
  * ------------------------------------------------------------------- 
  */
-@media only screen and (max-width:1024px) {
-	#portfolio
-}
+@media only screen and (max-width:1024px) {}
 
-@media only screen and (max-width:768px) {
-	#portfolio
-}
+@media only screen and (max-width:768px) {}
 
-@media only screen and (max-width:400px) {
-	#portfolio
-}
+@media only screen and (max-width:400px) {}
 
 /**
  * Popup Modal - (_layout.scss)
@@ -2098,8 +2092,8 @@ header .logo a {
  */
 #stats {
 	background: #990047;
-	padding-top: 7.2rem;
-	padding-bottom: 6rem;
+	padding-top: 12rem;
+	padding-bottom: 12rem;
 	text-align: center;
 }
 
@@ -2107,16 +2101,14 @@ header .logo a {
 	max-width: 1440px;
 }
 
-#stats #stats .stat:first-child {
+#stats .stat {
+	border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#stats .stat:first-child {
 	border: none;
 }
 
-#stats .icon-part i {
-	font-size: 4.8rem;
-	color: #000000;
-}
-
-#stats #stats
 /**
  * responsive:
  * stats
@@ -2159,7 +2151,7 @@ header .logo a {
 #contact {
 	background: #151515;
 	padding-top: 12rem;
-	padding-bottom: 7.2rem;
+	padding-bottom: 12rem;
 }
 
 #contact .section-intro h1 {

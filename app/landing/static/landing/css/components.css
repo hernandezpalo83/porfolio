@@ -16,8 +16,8 @@
 /* Blog Preview Cards (Home Page) */
 .blog-card {
     background: #fff;
-    flex: 1 1 calc(33.333% - 2rem);
-    max-width: calc(33.333% - 2rem);
+    width: 100% !important;
+    margin: 0 !important;
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     transition: all 0.3s ease;
@@ -43,13 +43,13 @@
     color: #CC0052;
     font-weight: 600;
     text-transform: uppercase;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     display: block;
     margin-bottom: 1.2rem;
 }
 
 .card-title {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Raleway', sans-serif;
     font-size: 2rem !important;
     font-weight: 700;
     line-height: 1.3;
@@ -82,6 +82,33 @@
     .card-content {
         padding: 2.5rem;
     }
+}
+
+.blog-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 30px !important;
+    width: 100% !important;
+    max-width: 1140px !important;
+    margin: 0 auto !important;
+}
+
+@media (max-width: 1024px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+}
+
+.blog-view-more-container {
+    margin-top: 15rem !important;
+    padding-bottom: 6rem;
 }
 
 /* DARK MODE SUPPORT FOR BLOG CARDS */
@@ -142,15 +169,33 @@
 }
 
 .education-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     gap: 30px;
+    width: 100% !important;
+    max-width: 1140px !important;
+    margin: 4rem auto 0 !important;
+    float: none !important;
 }
 
-.education-grid .col-six {
+.education-grid>div {
     display: flex;
-    padding: 0;
-    /* Remove default padding to avoid alignment issues with gap */
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 1024px) {
+    .education-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .education-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
 }
 
 .edu-card {
@@ -195,7 +240,7 @@
 .edu-date {
     display: inline-block;
     color: #CC0052;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     font-size: 1.3rem;
     margin-bottom: 1.2rem;
@@ -205,7 +250,7 @@
 
 .edu-card-header h3 {
     color: #fff;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Raleway', sans-serif;
     font-size: 2.4rem;
     line-height: 1.2;
     margin: 0 0 0.8rem 0;
@@ -215,7 +260,7 @@
 
 .edu-card-header h4 {
     color: #aaa;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1.6rem;
     font-weight: 500;
     margin-bottom: 2.5rem;
@@ -237,7 +282,7 @@
     margin-top: 3rem;
     color: #fff !important;
     text-decoration: none;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     font-size: 1.2rem;
     text-transform: uppercase;
@@ -263,12 +308,25 @@
 }
 
 .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100% !important;
+    max-width: 1140px !important;
+    margin: 0 auto !important;
     padding: 0 20px;
+}
+
+@media (max-width: 1100px) {
+    .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .portfolio-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 .project-card {
@@ -289,15 +347,34 @@
 
 .project-image-wrapper {
     position: relative;
-    height: 240px;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    /* Fallback 16:9 (9/16 = 0.5625) */
+    max-height: 250px;
     overflow: hidden;
 }
 
+@supports (aspect-ratio: 16/9) {
+    .project-image-wrapper {
+        aspect-ratio: 16 / 9;
+        height: auto;
+        padding-bottom: 0;
+    }
+}
+
 .project-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    -o-object-fit: cover;
     object-fit: cover;
+    -webkit-transition: -webkit-transform 0.6s ease;
+    transition: -webkit-transform 0.6s ease;
     transition: transform 0.6s ease;
+    transition: transform 0.6s ease, -webkit-transform 0.6s ease;
 }
 
 .project-card:hover .project-image-wrapper img {
@@ -311,7 +388,7 @@
     background: #CC0052;
     color: #fff;
     padding: 6px 14px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     font-size: 1.1rem;
     border-radius: 4px;
@@ -328,7 +405,7 @@
 }
 
 .project-title {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Raleway', sans-serif;
     font-weight: 700;
     font-size: 2.2rem;
     color: #313131;
@@ -356,7 +433,7 @@
     color: #fff !important;
     text-align: center;
     text-transform: uppercase;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     letter-spacing: 2px;
     font-size: 1.2rem;
@@ -370,13 +447,130 @@
     color: #fff !important;
 }
 
-/* Response: Portfolio */
-@media (max-width: 600px) {
-    .portfolio-grid {
-        grid-template-columns: 1fr;
+/* --- UTILITIES & LAYOUT (FROM HTML CLEANUP) --- */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', system-ui, sans-serif;
+    margin: 0;
+    padding-top: 80px;
+}
+
+header {
+    width: 100%;
+    background: #0c0c0c;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    height: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.top-bar {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    height: 80px;
+    margin: 0;
+}
+
+header .logo a {
+    font-family: 'Raleway', sans-serif;
+    color: #CC0052 !important;
+    font-size: clamp(1.4rem, 4vw, 2.4rem);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+nav {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .top-bar {
+        padding: 0 20px;
     }
 
-    .project-card-info {
-        padding: 2.5rem;
+    header .logo a {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
     }
+}
+
+/* --- BLOG SECTION ENHANCEMENTS --- */
+#blog-preview {
+    padding: 12rem 0;
+    background-color: #f9f9f9;
+}
+
+#blog-preview .section-title {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
+#blog-preview .section-subtitle {
+    color: #CC0052;
+    letter-spacing: .2rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.blog-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.blog-card .read-time {
+    color: #313131;
+}
+
+.blog-card .read-more {
+    margin-top: auto;
+    padding-top: 2rem;
+    color: #CC0052;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.blog-preview .empty-msg {
+    font-size: 1.8rem;
+    color: #777;
+    text-align: center;
+}
+
+.blog-btn {
+    border-color: #CC0052 !important;
+    color: #CC0052 !important;
+    font-size: 1.2rem !important;
+    height: 5.5rem !important;
+    line-height: 5.3rem !important;
+}
+
+/* --- EDUCATION SECTION ENHANCEMENTS --- */
+.edu-section-dark .section-subtitle {
+    color: #CC0052;
+    letter-spacing: 2px;
+}
+
+.edu-section-dark .section-title {
+    color: #fff;
 }

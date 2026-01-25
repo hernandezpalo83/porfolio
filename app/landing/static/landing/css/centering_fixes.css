@@ -5,7 +5,6 @@
     width: 94% !important;
     margin: 0 auto !important;
     float: none !important;
-    display: block !important;
 }
 
 .col-twelve {
@@ -37,33 +36,8 @@
     margin: 0 auto !important;
 }
 
-/* Education Cards Equal Width/Height and Grid centering */
-.education-grid {
-    display: -webkit-flex !important;
-    display: flex !important;
-    -webkit-flex-wrap: wrap !important;
-    flex-wrap: wrap !important;
-    gap: 30px !important;
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-}
-
-.education-grid .col-six {
-    -webkit-flex: 1 1 calc(50% - 30px);
-    flex: 1 1 calc(50% - 30px);
-    max-width: calc(50% - 15px);
-    display: -webkit-flex !important;
-    display: flex !important;
-    padding: 0 !important;
-}
 
 @media (max-width: 768px) {
-    .education-grid .col-six {
-        -webkit-flex: 1 1 100%;
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-
     .row {
         width: auto !important;
         padding-left: 20px !important;
