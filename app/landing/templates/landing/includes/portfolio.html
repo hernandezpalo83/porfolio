@@ -1,13 +1,13 @@
 <section id="portfolio">
     <div class="row section-intro">
         <div class="col-twelve">
-            <h5>Portfolio</h5>
-            <h1>Casos de Éxito y Proyectos</h1>
+            <h5 data-aos="fade-up">Portfolio</h5>
+            <h1 data-aos="fade-up" data-aos-delay="200">Casos de Éxito y Proyectos</h1>
         </div>
     </div>
     <div class="portfolio-grid">
         {% for project in projects %}
-        <div class="project-card">
+        <div class="project-card" data-aos="fade-up" data-aos-delay="100">
             <div class="project-image-wrapper">
                 {% if project.categoria %}
                 <span class="project-badge">{{ project.categoria }}</span>

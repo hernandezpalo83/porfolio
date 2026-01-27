@@ -1,0 +1,50 @@
+/* Visual Polish & Interactions */
+
+/* Button Hover Effects */
+.button,
+.submitform,
+.btn-view-more {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease !important;
+}
+
+.button:hover,
+.submitform:hover,
+.btn-view-more:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Lift Effect (Portfolio, Resume, etc) */
+.project-card,
+.timeline-block,
+.edu-card,
+.metric-item {
+    transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.project-card:hover,
+.timeline-block:hover,
+.edu-card:hover {
+    transform: translateY(-5px);
+    z-index: 10;
+}
+
+/* Link Enhancements */
+a {
+    position: relative;
+    text-decoration: none;
+}
+
+/* Navigation Hover */
+.current a {
+    color: #CC0052 !important;
+}
+
+/* Image Hover - Glow */
+.about-image-column img {
+    transition: box-shadow 0.3s ease;
+}
+
+.about-image-column img:hover {
+    box-shadow: 0 0 25px rgba(204, 0, 82, 0.4);
+}

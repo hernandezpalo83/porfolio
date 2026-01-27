@@ -1,12 +1,12 @@
 <section id="contact">
     <div class="row section-intro">
         <div class="col-twelve">
-            <h5>Contacto</h5>
-            <h1>¿Hablamos?</h1>
+            <h5 data-aos="fade-up">Contacto</h5>
+            <h1 data-aos="fade-up" data-aos-delay="200">¿Hablamos?</h1>
         </div>
     </div>
     <div class="row contact-form">
-        <div class="col-twelve">
+        <div class="col-twelve" data-aos="fade-up" data-aos-delay="300">
             <form name="contactForm" id="contactForm" method="post" action="{% url 'landing:index' %}#contact">
                 {% csrf_token %}
                 <fieldset>

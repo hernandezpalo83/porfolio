@@ -1,0 +1,44 @@
+/* Metrics SVG Rings */
+.metric-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 2s ease-in-out;
+    transform-origin: 50% 50%;
+    stroke-linecap: round;
+}
+
+/* Background circle */
+.progress-ring__bg {
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+.metric-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.metric-number h3 {
+    font-size: 3.5rem !important;
+    margin: 0;
+    line-height: 1;
+}

@@ -1,12 +1,12 @@
 <section id="resume" class="grey-section">
    <div class="row resume-timeline">
       <div class="col-twelve resume-header">
-         <h2>Experiencia Laboral</h2>
+         <h2 data-aos="fade-right">Experiencia Laboral</h2>
       </div>
       <div class="col-twelve">
          <div class="timeline-wrap">
             {% for experience in experiences %}
-            <div class="timeline-block">
+            <div class="timeline-block" data-aos="fade-up">
                <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
                <div class="timeline-header">
                   <h3>{{ experience.position }}</h3>
@@ -27,15 +27,15 @@
 <section id="education" class="edu-section-dark">
    <div class="row section-intro">
       <div class="col-twelve">
-         <h5 class="section-subtitle">Formación</h5>
-         <h1 class="section-title">Educación y Certificaciones</h1>
+         <h5 class="section-subtitle" data-aos="fade-up">Formación</h5>
+         <h1 class="section-title" data-aos="fade-up" data-aos-delay="200">Educación y Certificaciones</h1>
       </div>
    </div>
 
    <div class="education-grid">
       {% for edu in education %}
       <div>
-         <div class="edu-card">
+         <div class="edu-card" data-aos="fade-up" data-aos-delay="100">
             <div class="edu-card-icon"><i class="fa fa-graduation-cap"></i></div>
             <div class="edu-card-header">
                <span class="edu-date">{{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{ edu.end_date|date:"Y" }}{%

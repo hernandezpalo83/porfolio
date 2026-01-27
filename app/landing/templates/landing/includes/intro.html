@@ -4,14 +4,17 @@
     <div class="intro-content">
         <div class="row">
             <div class="col-twelve">
-                <h5>Hello, World.</h5>
-                <h1>I'm {{ info.name }} <br>
-                    <small style="font-size: 0.5em; vertical-align: middle; opacity: 0.9;">Technical Product
-                        Manager</small>
+                <h5 data-aos="fade-down" data-aos-delay="100">Hello, World.</h5>
+                <h1 data-aos="fade-up" data-aos-delay="300">I'm {{ info.name }} <br>
+                    <small style="font-size: 0.5em; vertical-align: middle; opacity: 0.9;">
+                        <span id="typed-roles"></span>
+                    </small>
                 </h1>
-                <h2 class="intro-position"><span>{{ info.resumen }}</span></h2>
+                <h2 class="intro-position" style="min-height: 2em;" data-aos="fade-up" data-aos-delay="500">
+                    <span>{{info.resumen}}</span>
+                </h2>
 
-                <div class="intro-buttons"
+                <div class="intro-buttons" data-aos="fade-up" data-aos-delay="700"
                     style="margin-top: 3rem; display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
                     <a class="button stroke smoothscroll" href="#about" title="Saber más">Más sobre mí</a>
 
