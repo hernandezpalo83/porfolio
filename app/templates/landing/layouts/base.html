@@ -60,6 +60,9 @@
     <link rel="stylesheet" href="{% static 'landing/css/font-awesome/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'landing/css/micons/micons.css' %}">
 
+    {# 🚀 CRITICAL ASSETS PRELOAD #}
+    <link rel="preload" as="image" href="{% static 'landing/img/intro-bg.webp' %}">
+
     {# 🚀 CRITICAL CSS (Above the Fold) #}
     {% include "landing/components/critical_css.html" %}
 

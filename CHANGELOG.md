@@ -16,6 +16,7 @@ This release focuses on "Clean Code" principles, separating logic from presentat
 #### Refactoring & Automation (New)
 - 🏗️ **Template Architecture**: Major refactor moving all templates to a centralized `app/templates` structure with clear separation between `landing` (public) and `private` (dashboard) areas.
 - ⚙️ **Automated Verification**: Implemented a robust `verify_urls` management command and a Git pre-commit hook to prevent regression by verifying all critical URLs before every commit.
+- 🚀 **LCP Optimization**: Fixed critical CSS image path causing 404s and delays. Added explicit preload for Hero background image to improve Largest Contentful Paint.
 - 🗑️ **Cleanup**: Removed deprecated template directories and effectively centralized the frontend architecture.
 
 #### Added

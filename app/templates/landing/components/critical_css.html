@@ -1,3 +1,4 @@
+{% load static %}
 <style>
     /* --- 1. RESET & BASIC TYPOGRAPHY --- */
     html {
@@ -309,7 +310,7 @@
 
     /* --- 4. INTRO SECTON STYLES --- */
     #intro {
-        background: #151515 url(../img/intro-bg.webp) no-repeat center bottom;
+        background: #151515 url('{% static "landing/img/intro-bg.webp" %}') no-repeat center bottom;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         background-size: cover;
