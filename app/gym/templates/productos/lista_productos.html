@@ -1,24 +1,25 @@
-{% extends "base.html" %}
+{% extends "landing/layouts/base.html" %}
 {% load crispy_forms_tags %}
 {% load django_tables2 %}
 
 {% block title %}Lista de Productos{% endblock %}
 
 {% block content %}
-    <h1>Lista de Productos</h1>
-    <form id="filtro-form" method="get" class="form-inline">
-        <div class="form-group mb-2">
-            {{ filter.form.nombre|as_crispy_field }}
-        </div>
-        <div class="form-group mx-sm-3 mb-2">
-            {{ filter.form.precio_min|as_crispy_field }}
-        </div>
-        <div class="form-group mx-sm-3 mb-2">
-            {{ filter.form.precio_max|as_crispy_field }}
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
-    </form>
-    <div id="tabla-contenedor" hx-get="{% url 'lista_productos' %}?{{ request.GET.urlencode }}" hx-trigger="load, submit from:#filtro-form" hx-target="#tabla-contenedor" hx-swap="innerHTML">
-        {% include "productos/tabla_parcial.html" %}
+<h1>Lista de Productos</h1>
+<form id="filtro-form" method="get" class="form-inline">
+    <div class="form-group mb-2">
+        {{ filter.form.nombre|as_crispy_field }}
     </div>
+    <div class="form-group mx-sm-3 mb-2">
+        {{ filter.form.precio_min|as_crispy_field }}
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        {{ filter.form.precio_max|as_crispy_field }}
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Filtrar</button>
+</form>
+<div id="tabla-contenedor" hx-get="{% url 'gym:lista_productos' %}?{{ request.GET.urlencode }}"
+    hx-trigger="load, submit from:#filtro-form" hx-target="#tabla-contenedor" hx-swap="innerHTML">
+    {% include "productos/tabla_parcial.html" %}
+</div>
 {% endblock %}

@@ -17,7 +17,7 @@ import io
 logger = logging.getLogger(__name__)
 
 def error_404_view(request: HttpRequest, exception: Exception) -> HttpResponse:
-    return render(request, 'landing/404.html', status=404)
+    return render(request, 'landing/pages/404.html', status=404)
 
 @login_required
 def private_area(request: HttpRequest) -> HttpResponse:
@@ -25,7 +25,7 @@ def private_area(request: HttpRequest) -> HttpResponse:
     context: Dict[str, Any] = {
         'segment': 'dashboard', # Útil para marcar el menú activo
     }
-    return render(request, 'landing/private/layouts/private_dashboard.html', context)
+    return render(request, 'private/pages/dashboard.html', context)
 
 @login_required
 def profile(request: HttpRequest) -> HttpResponse:
@@ -76,7 +76,8 @@ def home(request: HttpRequest) -> HttpResponse:
     }
 
     # 4. RENDERIZADO
-    return render(request, 'landing/index.html', context)
+    # 4. RENDERIZADO
+    return render(request, 'landing/pages/home.html', context)
 
 def is_superuser(user) -> bool:
     return user.is_authenticated and user.is_superuser

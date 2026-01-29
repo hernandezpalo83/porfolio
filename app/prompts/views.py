@@ -122,7 +122,7 @@ def prompt_library(request):
     if category_filter and category_filter != 'all':
         prompts_data = [p for p in prompts_data if p.get('category') == category_filter]
 
-    return render(request, 'landing/private/layouts/prompts.html', {
+    return render(request, 'private/pages/prompts.html', {
         'prompts': prompts_data,
         'categories': categories,
         'selected_category': category_filter,

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "landing/layouts/base.html" %}
 {% load static %}
 
 {% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
@@ -19,7 +19,8 @@
 {# Twitter Card Overrides #}
 {% block twitter_title %}{{ post.title }}{% endblock %}
 {% block twitter_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
-{% block twitter_image %}{% if post.imagen_url %}{{ post.imagen_url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if post.imagen_url %}{{ post.imagen_url }}{% else %}{{ block.super }}{% endif %}{% endblock
+%}
 
 {% block extra_schema %}
 {{ block.super }}
@@ -73,7 +74,8 @@
 
             <h1 class="post-header-title">{{ post.title }}</h1>
             <p class="post-main-meta">
-                {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span> · {{ post.get_read_time }} min lectura
+                {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">{{ post.category.name
+                    }}</span> · {{ post.get_read_time }} min lectura
             </p>
 
             {% if post.image_url %}
@@ -109,7 +111,8 @@
                 <div class="related-grid">
                     {% for r_post in related_posts %}
                     <a href="{{ r_post.get_absolute_url }}" class="related-item">
-                        <span style="font-size: 1rem; color: #CC0052; font-weight: bold; text-transform: uppercase;">{{ r_post.publish|date:"M Y" }}</span>
+                        <span style="font-size: 1rem; color: #CC0052; font-weight: bold; text-transform: uppercase;">{{
+                            r_post.publish|date:"M Y" }}</span>
                         <h4>{{ r_post.title }}</h4>
                         <div style="margin-top: 1.5rem; color: #CC0052; font-weight: bold; font-size: 1.1rem;">LEER MÁS
                             →</div>

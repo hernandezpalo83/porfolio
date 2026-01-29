@@ -22,7 +22,7 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='landing/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='landing/pages/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
         
     path('blog/', include('app.blog.urls', namespace='blog')),

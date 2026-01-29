@@ -13,20 +13,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This release focuses on "Clean Code" principles, separating logic from presentation, and restoring critical SEO components after a major cleanup.
 
+#### Refactoring & Automation (New)
+- 🏗️ **Template Architecture**: Major refactor moving all templates to a centralized `app/templates` structure with clear separation between `landing` (public) and `private` (dashboard) areas.
+- ⚙️ **Automated Verification**: Implemented a robust `verify_urls` management command and a Git pre-commit hook to prevent regression by verifying all critical URLs before every commit.
+- 🗑️ **Cleanup**: Removed deprecated template directories and effectively centralized the frontend architecture.
+
 #### Added
 - 🧼 **Separation of Concerns**: Moved all inline CSS and `<style>` blocks from HTML templates (`base.html`, `resume.html`, `post.html`) to external `components.css`.
 - 🛡️ **SEO Shield**: Restored and validated all meta-tags, Open Graph (LinkedIn/Twitter) integration, and JSON-LD structured data for better search engine ranking.
 - 🎨 **Visual Rhythm**: Applied a soft gray background (`#f7f7f7`) to the "Mi Historia" section to create a cleaner visual transition between blocks.
+- 🤖 **CI/CD Local**: Added `.git/hooks/pre-commit` for local quality assurance.
 
 #### Changed
 - 📐 **Grid Robustness**: Updated `.education-grid` and `.blog-grid` to ensure a consistent 3-column layout on desktop, improving responsiveness on 1024px screens.
 - 📏 **Enhanced Spacing**: Increased vertical margin above the "Explorar el Blog Completo" button to **15rem** for better visual breathing room.
 - 🔄 **Cache Busting**: Incremented static file versioning (v1.6) to ensure all users receive the latest visual updates immediately.
+- 📂 **Project Structure**: Centralized templates in `app/templates/` (replacing `app/landing/templates`).
 
 #### Fixed
 - 🐛 **Dynamic Date Rendering**: Fixed a critical template logic error where raw Django tags were visible in the Education cards. Now correctly displays "Year - Actualidad".
 - 🧩 **Template Syntax**: Repaired broken curly braces and malformed block tags in `base.html` that were causing performance lag.
 - 🔗 **URL NameSpace Conflict**: Resolved Django warning `urls.W005` by removing redundant inclusion of `landing.urls` in the core configuration.
+- 🔧 **Login View**: Corrected `LoginView` template path to point to the new location.
+- 🐛 **Gym Namespace**: Fixed URL namespace issue in gym product list template.
 
 ---
 

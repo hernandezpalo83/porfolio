@@ -61,7 +61,7 @@
     <link rel="stylesheet" href="{% static 'landing/css/micons/micons.css' %}">
 
     {# 🚀 CRITICAL CSS (Above the Fold) #}
-    {% include "landing/includes/critical_css.html" %}
+    {% include "landing/components/critical_css.html" %}
 
     {# 🚀 CSS CONSOLIDADO (Defered) #}
     <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}" as="style"
@@ -103,7 +103,7 @@
 </head>
 
 <body id="top">
-    {% include "navbar.html" %}
+    {% include "landing/components/navbar.html" %}
 
     <main>
         {% block content %}{% endblock %}
