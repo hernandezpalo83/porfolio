@@ -68,10 +68,10 @@
     {% include "landing/components/critical_css.html" %}
 
     {# 🚀 CSS CONSOLIDADO (Defered) #}
-    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}" as="style"
+    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.2.5" as="style"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}">
+        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.2.5">
     </noscript>
 
     {% block extra_schema %}

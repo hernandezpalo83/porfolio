@@ -72,16 +72,6 @@ class ContactAdmin(admin.ModelAdmin):
     list_filter = ('email',)
     readonly_fields = ('email', 'phone')
 
-class GlobalAdminMedia:
-    class Media:
-        css = {
-            'all': ('landing/css/admin_dark_ckeditor.css',)
-        }
-        
-for model, model_admin in admin.site._registry.items():
-    if not hasattr(model_admin, 'Media'):
-        model_admin.__class__.Media = GlobalAdminMedia.Media
-
 @admin.register(Contacto)
 class ContactoAdmin(admin.ModelAdmin):
     # Columnas que se verán en el listado principal
