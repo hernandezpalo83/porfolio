@@ -16,10 +16,14 @@ Hernandezpalo.es
 - **Django Sites & Sitemaps**: SEO dinámico y gestión avanzada de URLs.
 - **PostgreSQL (Supabase)**: Base de datos relacional, ahora con persistencia segura y pooler de sesión.
 
-### **Frontend**
-- **Bootstrap 5 / HTML5 / CSS3**: Diseño responsive, moderno y consistente.
-- **Bootstrap Icons**: Librería de iconos vectoriales.
-- **JSON dinámico**: Para la biblioteca de prompts y backups de datos.
+### **Frontend (Hybrid Architecture)**
+- **Public Area (Landing/Blog)**: 
+  - **Vanilla JS (ES6+)**: Cero dependencias (No jQuery) para máxima velocidad.
+  - **Custom CSS (Kards)**: Diseño ligero con CSS moderno (`clamp`, `flexbox`).
+  - **HTML Minification**: Compresión automática en producción.
+- **Private Area (Portal)**: 
+  - **Bootstrap 5**: Gestión eficiente de dashboards y formularios.
+  - **Bootstrap Icons**: Librería de iconos vectoriales.
 
 ---
 
