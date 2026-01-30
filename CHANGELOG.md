@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.4] - 2026-01-30
+
+### 🚀 Performance Boost & Modernization (No-jQuery)
+
+Major performance milestone focusing on loading speed and modernization of the frontend stack by removing legacy dependencies.
+
+#### Performance
+- ⚡ **Removed jQuery**: Completely removed `jquery-2.1.3.min.js` and all dependent plugins (OwlCarousel, Masonry, MagnificPopup) from the Landing Page.
+- 📉 **Asset Reduction**: Saved **~150KB** of blocking JS/CSS scripts.
+- ⚡ **HTML Minification**: Implemented `django-htmlmin` middleware to compress HTML output in production (DEBUG=False).
+- 🚀 **Critical CSS**: Optimized `no-js` class handling with an inline script in `<head>` to prevent Flash of Unstyled Content (FOUC).
+
+#### Refactored (Vanilla JS)
+- 🏗️ **`main.js`**: Rewritten entirely in ES6+ Vanilla JavaScript.
+    - **Navigation**: Lightweight class toggling.
+    - **ScrollSpy**: Implemented using `IntersectionObserver` API (more performant than scroll listeners).
+    - **Smooth Scroll**: Replaced custom logic with native `scrollIntoView`.
+    - **Contact Form**: Replaced `jquery-validate` + AJAX with modern `fetch()` API.
+
+#### Changed
+- 🎨 **Typography**: Replaced JS-based `FitText` plugin with CSS `clamp()` for responsive headlines (Zero-JS approach).
+- 🏗️ **Stack Definition**: Explicit separation of Public Stack (Vanilla JS + Kards CSS) vs Private Stack (Bootstrap 5).
+
+#### Verification
+- ✅ **System Check**: `manage.py check` passed.
+- ✅ **Static Analysis**: Confirmed zero references to `$` or `jQuery` in public assets.
+
+---
+
 ## [2.2.3] - 2026-01-25
 
 ### 🧹 Code Integrity & Performance Optimization

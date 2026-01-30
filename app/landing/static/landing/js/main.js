@@ -1,183 +1,170 @@
-/** * ===================================================================
- * main js - HernandezPalo Portfolio (Recurrent Animation Edition)
- * =================================================================== 
+/**
+ * main.js - HernandezPalo Portfolio
+ * Refactored to Vanilla JS (No jQuery) - Performance Optimized
  */
 
-(function ($) {
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-    "use strict";
+    // --- 1. Preloader ---
+    const loader = document.getElementById('loader');
+    const preloader = document.getElementById('preloader');
 
-    /*---------------------------------------------------- */
-    /* Preloader
-    ------------------------------------------------------ */
-    $(window).load(function () {
-        $("#loader").fadeOut("slow", function () {
-            $("#preloader").delay(300).fadeOut("slow");
+    window.addEventListener('load', () => {
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 300); // delay
+                }
+            }, 500); // fadeOut slow equivalent
+        }
+    });
+
+    // --- 2. Navigation Menu ---
+    const toggleButton = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.main-navigation');
+    const navLinks = document.querySelectorAll('.main-navigation li a');
+
+    if (toggleButton && nav) {
+        toggleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleButton.classList.toggle('is-clicked');
+
+            if (nav.style.display === 'block') {
+                nav.style.display = 'none';
+            } else {
+                nav.style.display = 'block';
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.getComputedStyle(toggleButton).display !== 'none') {
+                    toggleButton.classList.remove('is-clicked');
+                    nav.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // --- 3. Highlight Current Section (ScrollSpy) ---
+    const sections = document.querySelectorAll('section');
+    const navItems = document.querySelectorAll('#main-nav-wrap li a');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '-25% 0px -25% 0px', // Offset match
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                const activeLink = document.querySelector(`#main-nav-wrap a[href="#${id}"]`);
+
+                navItems.forEach(item => item.parentElement.classList.remove('current'));
+                if (activeLink) {
+                    activeLink.parentElement.classList.add('current');
+                }
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
+
+    // --- 4. Smooth Scrolling ---
+    const smoothScrollLinks = document.querySelectorAll('.smoothscroll');
+
+    smoothScrollLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                history.pushState(null, null, targetId);
+            }
         });
     });
 
-    /*---------------------------------------------------- */
-    /* FitText Settings
-    ------------------------------------------------------ */
-    setTimeout(function () {
-        $('#intro h1').fitText(1, { minFontSize: '42px', maxFontSize: '84px' });
-    }, 100);
+    // --- 5. Back to Top ---
+    const goTopBtn = document.getElementById('go-top');
+    const pxShow = 300;
 
-    /*---------------------------------------------------- */
-    /* FitVids
-    ------------------------------------------------------ */
-    $(".fluid-video-wrapper").fitVids();
+    window.addEventListener('scroll', () => {
+        if (!goTopBtn) return;
 
-    /*---------------------------------------------------- */
-    /* Owl Carousel
-    ------------------------------------------------------ */
-    $("#owl-slider").owlCarousel({
-        navigation: false,
-        pagination: true,
-        itemsCustom: [[0, 1], [700, 2], [960, 3]],
-        navigationText: false
+        if (window.scrollY >= pxShow) {
+            goTopBtn.style.display = 'block';
+            // Simple fade in effect via CSS transition is recommended, but basic display works
+            goTopBtn.style.opacity = '1';
+        } else {
+            goTopBtn.style.opacity = '0';
+            setTimeout(() => {
+                if (window.scrollY < pxShow) goTopBtn.style.display = 'none';
+            }, 400);
+        }
     });
 
-    /*----------------------------------------------------- */
-    /* Alert Boxes
-    ------------------------------------------------------- */
-    $('.alert-box').on('click', '.close', function () {
-        $(this).parent().fadeOut(500);
-    });
+    // --- 6. Contact Form (Fetch API) ---
+    const contactForm = document.getElementById('contactForm');
+    const messageWarning = document.getElementById('message-warning');
+    const messageSuccess = document.getElementById('message-success');
+    const submitLoader = document.getElementById('submit-loader');
 
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
+            // Reset States
+            if (submitLoader) submitLoader.style.display = 'block';
+            if (messageWarning) messageWarning.style.display = 'none';
+            if (messageSuccess) messageSuccess.style.display = 'none';
 
-    /*---------------------------------------------------- */
-    /* Masonry
-    ------------------------------------------------------ */
-    var containerProjects = $('#folio-wrapper');
-    containerProjects.imagesLoaded(function () {
-        containerProjects.masonry({
-            itemSelector: '.folio-item',
-            resize: true
-        });
-    });
+            const formData = new FormData(contactForm);
 
-    /*----------------------------------------------------*/
-    /* Modal Popup
-    ------------------------------------------------------*/
-    $('.item-wrap a').magnificPopup({
-        type: 'inline',
-        fixedContentPos: false,
-        removalDelay: 300,
-        showCloseBtn: false,
-        mainClass: 'mfp-fade'
-    });
-
-    $(document).on('click', '.popup-modal-dismiss', function (e) {
-        e.preventDefault();
-        $.magnificPopup.close();
-    });
-
-    /*-----------------------------------------------------*/
-    /* Navigation Menu
-   ------------------------------------------------------ */
-    var toggleButton = $('.menu-toggle'),
-        nav = $('.main-navigation');
-
-    toggleButton.on('click', function (e) {
-        e.preventDefault();
-        toggleButton.toggleClass('is-clicked');
-        nav.slideToggle();
-    });
-
-    nav.find('li a').on("click", function () {
-        toggleButton.toggleClass('is-clicked');
-        nav.fadeOut();
-    });
-
-    /*---------------------------------------------------- */
-    /* Highlight the current section in the navigation bar
-    ------------------------------------------------------ */
-    var sections = $("section"),
-        navigation_links = $("#main-nav-wrap li a");
-
-    sections.waypoint({
-        handler: function (direction) {
-            var active_section;
-            active_section = $('section#' + this.element.id);
-            if (direction === "up") active_section = active_section.prev();
-            var active_link = $('#main-nav-wrap a[href="#' + active_section.attr("id") + '"]');
-            navigation_links.parent().removeClass("current");
-            active_link.parent().addClass("current");
-        },
-        offset: '25%'
-    });
-
-    /*---------------------------------------------------- */
-    /* Smooth Scrolling
-    ------------------------------------------------------ */
-    $('.smoothscroll').on('click', function (e) {
-        e.preventDefault();
-        var target = this.hash,
-            $target = $(target);
-
-        $('html, body').stop().animate({
-            'scrollTop': $target.offset().top
-        }, 800, 'swing', function () {
-            window.location.hash = target;
-        });
-    });
-
-    /*---------------------------------------------------- */
-    /* Placeholder Plugin Settings
-    ------------------------------------------------------ */
-    $('input, textarea, select').placeholder()
-
-    /*---------------------------------------------------- */
-    /* Contact Form
-    ------------------------------------------------------ */
-    if ($('#contactForm').length > 0) {
-        $('#contactForm').validate({
-            submitHandler: function (form) {
-                var sLoader = $('#submit-loader');
-                $.ajax({
-                    type: "POST",
-                    url: "inc/sendEmail.php",
-                    data: $(form).serialize(),
-                    beforeSend: function () { sLoader.fadeIn(); },
-                    success: function (msg) {
-                        if (msg == 'OK') {
-                            sLoader.fadeOut();
-                            $('#message-warning').hide();
-                            $('#contactForm').fadeOut();
-                            $('#message-success').fadeIn();
-                        } else {
-                            sLoader.fadeOut();
-                            $('#message-warning').html(msg);
-                            $('#message-warning').fadeIn();
-                        }
-                    },
-                    error: function () {
-                        sLoader.fadeOut();
-                        $('#message-warning').html("Something went wrong. Please try again.");
-                        $('#message-warning').fadeIn();
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
+
+                if (submitLoader) submitLoader.style.display = 'none';
+
+                if (response.ok) {
+                    if (messageSuccess) {
+                        messageSuccess.style.display = 'block';
+                        contactForm.reset();
+                        contactForm.style.display = 'none';
+                    }
+                } else {
+                    const text = await response.text();
+                    if (messageWarning) {
+                        messageWarning.innerHTML = text || "Ocurrió un error. Inténtalo de nuevo.";
+                        messageWarning.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                if (submitLoader) submitLoader.style.display = 'none';
+                if (messageWarning) {
+                    messageWarning.innerHTML = "Error de conexión. Verifica tu internet.";
+                    messageWarning.style.display = 'block';
+                }
             }
         });
     }
 
-    /*----------------------------------------------------- */
-    /* Back to top
-   ------------------------------------------------------- */
-    var pxShow = 300;
-    var fadeInTime = 400;
-    var fadeOutTime = 400;
-
-    jQuery(window).scroll(function () {
-        if (!($("#header-search").hasClass('is-visible'))) {
-            if (jQuery(window).scrollTop() >= pxShow) {
-                jQuery("#go-top").fadeIn(fadeInTime);
-            } else {
-                jQuery("#go-top").fadeOut(fadeOutTime);
-            }
-        }
-    });
-
-})(jQuery);
+});
