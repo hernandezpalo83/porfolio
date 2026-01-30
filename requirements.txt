@@ -13,4 +13,5 @@ psycopg[binary]
 dj-database-url
 requests
 django-recaptcha
+django-htmlmin
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python

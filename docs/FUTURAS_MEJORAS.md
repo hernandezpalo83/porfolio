@@ -1,77 +1,72 @@
 # 🔍 ANÁLISIS DE FUTURAS MEJORAS
 
-**Fecha**: 26 de Enero de 2026 (Actualizado)  
-**Proyecto**: Portfolio Django v2.2.0 (En progreso)  
-**Objetivo**: Consolidar las optimizaciones de rendimiento y experiencia de usuario (UX).
+**Fecha**: 27 de Enero de 2026 (Actualizado)  
+**Proyecto**: Portfolio Django v2.2.3  
+**Objetivo**: Plan de acción para maximizar puntuación en Google PageSpeed Insights (Mobile First).
 
 ---
 
-## 📊 LOGROS RECIENTES (v2.2.0 - Enero 2026)
+## 🎯 ACCIONES INMEDIATAS (v2.2.4 - Optimization Sprint)
 
-### 1. **Optimización Extrema de Assets**
-- **Favicon**: Reducción de **825 KB** a **2.8 KB** (99.6% de ahorro).
-- **CSS Bundling**: Consolidación de 4 archivos (`base`, `main`, `components`, `fixes`) en un único `bundle.v2.css`.
-- **Impacto**: Reducción de peticiones HTTP de 5 a 2 para el core visual.
+### 1. 🖼️ Optimización Avanzada de Imágenes (WebP/AVIF)
+- **Problema**: Actualmente servimos WebP, pero no tenemos tamaños adaptativos (`srcset`). Móviles cargan imágenes de escritorio.
+- **Acción**: 
+    - Implementar `<picture>` o `srcset` para el Hero (`intro-bg.webp`) y proyectos.
+    - Generar versiones de 480w, 800w, 1200w para cada imagen principal.
+    - Evaluar formato **AVIF** (más ligero que WebP).
 
-### 2. **🚀 v2.2.3 - UX & Visual Polish (Enero 2026)**
-_Consolidación de mejoras visuales y correcciones de estabilidad._
+### 2. ⚡ Minificación de HTML/CSS/JS
+- **Problema**: El HTML y CSS inline (Critical) se sirven con espacios y comentarios.
+- **Acción**:
+    - Usar `django-compressor` o `django-htmlmin` para eliminar espacios en blanco en producción.
+    - Esto reduce el tamaño del payload inicial en un ~10-15%.
 
-#### **A. Nuevas Funcionalidades (UX/UI)**
-- **Typing Effect**: Integración de `Typed.js` en el header para rotación dinámica de roles ("Product Manager", "Software Engineer"...).
-- **Animaciones Scroll (AOS)**: Implementación de efectos "fade-up" y "zoom-in" en todas las secciones principales (Intro, About, Portfolio, Resume).
-- **Métricas Interactivas**: Reemplazo de contadores estáticos por **Anillos de Progreso SVG** animados, controlados por `IntersectionObserver` para alto rendimiento.
-- **Micro-interacciones**: Efectos de elevación (lift) y resplandor (glow) en botones y tarjetas de proyecto al hacer hover.
+### 3. 📉 Eliminación de JavaScript Bloqueante (jQuery Legacy)
+- **Problema**: `jquery-2.1.3.min.js` y `main.js` (legacy) añaden latencia al hilo principal.
+- **Acción**: 
+    - **Prioridad Alta**: Terminar de migrar las funcionalidades restantes a Vanilla JS.
+    - Eliminar la dependencia de jQuery completamente (Roadmap v3.0, pero acelerable).
 
-#### **B. Correcciones y Estabilidad**
-- **Fix Template Rendering**: Solucionado error de renderizado en `{{ info.resumen }}` causado por saltos de línea en el tag de Django.
-- **Recuperación de Iconos**: Restaurados `FontAwesome` y `MicIcons` que se perdieron durante el bundling inicial.
-- **Profile Image**: Ajuste en la lógica de visualización de la imagen de perfil (`BRAND` fallback).
-
-#### **C. Infraestructura y Rendimiento (Deep Dive)**
-- **Code Cleanup**: Eliminación de `tests.py` vacíos y refactorización masiva de `main.js` (eliminación de jQuery Waypoints a favor de Vanilla JS).
-- **Self-host Fonts**: Descarga local de fuentes Google (Montserrat, Raleway, JetBrains Mono) para eliminar 3 peticiones externas y mejorar privacidad.
-- **Critical CSS**: Extracción de estilos "Above-the-fold" (Reset, Grid, Header, Intro) e inyección inline en `base.html` para mejorar FCP. Carga diferida del `bundle.v2.css`.
-
-### 2. **Infraestructura y SEO**
-- Actualización de `base.html` con mejores estrategias de carga.
-- Verificación de metadatos SEO y arquitectura de templates.
+### 4. 📏 Cumulative Layout Shift (CLS)
+- **Problema**: Elementos sin dimensiones explícitas pueden mover el contenido al cargar.
+- **Acción**:
+    - Verificar que TODAS las etiquetas `<img>` tengan atributos `width` y `height` (aspect-ratio implícito).
+    - Reservar espacio estático para widgets dinámicos (si los hubiera).
 
 ---
 
+## 📊 LOGROS RECIENTES (v2.2.3 - Enero 2026)
 
+### 1. **🚀 UX & Core Web Vitals**
+- **✅ LCP Fix**: Corrección de ruta 404 en Critical CSS + Preload de imagen Hero. Impacto masivo en velocidad visual.
+- **✅ Refactorización Arquitectónica**: Migración a `App Structure` con templates centralizadas.
+- **✅ Automatización**: Pre-commit hooks para garantizar estabilidad (`verify_urls`).
 
----
-
-##  MEDIANO PLAZO (v2.3.0)
-
----
-
-##  LARGO PLAZO (v3.0.0 - Major Refactor)
-
-### 5. **Desacoplamiento total de jQuery**
-- **Meta**: Eliminar jQuery 2.1.3 por completo.
-- **Riesgo**: Alto (especialmente por el plugin de Masonry y validación).
-- **Plan**: Migrar a Splide/Swiper y Vanilla JS native.
-
-### 6. **Tailwind CSS / Modern CSS**
-- Evaluar si merece la pena el rewrite total a Tailwind para facilitar el mantenimiento a largo plazo.
+### 2. **Optimizaciones Previas (v2.2.0)**
+- **Favicon**: Optimizado (825KB → 2.8KB).
+- **Self-hosted Fonts**: Fuentes Google locales.
+- **Critical CSS**: Implementado inline.
 
 ---
 
-## 📋 MATRIZ DE PRIORIZACIÓN ACTUALIZADA
+##  LARGO PLAZO (v3.0.0 - Modernización)
 
-| Tarea | Estado | Esfuerzo | Impacto | Prioridad |
-|-------|--------|----------|---------|-----------|
-| Favicon Opt | ✅ | ⚡ | Alto | **COMPLETADO** |
-| CSS Bundling | ✅ | ⚡ | Medio | **COMPLETADO** |
-| Typing Effect | ✅ | ⚡ | Alto | **COMPLETADO** |
-| Progress Rings SVG | ✅ | ⏱️ | Alto | **COMPLETADO** |
-| AOS Animations | ✅ | ⚡ | Alto | **COMPLETADO** |
-| Fix Template Vars | ✅ | ⚡ | Alto | **COMPLETADO** |
-| Code Cleanup | ✅ | ⚡ | Medio | **COMPLETADO** |
-| Self-host Fonts | ✅ | ⏱️ | Medio | **COMPLETADO** |
-| Critical CSS | ✅ | ⏱️ | Alto | **COMPLETADO** |
-| jQuery Removal | ⚪ | ⏳ | Alto | **FUTURO** |
+### 5. **Server-Side Caching (Redis)**
+- Implementar caché de fragmentos para componentes pesados (aunque ahora es mayormente estático).
+
+### 6. **Service Worker (PWA)**
+- Permitir funcionamiento offline y cacheo inteligente de assets estáticos (Stale-While-Revalidate).
+
+---
+
+## 📋 MATRIZ DE PRIORIZACIÓN v2.2.4
+
+| Tarea | Impacto Web Vitals | Esfuerzo | Estado |
+|-------|--------------------|----------|--------|
+| **Responsive Images (Srcset)** | Alto (LCP) | Medio | 🔴 Pendiente |
+| **HTML Minification** | Medio (FCP) | Bajo | 🔴 Pendiente |
+| **Eliminar jQuery** | Alto (TBT) | Alto | 🟡 En Progreso |
+| **Image Aspect Ratrio** | Alto (CLS) | Bajo | 🔴 Pendiente |
 
 ---
 

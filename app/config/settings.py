@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5', 
     'django_ckeditor_5',
     'django_recaptcha',
+    'htmlmin',  # Minificador HTML
     'app.landing',
     'app.gym',
     'app.prompts',
@@ -88,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware', # 3. Minifica el HTML final
 ]
 
 ROOT_URLCONF = 'app.config.urls'
@@ -150,6 +152,12 @@ STORAGES = {
 
 WHITENOISE_MAX_AGE = 31536000 # 1 año de caché
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+
+# --- HTML MINIFICATION ---
+HTML_MINIFY = not DEBUG # Solo en producción
+HTML_MINIFY_KEEP_COMMENTS = False # Eliminar comentarios
 
 # --- THIRD PARTY CONFIGS ---
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
