@@ -38,8 +38,9 @@
          <div class="edu-card" data-aos="fade-up" data-aos-delay="100">
             <div class="edu-card-icon"><i class="fa fa-graduation-cap"></i></div>
             <div class="edu-card-header">
-               <span class="edu-date">{{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{ edu.end_date|date:"Y" }}{%
-                  else %}Actualidad{% endif %}</span>
+               <span class="edu-date">
+                  {{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{ edu.end_date|date:"Y" }}
+                  {%else %}Actualidad{% endif %}</span>
                <h3>{{ edu.degree }}</h3>
                <h4>{{ edu.institution }}</h4>
             </div>
