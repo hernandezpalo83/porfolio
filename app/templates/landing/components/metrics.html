@@ -12,70 +12,33 @@
     </div>
 
     <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-around; margin-top: 2rem;">
+        {% for metric in metrics %}
         <div class="metric-item" style="text-align: center; margin: 2rem; flex: 1; min-width: 250px;" data-aos="zoom-in"
-            data-aos-delay="100">
+            data-aos-delay="{{ forloop.counter|add:0|mul:100 }}">
             <div class="metric-circle">
                 <svg class="progress-ring" width="150" height="150">
                     <circle class="progress-ring__bg" stroke-width="8" fill="transparent" r="68" cx="75" cy="75" />
                     <circle class="progress-ring__circle" stroke="#CC0052" stroke-width="8" fill="transparent" r="68"
-                        cx="75" cy="75" stroke-dasharray="427.26" stroke-dashoffset="427.26" data-percent="25" />
+                        cx="75" cy="75" stroke-dasharray="427.26" stroke-dashoffset="427.26"
+                        data-percent="{{ metric.get_percent }}" />
                 </svg>
                 <div class="metric-number">
                     <h3 style="color: white; font-family: 'montserrat-bold', sans-serif;">
-                        <span class="animate-num" data-target="25">0</span>%
+                        {{ metric.prefix }}<span class="animate-num" data-target="{{ metric.value }}">0</span>{{
+                        metric.suffix }}
                     </h3>
                 </div>
             </div>
             <p
                 style="color: #CC0052; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 1.2rem; margin-top: 1rem;">
-                Time-to-Market
+                {{ metric.title }}
             </p>
-            <p style="color: #777; font-size: 1.3rem; max-width: 200px; margin: 0 auto;">Reducción en tiempos de entrega
-                mediante la estandarización de arquitecturas.</p>
-        </div>
-
-        <div class="metric-item" style="text-align: center; margin: 2rem; flex: 1; min-width: 250px;">
-            <div class="metric-circle">
-                <svg class="progress-ring" width="150" height="150">
-                    <circle class="progress-ring__bg" stroke-width="8" fill="transparent" r="68" cx="75" cy="75" />
-                    <!-- Note: For +20, we treat it as 100% full visually or specific calc -->
-                    <circle class="progress-ring__circle" stroke="#CC0052" stroke-width="8" fill="transparent" r="68"
-                        cx="75" cy="75" stroke-dasharray="427.26" stroke-dashoffset="427.26" data-percent="100" />
-                </svg>
-                <div class="metric-number">
-                    <h3 style="color: white; font-family: 'montserrat-bold', sans-serif;">
-                        +<span class="animate-num" data-target="20">0</span>
-                    </h3>
-                </div>
-            </div>
-            <p
-                style="color: #CC0052; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 1.2rem; margin-top: 1rem;">
-                Años de Experiencia IT
+            <p style="color: #777; font-size: 1.3rem; max-width: 200px; margin: 0 auto;">
+                {{ metric.description }}
             </p>
-            <p style="color: #777; font-size: 1.3rem; max-width: 200px; margin: 0 auto;">Trayectoria sólida desde el
-                desarrollo core hasta la gestión estratégica.</p>
         </div>
-
-        <div class="metric-item" style="text-align: center; margin: 2rem; flex: 1; min-width: 250px;">
-            <div class="metric-circle">
-                <svg class="progress-ring" width="150" height="150">
-                    <circle class="progress-ring__bg" stroke-width="8" fill="transparent" r="68" cx="75" cy="75" />
-                    <circle class="progress-ring__circle" stroke="#CC0052" stroke-width="8" fill="transparent" r="68"
-                        cx="75" cy="75" stroke-dasharray="427.26" stroke-dashoffset="427.26" data-percent="100" />
-                </svg>
-                <div class="metric-number">
-                    <h3 style="color: white; font-family: 'montserrat-bold', sans-serif;">
-                        <span class="animate-num" data-target="100">0</span>%
-                    </h3>
-                </div>
-            </div>
-            <p
-                style="color: #CC0052; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 1.2rem; margin-top: 1rem;">
-                Enfoque en Escalabilidad
-            </p>
-            <p style="color: #777; font-size: 1.3rem; max-width: 200px; margin: 0 auto;">Garantizando que cada solución
-                técnica soporte el crecimiento.</p>
-        </div>
-
+        {% empty %}
+        <p style="color: #777; text-align: center; width: 100%;">No hay métricas disponibles en este momento.</p>
+        {% endfor %}
     </div>
 </section>

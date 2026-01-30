@@ -43,7 +43,7 @@ class Skill(models.Model):
 class Experience(models.Model):
     company = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
-    resumen = CKEditor5Field('Text', config_name='default', blank=True, null=True, default="")
+    resumen = CKEditor5Field('Text', config_name='default', blank=True, default="")
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 
@@ -120,3 +120,25 @@ class MenuItem(models.Model):
     
     def __str__(self):
         return self.title
+
+class Metric(models.Model):
+    """Métricas de impacto para la landing page"""
+    value = models.IntegerField(help_text="Valor numérico del contador (ej: 25, 100)")
+    prefix = models.CharField(max_length=10, blank=True, default='', help_text="Prefijo opcional (ej: '+')")
+    suffix = models.CharField(max_length=10, blank=True, default='', help_text="Sufijo opcional (ej: '%')")
+    title = models.CharField(max_length=100, help_text="Título de la métrica")
+    description = models.TextField(help_text="Descripción detallada")
+    is_visible = models.BooleanField(default=True, verbose_name="Visible")
+    order = models.IntegerField(default=0, help_text="Orden de aparición (menor = primero)")
+    
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Métrica de Impacto"
+        verbose_name_plural = "Métricas de Impacto"
+    
+    def __str__(self):
+        return f"{self.prefix}{self.value}{self.suffix} - {self.title}"
+    
+    def get_percent(self):
+        """Calcula el porcentaje para el círculo de progreso (máximo 100)"""
+        return min(self.value, 100)

@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.5] - 2026-01-30
+
+### 🎯 Dynamic Metrics & Admin Stability
+
+This release introduces a dynamic metrics system for the landing page and fixes critical admin interface issues that were causing 500 errors in production.
+
+#### Added
+- ✨ **Dynamic Metrics System**: New `Metric` model for managing impact metrics from Django Admin.
+    - Fields: `value`, `prefix`, `suffix`, `title`, `description`, `is_visible`, `order`
+    - Custom admin interface with inline value preview and drag-to-reorder functionality
+    - Automatic percentage calculation for progress ring animations
+    - Template refactored to use `{% for metric in metrics %}` loop
+- 🎨 **Accessibility Improvements**: Enhanced color contrast in Education Grid cards.
+    - Background: Lightened to `#1e1e1e` for better visibility
+    - Dates: Updated to luminous pink `#FF4081` (WCAG AA compliant)
+    - Text: Brightened to `#e0e0e0` and `#d1d1d1` for AAA compliance
+
+#### Fixed
+- 🐛 **SkillAdmin**: Added missing `list_display_links = ('name',)` to prevent Django validation error when using `list_editable`
+- 🐛 **ProjectAdmin**: Fixed `get_description_preview()` method to safely handle new objects (before first save) and properly render HTML with `mark_safe()`
+- 🐛 **Experience Model**: Removed redundant `null=True` from `resumen` CKEditor5 field (conflicted with `default=""`)
+
+#### Database
+- 📊 **Migrations**: 
+    - `0013_metric_*`: Created Metric model and related fields
+    - `0014_alter_experience_resumen`: Fixed CKEditor5 field configuration
+
+#### Verification
+- ✅ **System Check**: `manage.py check` passed with no issues
+- ✅ **Admin Interface**: All models now editable without 500 errors
+
+---
+
 ## [2.2.4] - 2026-01-30
 
 ### 🚀 Performance Boost & Modernization (No-jQuery)

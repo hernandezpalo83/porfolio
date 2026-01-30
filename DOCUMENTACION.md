@@ -2,7 +2,7 @@
 
 **Portfolio Django** - Documentación Completa y Profesional  
 **Última actualización**: 30 de Enero de 2026  
-**Versión del proyecto**: 2.2.4
+**Versión del proyecto**: 2.2.5
 
 ---
 

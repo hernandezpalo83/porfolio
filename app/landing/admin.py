@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Info, Skill, Experience, Education, Project, Contact, Contacto
+from .models import Info, Skill, Experience, Education, Project, Contact, Contacto, Metric
 from .models import MenuItem
 
 @admin.register(Info)
@@ -11,6 +11,7 @@ class InfoAdmin(admin.ModelAdmin):
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
     list_display = ('name', 'score')
+    list_display_links = ('name',)
     search_fields = ('name',)
     list_filter = ('score',)
     list_editable = ('score',)
@@ -58,7 +59,10 @@ class ProjectAdmin(admin.ModelAdmin):
     
     def get_description_preview(self, obj):
         """Preview HTML de la descripción en readonly"""
-        return obj.description if obj.description else "(vacío)"
+        if obj and obj.pk:
+            from django.utils.safestring import mark_safe
+            return mark_safe(obj.description) if obj.description else "(vacío)"
+        return "(Guarda primero para ver el preview)"
     get_description_preview.short_description = "Preview"
 
 @admin.register(Contact)
@@ -149,3 +153,29 @@ class MenuItemAdmin(admin.ModelAdmin):
         """Muestra los nombres de los grupos en la lista del admin."""
         return ", ".join([g.name for g in obj.groups.all()])
     display_groups.short_description = 'Grupos con acceso'
+
+@admin.register(Metric)
+class MetricAdmin(admin.ModelAdmin):
+    list_display = ('order', 'title', 'get_display_value', 'is_visible')
+    list_display_links = ('title',)
+    list_editable = ('order', 'is_visible')
+    list_filter = ('is_visible',)
+    search_fields = ('title', 'description')
+    ordering = ('order', 'id')
+    
+    fieldsets = (
+        ('Valor', {
+            'fields': ('value', 'prefix', 'suffix')
+        }),
+        ('Contenido', {
+            'fields': ('title', 'description')
+        }),
+        ('Configuración', {
+            'fields': ('is_visible', 'order')
+        }),
+    )
+    
+    def get_display_value(self, obj):
+        """Muestra el valor formateado en el listado"""
+        return f"{obj.prefix}{obj.value}{obj.suffix}"
+    get_display_value.short_description = 'Valor'
