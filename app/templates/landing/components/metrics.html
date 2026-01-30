@@ -14,7 +14,7 @@
     <div class="row" style="display: flex; flex-wrap: wrap; justify-content: space-around; margin-top: 2rem;">
         {% for metric in metrics %}
         <div class="metric-item" style="text-align: center; margin: 2rem; flex: 1; min-width: 250px;" data-aos="zoom-in"
-            data-aos-delay="{{ forloop.counter|add:0|mul:100 }}">
+            data-aos-delay="{% widthratio forloop.counter0 1 100 %}">
             <div class="metric-circle">
                 <svg class="progress-ring" width="150" height="150">
                     <circle class="progress-ring__bg" stroke-width="8" fill="transparent" r="68" cx="75" cy="75" />
