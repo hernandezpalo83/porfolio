@@ -5,7 +5,7 @@ URLs for Documentation Hub
 from django.urls import path
 from . import views
 
-app_name = 'docs'
+app_name = 'wiki'
 
 urlpatterns = [
     path('', views.CategoryListView.as_view(), name='category_list'),
