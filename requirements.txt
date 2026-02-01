@@ -14,4 +14,7 @@ dj-database-url
 requests
 django-recaptcha
 django-htmlmin
+markdown
+pymdown-extensions
+pygments
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python

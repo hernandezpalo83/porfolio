@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'app.landing',
     'app.gym',
     'app.prompts',
+    'app.docs',
     'app.blog',
 ]
 
@@ -107,6 +108,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'app.config.context_processors.brand_assets',
                 'app.landing.context_processors.menu_int_processor',
+                'app.docs.context_processors.docs_navigation',
             ],
         },
     },

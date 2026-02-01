@@ -1,0 +1,96 @@
+{% extends "docs/base_docs.html" %}
+{% load static %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "{{ document.title }}",
+  "description": "{{ document.meta_description }}",
+  "author": {
+    "@type": "Person",
+    "name": "Javier Hernández Martin"
+  },
+  "datePublished": "{{ document.created_at|date:'Y-m-d' }}",
+  "dateModified": "{{ document.updated_at|date:'Y-m-d' }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ request.build_absolute_uri }}"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Javier Hernández Martin"
+  }
+}
+</script>
+{% endblock %}
+
+{% block docs_content %}
+<article class="docs-article">
+    <div class="docs-breadcrumbs">
+        <a href="{% url 'docs:category_list' %}">Docs</a> /
+        <a href="{% url 'docs:document_list' document.category.slug %}">{{ document.category.name }}</a> /
+        <span>{{ document.title }}</span>
+    </div>
+
+    <header class="docs-header">
+        <h1>{{ document.title }}</h1>
+        <div class="docs-meta">
+            <span><i class="fa fa-clock"></i> {{ document.reading_time }} min lectura</span>
+            <span><i class="fa fa-calendar-check"></i> Revisión: {{ document.updated_at|date:"d M Y" }}</span>
+            {% if document.stack_version %}
+            <span><i class="fa fa-layer-group"></i> {{ document.stack_version }}</span>
+            {% endif %}
+            <span class="badge-status badge-{{ document.status }}">{{ document.get_status_display }}</span>
+        </div>
+    </header>
+
+    <div class="docs-body">
+        {{ document.content_html|safe }}
+    </div>
+
+    <footer style="margin-top: 8rem; padding-top: 4rem; border-top: 1px solid #eee;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h4 style="font-size: 1.4rem; color: #999; margin-bottom: 1.5rem;">Documentos Relacionados</h4>
+                <ul style="list-style: none; padding: 0;">
+                    {% for related in related_documents %}
+                    <li style="margin-bottom: 1rem;">
+                        <a href="{{ related.get_absolute_url }}"
+                            style="color: #CC0052; text-decoration: none; font-size: 1.4rem;">
+                            {{ related.title }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-size: 1.2rem; color: #aaa;">
+                    ¿Encontraste un error? <br>
+                    <a href="mailto:hernandezpalo@gmail.com" style="color: #666;">Reportar en GitHub</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</article>
+{% endblock %}
+
+{% block docs_toc %}
+<aside class="docs-toc">
+    <h4>En esta página</h4>
+    <div class="toc-container">
+        {{ toc|safe }}
+    </div>
+
+    <div style="margin-top: 6rem;">
+        <div style="padding: 2.5rem; background: #fff5f8; border-radius: 8px; border: 1px solid #ffd6e0;">
+            <p style="font-size: 1.2rem; color: #CC0052; font-weight: 600; margin-bottom: 1rem;">TPM Insight</p>
+            <p style="font-size: 1.3rem; line-height: 1.5; color: #555;">
+                Este documento forma parte de mi Wiki de Ingeniería, donde centralizo decisiones de arquitectura y
+                estándares técnicos.
+            </p>
+        </div>
+    </div>
+</aside>
+{% endblock %}

@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+
+
+class DocsConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'app.docs'
+    label = 'docs'
+    verbose_name = 'Documentation Hub'
