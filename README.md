@@ -48,6 +48,21 @@ El sitio sigue una **arquitectura CI/CD**:
   - `DATABASE_URL` = conexión mediante `dj-database-url` con Supabase Pooler.
 - **Archivos Estáticos**: Gestionados con WhiteNoise, optimizando CSS/JS.
 
+### ✅ Deploy: seed y verificación de `wiki`
+
+- Asegúrate de que `documentum_seed_postgres.sql` esté en la raíz del repositorio (o pásalo con `--seed-sql`).
+- Ejecuta (one‑off en Render o localmente):
+
+```bash
+python manage.py setup_db --seed --seed-sql documentum_seed_postgres.sql --normalize --render
+```
+
+- Verificación rápida:
+  - Revisa los logs del deploy: deberías ver "Archivo SQL encontrado" y "Found X documents to render".
+  - Accede a `https://<tu-site>/wiki/` y prueba alguna página (p.ej. `/wiki/general/`) — debe devolver 200 y mostrar el contenido renderizado.
+
+- Alternativa: si prefieres importar desde Markdown, puedes usar `python manage.py seed_documentum`.
+
 ---
 
 ## 📦 Gestión de Datos y Resiliencia
