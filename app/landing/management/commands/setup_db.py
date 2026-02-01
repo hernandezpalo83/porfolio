@@ -43,9 +43,13 @@ class Command(BaseCommand):
             Path(settings.BASE_DIR) / 'documentum_seed.sql',
             Path(settings.BASE_DIR) / 'app' / 'documentum' / 'sql' / 'documentum_seed_postgres.sql',
         ]
+        self.stdout.write('Buscando archivo SQL de seed en ubicaciones candidatas:')
         for p in candidates:
+            self.stdout.write(f'  - {p}')
             if p.exists():
+                self.stdout.write(self.style.SUCCESS(f'Archivo SQL encontrado: {p}'))
                 return str(p)
+        self.stdout.write(self.style.WARNING('No se encontró archivo SQL de seed en ubicaciones candidatas.'))
         return None
 
     def _execute_sql_file(self, path):
@@ -173,11 +177,30 @@ class Command(BaseCommand):
                 # Resolve seed SQL path
                 if not seed_sql:
                     seed_sql = self._find_default_seed_sql()
-                if not seed_sql:
-                    self.stdout.write(self.style.ERROR("No se encontró archivo SQL de seed y no se proporcionó --seed-sql"))
-                    return
 
-                # Determine whether to run seed: only when documentum is empty or if --force
+                # If a seed path was provided but doesn't exist, warn and skip seed
+                if seed_sql and not Path(seed_sql).exists():
+                    self.stdout.write(self.style.WARNING(f"Seed SQL proporcionado no existe: {seed_sql}. Saltando seed."))
+                    should_run_seed = False
+                elif not seed_sql:
+                    # No seed file available: skip seed but continue with normalize/render
+                    self.stdout.write(self.style.WARNING("No se encontró archivo SQL de seed; saltando paso de seed."))
+                    should_run_seed = False
+
+                # Determine whether to run seed: only when documentum is empty or if --force (unless already decided)
+                try:
+                    from app.documentum.models import Category
+                except Exception:
+                    Category = None
+
+                if 'should_run_seed' not in locals():
+                    should_run_seed = force
+                    if not should_run_seed:
+                        if Category is None:
+                            # If model not available, try to run seed to create tables/data
+                            should_run_seed = True
+                        else:
+                            should_run_seed = (Category.objects.count() == 0)
                 try:
                     from app.documentum.models import Category
                 except Exception:
