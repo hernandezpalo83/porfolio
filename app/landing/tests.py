@@ -47,3 +47,8 @@ class SetupDbCommandTests(TestCase):
             self.assertTrue(self.Category.objects.filter(slug='new-cat').exists())
         finally:
             Path(path).unlink(missing_ok=True)
+
+    def test_acquire_lock_returns_true_on_sqlite(self):
+        from app.landing.management.commands.setup_db import Command
+        cmd = Command()
+        self.assertTrue(cmd._acquire_lock())

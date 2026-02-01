@@ -60,6 +60,38 @@ class Command(BaseCommand):
             raise
         self.stdout.write(self.style.SUCCESS("SQL ejecutado correctamente."))
 
+    def _acquire_lock(self, lock_id: int = 987654321) -> bool:
+        """Try to acquire an advisory lock on Postgres. Returns True if lock acquired or running on non-Postgres."""
+        vendor = connection.vendor
+        if vendor != 'postgresql':
+            # For SQLite and others assume single-process dev environment
+            self.stdout.write('Non-Postgres DB detected; skipping advisory lock.')
+            return True
+        try:
+            with connection.cursor() as cur:
+                cur.execute('SELECT pg_try_advisory_lock(%s)', [lock_id])
+                row = cur.fetchone()
+                acquired = bool(row and row[0])
+                if acquired:
+                    self.stdout.write('Advisory lock acquired.')
+                else:
+                    self.stdout.write('Could not acquire advisory lock (another process may be running).')
+                return acquired
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Advisory lock failed: {e}. Proceeding without lock."))
+            return True
+
+    def _release_lock(self, lock_id: int = 987654321) -> None:
+        vendor = connection.vendor
+        if vendor != 'postgresql':
+            return
+        try:
+            with connection.cursor() as cur:
+                cur.execute('SELECT pg_advisory_unlock(%s)', [lock_id])
+                self.stdout.write('Advisory lock released.')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Failed to release advisory lock: {e}"))
+
     def handle(self, *args, **options):
         force = options.get('force')
         do_seed = options.get('seed')
@@ -84,14 +116,17 @@ class Command(BaseCommand):
             do_seed = False
             do_normalize = False
 
-        # If nothing requested and DB has data, keep original behavior: do nothing
-        has_data = self._db_has_data()
+        # If no explicit flags provided, assume we want to run all steps (seed, normalize, render)
         if not any([do_seed, do_normalize, do_render]):
-            if has_data and not force:
-                self.stdout.write(self.style.SUCCESS(
-                    "La base de datos ya contiene datos. No se restaura el backup ni se ejecutan tareas extra."
-                ))
-                return
+            do_seed = True
+            do_normalize = True
+            do_render = True
+
+        has_data = self._db_has_data()
+        if has_data and not force:
+            self.stdout.write(self.style.SUCCESS(
+                "La base de datos contiene datos. Se ejecutarán tareas idempotentes (seed solo si falta contenido, normalize, render)."
+            ))
 
         # If DB empty and no operation-only flags, try to restore from db_backup.json
         if not has_data and not any([seed_only, normalize_only, render_only]):
@@ -126,40 +161,76 @@ class Command(BaseCommand):
                     f"No se encontró db_backup.json en ninguna de las rutas: {posibles_rutas}. No se restaura nada."
                 ))
 
-        # SEED step
-        if do_seed:
-            # Resolve seed SQL path
-            if not seed_sql:
-                seed_sql = self._find_default_seed_sql()
-            if not seed_sql:
-                self.stdout.write(self.style.ERROR("No se encontró archivo SQL de seed y no se proporcionó --seed-sql"))
-                return
+        # Acquire advisory lock (Postgres) to avoid concurrent runs
+        got_lock = self._acquire_lock()
+        if not got_lock:
+            self.stdout.write(self.style.WARNING('No se obtuvo lock; asumiendo que otro proceso está realizando setup. Saliendo.'))
+            return
 
-            # Determine whether to run seed: only when documentum is empty or if --force
-            try:
-                from app.documentum.models import Category
-            except Exception:
-                Category = None
-
-            should_run_seed = force
-            if not should_run_seed:
-                if Category is None:
-                    # If model not available, try to run seed to create tables/data
-                    should_run_seed = True
-                else:
-                    should_run_seed = (Category.objects.count() == 0)
-
-            if should_run_seed:
-                try:
-                    self._execute_sql_file(seed_sql)
-                except Exception:
-                    self.stdout.write(self.style.ERROR("Seed SQL falló. Abortando."))
+        try:
+            # SEED step
+            if do_seed:
+                # Resolve seed SQL path
+                if not seed_sql:
+                    seed_sql = self._find_default_seed_sql()
+                if not seed_sql:
+                    self.stdout.write(self.style.ERROR("No se encontró archivo SQL de seed y no se proporcionó --seed-sql"))
                     return
-            else:
-                self.stdout.write(self.style.SUCCESS("Seed SQL omitido: ya existen categorías de documentum."))
 
-            if seed_only:
-                return
+                # Determine whether to run seed: only when documentum is empty or if --force
+                try:
+                    from app.documentum.models import Category
+                except Exception:
+                    Category = None
+
+                should_run_seed = force
+                if not should_run_seed:
+                    if Category is None:
+                        # If model not available, try to run seed to create tables/data
+                        should_run_seed = True
+                    else:
+                        should_run_seed = (Category.objects.count() == 0)
+
+                if should_run_seed:
+                    try:
+                        self._execute_sql_file(seed_sql)
+                    except Exception:
+                        self.stdout.write(self.style.ERROR("Seed SQL falló. Abortando."))
+                        return
+                else:
+                    self.stdout.write(self.style.SUCCESS("Seed SQL omitido: ya existen categorías de documentum."))
+
+                if seed_only:
+                    return
+
+            # NORMALIZE step
+            if do_normalize:
+                try:
+                    self.stdout.write('Ejecutando normalize_documentum_slugs...')
+                    call_command('normalize_documentum_slugs')
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"Error en normalize_documentum_slugs: {e}"))
+                    return
+                if normalize_only:
+                    return
+
+            # RENDER step
+            if do_render:
+                try:
+                    self.stdout.write('Ejecutando render_documentum_html...')
+                    call_command('render_documentum_html', '--force')
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"Error en render_documentum_html: {e}"))
+                    return
+                if render_only:
+                    return
+
+        finally:
+            # Release the advisory lock if we acquired it
+            try:
+                self._release_lock()
+            except Exception:
+                pass
 
         # NORMALIZE step
         if do_normalize:
