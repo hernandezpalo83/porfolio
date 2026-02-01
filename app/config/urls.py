@@ -15,8 +15,8 @@ from django.views.generic import TemplateView
 sitemaps = {
     'static': StaticViewSitemap,
     'blog': PostSitemap,
-    'docs_docs': DocumentSitemap,
-    'docs_cats': CategorySitemap,
+    'wiki_docs': DocumentSitemap,
+    'wiki_cats': CategorySitemap,
 }
 
 urlpatterns = [
@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('gym/', include('app.gym.urls')),
     path('prompts/', include('app.prompts.urls')),
-    path('docs/', include('app.documentum.urls', namespace='docs')),
+    path('wiki/', include('app.documentum.urls', namespace='wiki')),
 
     path('', include('app.landing.urls')),    
 ]
