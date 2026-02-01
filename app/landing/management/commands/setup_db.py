@@ -1,17 +1,30 @@
 import os
+import tempfile
+from pathlib import Path
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.conf import settings
 from django.apps import apps
+from django.db import connection, transaction
+
 
 class Command(BaseCommand):
-    help = "Inicializa la base de datos desde db_backup.json si está vacía"
+    help = (
+        "Inicializa la base de datos desde db_backup.json si está vacía y opcionalmente ejecuta seed SQL, "
+        "normaliza slugs y renderiza Markdown a HTML."
+    )
 
-    def handle(self, *args, **options):
-        self.stdout.write("Iniciando verificación de base de datos...")
+    def add_arguments(self, parser):
+        parser.add_argument('--force', action='store_true', help='Forzar la ejecución incluso si la BD contiene datos')
+        parser.add_argument('--seed', action='store_true', help='Ejecutar seed SQL para documentum (por defecto busca documentum_seed_postgres.sql en la raíz)')
+        parser.add_argument('--seed-sql', dest='seed_sql', help='Ruta al archivo SQL de seed a ejecutar (si se omite usa documentum_seed_postgres.sql)')
+        parser.add_argument('--normalize', action='store_true', help='Ejecutar normalize_documentum_slugs después del seed')
+        parser.add_argument('--render', action='store_true', help='Ejecutar render_documentum_html después del seed')
+        parser.add_argument('--seed-only', action='store_true', help='Solo ejecutar el seed y salir')
+        parser.add_argument('--normalize-only', action='store_true', help='Solo ejecutar normalize_documentum_slugs y salir')
+        parser.add_argument('--render-only', action='store_true', help='Solo ejecutar render_documentum_html y salir')
 
-        # Verificar si hay datos en cualquier modelo de landing o gym
-        has_data = False
+    def _db_has_data(self):
         for app_label in ["landing", "gym"]:
             try:
                 app_config = apps.get_app_config(app_label)
@@ -21,44 +34,151 @@ class Command(BaseCommand):
 
             for model in app_config.get_models():
                 if model.objects.exists():
-                    has_data = True
-                    break
-            if has_data:
-                break
+                    return True
+        return False
 
-        if has_data:
-            self.stdout.write(self.style.SUCCESS(
-                "La base de datos ya contiene datos. No se restaura el backup."
-            ))
-            return
-
-        # Posibles rutas donde buscar el backup
-        posibles_rutas = [
-            os.path.join(settings.BASE_DIR, "db_backup.json"),
-            os.path.join(settings.BASE_DIR, "app", "db_backup.json"),
-            os.path.join(settings.BASE_DIR, "app", "landing", "db_backup.json"),
+    def _find_default_seed_sql(self):
+        candidates = [
+            Path(settings.BASE_DIR) / 'documentum_seed_postgres.sql',
+            Path(settings.BASE_DIR) / 'documentum_seed.sql',
+            Path(settings.BASE_DIR) / 'app' / 'documentum' / 'sql' / 'documentum_seed_postgres.sql',
         ]
+        for p in candidates:
+            if p.exists():
+                return str(p)
+        return None
 
-        backup_file = None
-        for ruta in posibles_rutas:
-            if os.path.exists(ruta):
-                backup_file = ruta
-                break
-
-        if not backup_file:
-            self.stdout.write(self.style.WARNING(
-                f"No se encontró db_backup.json en ninguna de las rutas: {posibles_rutas}. No se restaura nada."
-            ))
-            return
-
-        self.stdout.write(self.style.WARNING(
-            f"Base de datos vacía detectada. Restaurando desde {backup_file}..."
-        ))
-
+    def _execute_sql_file(self, path):
+        self.stdout.write(f"Ejecutando SQL desde {path}...")
+        sql = Path(path).read_text()
         try:
-            call_command("loaddata", backup_file)
+            with transaction.atomic():
+                with connection.cursor() as cur:
+                    cur.execute(sql)
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Error al restaurar el backup: {e}"))
-            return
+            self.stdout.write(self.style.ERROR(f"Error ejecutando SQL: {e}"))
+            raise
+        self.stdout.write(self.style.SUCCESS("SQL ejecutado correctamente."))
 
-        self.stdout.write(self.style.SUCCESS("Base de datos restaurada correctamente."))
+    def handle(self, *args, **options):
+        force = options.get('force')
+        do_seed = options.get('seed')
+        seed_sql = options.get('seed_sql')
+        do_normalize = options.get('normalize')
+        do_render = options.get('render')
+        seed_only = options.get('seed_only')
+        normalize_only = options.get('normalize_only')
+        render_only = options.get('render_only')
+
+        # If any *-only flags are provided, they take precedence
+        if seed_only:
+            do_seed = True
+            do_normalize = False
+            do_render = False
+        if normalize_only:
+            do_normalize = True
+            do_seed = False
+            do_render = False
+        if render_only:
+            do_render = True
+            do_seed = False
+            do_normalize = False
+
+        # If nothing requested and DB has data, keep original behavior: do nothing
+        has_data = self._db_has_data()
+        if not any([do_seed, do_normalize, do_render]):
+            if has_data and not force:
+                self.stdout.write(self.style.SUCCESS(
+                    "La base de datos ya contiene datos. No se restaura el backup ni se ejecutan tareas extra."
+                ))
+                return
+
+        # If DB empty and no operation-only flags, try to restore from db_backup.json
+        if not has_data and not any([seed_only, normalize_only, render_only]):
+            self.stdout.write("Iniciando verificación de base de datos... (vacía)")
+
+            posibles_rutas = [
+                os.path.join(settings.BASE_DIR, "db_backup.json"),
+                os.path.join(settings.BASE_DIR, "app", "db_backup.json"),
+                os.path.join(settings.BASE_DIR, "app", "landing", "db_backup.json"),
+            ]
+
+            backup_file = None
+            for ruta in posibles_rutas:
+                if os.path.exists(ruta):
+                    backup_file = ruta
+                    break
+
+            if backup_file:
+                self.stdout.write(self.style.WARNING(
+                    f"Base de datos vacía detectada. Restaurando desde {backup_file}..."
+                ))
+
+                try:
+                    call_command("loaddata", backup_file)
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"Error al restaurar el backup: {e}"))
+                    return
+
+                self.stdout.write(self.style.SUCCESS("Base de datos restaurada correctamente."))
+            else:
+                self.stdout.write(self.style.WARNING(
+                    f"No se encontró db_backup.json en ninguna de las rutas: {posibles_rutas}. No se restaura nada."
+                ))
+
+        # SEED step
+        if do_seed:
+            # Resolve seed SQL path
+            if not seed_sql:
+                seed_sql = self._find_default_seed_sql()
+            if not seed_sql:
+                self.stdout.write(self.style.ERROR("No se encontró archivo SQL de seed y no se proporcionó --seed-sql"))
+                return
+
+            # Determine whether to run seed: only when documentum is empty or if --force
+            try:
+                from app.documentum.models import Category
+            except Exception:
+                Category = None
+
+            should_run_seed = force
+            if not should_run_seed:
+                if Category is None:
+                    # If model not available, try to run seed to create tables/data
+                    should_run_seed = True
+                else:
+                    should_run_seed = (Category.objects.count() == 0)
+
+            if should_run_seed:
+                try:
+                    self._execute_sql_file(seed_sql)
+                except Exception:
+                    self.stdout.write(self.style.ERROR("Seed SQL falló. Abortando."))
+                    return
+            else:
+                self.stdout.write(self.style.SUCCESS("Seed SQL omitido: ya existen categorías de documentum."))
+
+            if seed_only:
+                return
+
+        # NORMALIZE step
+        if do_normalize:
+            try:
+                self.stdout.write('Ejecutando normalize_documentum_slugs...')
+                call_command('normalize_documentum_slugs')
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error en normalize_documentum_slugs: {e}"))
+                return
+            if normalize_only:
+                return
+
+        # RENDER step
+        if do_render:
+            try:
+                self.stdout.write('Ejecutando render_documentum_html...')
+                call_command('render_documentum_html', '--force')
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error en render_documentum_html: {e}"))
+                return
+
+        self.stdout.write(self.style.SUCCESS('setup_db finalizado.'))
