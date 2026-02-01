@@ -8,7 +8,7 @@ from app.landing.sitemaps import StaticViewSitemap
 from app.blog.sitemaps import PostSitemap
 from django.conf import settings
 from django.conf.urls.static import static
-from app.docs.sitemaps import DocumentSitemap, CategorySitemap
+from app.documentum.sitemaps import DocumentSitemap, CategorySitemap
 
 from django.views.generic import TemplateView
 
@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('gym/', include('app.gym.urls')),
     path('prompts/', include('app.prompts.urls')),
-    path('docs/', include('app.docs.urls', namespace='docs')),
+    path('docs/', include('app.documentum.urls', namespace='docs')),
 
     path('', include('app.landing.urls')),    
 ]

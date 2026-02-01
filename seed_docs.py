@@ -4,7 +4,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.config.settings')
 django.setup()
 
-from app.docs.models import Category, Document
+from app.documentum.models import Category, Document
 
 def seed_docs():
     print("🌱 Seeding Documentation Hub...")
