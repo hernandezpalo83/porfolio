@@ -46,7 +46,7 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        app_label = 'docs'
+        app_label = 'documentum'
         verbose_name = "Category"
         verbose_name_plural = "Categories"
         ordering = ['order', 'name']
@@ -142,7 +142,7 @@ class Document(models.Model):
     published = PublishedDocumentsManager()
 
     class Meta:
-        app_label = 'docs'
+        app_label = 'documentum'
         verbose_name = "Document"
         verbose_name_plural = "Documents"
         ordering = ['-updated_at']
@@ -217,7 +217,7 @@ class DocumentVersion(models.Model):
     )
 
     class Meta:
-        app_label = 'docs'
+        app_label = 'documentum'
         verbose_name = "Document Version"
         verbose_name_plural = "Document Versions"
         ordering = ['-created_at']

@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'app.landing',
     'app.gym',
     'app.prompts',
+    'app.documentum.apps.DocumentumConfig',
     'app.blog',
 ]
 
