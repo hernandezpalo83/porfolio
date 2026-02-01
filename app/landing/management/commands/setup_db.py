@@ -38,13 +38,27 @@ class Command(BaseCommand):
         return False
 
     def _find_default_seed_sql(self):
+        # Check multiple locations: BASE_DIR, BASE_DIR.parent (repo root) and CWD, plus app/documentum/sql
         candidates = [
             Path(settings.BASE_DIR) / 'documentum_seed_postgres.sql',
             Path(settings.BASE_DIR) / 'documentum_seed.sql',
+            Path(settings.BASE_DIR).parent / 'documentum_seed_postgres.sql',
+            Path(settings.BASE_DIR).parent / 'documentum_seed.sql',
             Path(settings.BASE_DIR) / 'app' / 'documentum' / 'sql' / 'documentum_seed_postgres.sql',
+            Path.cwd() / 'documentum_seed_postgres.sql',
+            Path.cwd() / 'documentum_seed.sql',
         ]
+        seen = set()
         self.stdout.write('Buscando archivo SQL de seed en ubicaciones candidatas:')
         for p in candidates:
+            # Avoid duplicate paths
+            try:
+                real = str(p.resolve())
+            except Exception:
+                real = str(p)
+            if real in seen:
+                continue
+            seen.add(real)
             self.stdout.write(f'  - {p}')
             if p.exists():
                 self.stdout.write(self.style.SUCCESS(f'Archivo SQL encontrado: {p}'))

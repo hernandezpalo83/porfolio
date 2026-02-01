@@ -3,6 +3,8 @@ from django.apps import apps
 from unittest.mock import patch
 import types
 from pathlib import Path
+from django.conf import settings
+from django.core.management import call_command
 
 from app.documentum.models import Category, Document, DocumentVersion
 
@@ -91,6 +93,24 @@ class SetupDbIntegrationTest(TestCase):
             self.assertTrue(Category.objects.filter(slug='new-cat-2').exists())
         finally:
             Path(path).unlink(missing_ok=True)
+
+    def test_setup_db_finds_candidate_in_repo_root(self):
+        # Create a candidate in repo root (BASE_DIR.parent)
+        sql = """
+        INSERT INTO documentum_category (name, slug, description, icon, "order", is_visible, created_at, updated_at) 
+        VALUES ('Root Cat', 'root-cat', 'desc', 'fa-book', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+        """
+        root_path = Path(settings.BASE_DIR).parent / 'documentum_seed_postgres.sql'
+        root_path.write_text(sql)
+        try:
+            self.assertFalse(Category.objects.filter(slug='root-cat').exists())
+            call_command('setup_db', '--seed-only')
+            self.assertTrue(Category.objects.filter(slug='root-cat').exists())
+        finally:
+            try:
+                root_path.unlink()
+            except Exception:
+                pass
 
     def test_setup_db_advisory_lock_on_sqlite_returns_true(self):
         from app.landing.management.commands.setup_db import Command
