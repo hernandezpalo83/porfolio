@@ -71,8 +71,21 @@ class Command(BaseCommand):
         sql = Path(path).read_text()
         try:
             with transaction.atomic():
-                with connection.cursor() as cur:
-                    cur.execute(sql)
+                vendor = connection.vendor
+                # SQLite: use the underlying connection's executescript for multi-statement files
+                if vendor == 'sqlite':
+                    raw = connection.connection
+                    try:
+                        raw.executescript(sql)
+                    except Exception as e:
+                        self.stdout.write(self.style.ERROR(f"Error ejecutando SQL (SQLite execscript): {e}"))
+                        raise
+                else:
+                    # For other DBs (e.g., Postgres), execute statements one-by-one
+                    statements = [s.strip() for s in sql.split(';') if s.strip()]
+                    with connection.cursor() as cur:
+                        for stmt in statements:
+                            cur.execute(stmt)
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error ejecutando SQL: {e}"))
             raise

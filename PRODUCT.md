@@ -84,3 +84,9 @@ Render Free proporciona PostgreSQL con **persistencia limitada a 90 días**, lo 
 
 Este documento refleja la **visión estratégica y capacidades técnicas** de gestión de producto, mostrando cómo se abordan desafíos de arquitectura, resiliencia y escalabilidad en un entorno profesional.  
 Está alineado con mi **perfil de Technical Product Manager**, demostrando dominio en **MVP, UX, SEO, KPIs y gestión de riesgo técnico**.
+
+
+pip install -r requirements.txt && python manage.py migrate && python manage.py setup_db && python create_admin.py && python manage.py collectstatic --noinput
+
+
+pip install -r requirements.txt && python manage.py migrate && python manage.py setup_db --seed --seed-sql documentum_seed_postgres.sql --normalize --render && python create_admin.py && python manage.py collectstatic --noinput
