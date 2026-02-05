@@ -11,7 +11,7 @@ class CategoryListView(ListView):
     """List all visible categories"""
     model = Category
     # Templates are located under app/templates/docs/
-    template_name = 'docs/category_list.html'
+    template_name = 'documentum/category_list.html'
     context_object_name = 'categories'
     
     def get_queryset(self):
@@ -21,7 +21,7 @@ class CategoryListView(ListView):
 class DocumentListView(ListView):
     """List published documents in a specific category"""
     model = Document
-    template_name = 'docs/document_list.html'
+    template_name = 'documentum/document_list.html'
     context_object_name = 'documents'
     
     def get_queryset(self):
@@ -37,7 +37,7 @@ class DocumentListView(ListView):
 class DocumentDetailView(DetailView):
     """Display a single document with TOC"""
     model = Document
-    template_name = 'docs/document_detail.html'
+    template_name = 'documentum/document_detail.html'
     context_object_name = 'document'
     
     def get_object(self, queryset=None):

@@ -60,7 +60,7 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('docs:category_detail', kwargs={'slug': self.slug})
+        return reverse('documentum:category_detail', kwargs={'slug': self.slug})
 
     @property
     def document_count(self):
@@ -175,7 +175,7 @@ class Document(models.Model):
             )
 
     def get_absolute_url(self):
-        return reverse('docs:document_detail', kwargs={
+        return reverse('documentum:document_detail', kwargs={
             'category_slug': self.category.slug,
             'slug': self.slug
         })
