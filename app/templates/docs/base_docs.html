@@ -11,7 +11,7 @@
     <!-- 📚 Sidebar Nav -->
     <aside class="docs-sidebar">
         <div class="docs-brand" style="margin-bottom: 4rem;">
-            <a href="{% url 'docs:category_list' %}" style="text-decoration: none;">
+            <a href="{% url 'wiki:category_list' %}" style="text-decoration: none;">
                 <h2 style="color: #CC0052; font-family: 'Raleway', sans-serif;">Engineering Wiki</h2>
             </a>
         </div>
@@ -21,7 +21,7 @@
             <ul>
                 {% for cat in all_categories %}
                 <li class="{% if category.slug == cat.slug %}active{% endif %}">
-                    <a href="{% url 'docs:document_list' cat.slug %}">
+                    <a href="{% url 'wiki:document_list' cat.slug %}">
                         <i class="fa {{ cat.icon }} fa-fw"></i> {{ cat.name }}
                     </a>
                 </li>

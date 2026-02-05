@@ -1,7 +1,7 @@
 {% extends "landing/layouts/base.html" %}
 {% load static %}
 
-{% block title %}{{ post.title }} | Javier Hernández Martin{% endblock %}
+{% block title %} {{ post.title }} | Javier Hernández Martin {% endblock %}
 
 {# SEO Blocks #}
 {% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
@@ -19,8 +19,13 @@
 {# Twitter Card Overrides #}
 {% block twitter_title %}{{ post.title }}{% endblock %}
 {% block twitter_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
-{% block twitter_image %}{% if post.imagen_url %}{{ post.imagen_url }}{% else %}{{ block.super }}{% endif %}{% endblock
-%}
+{% block twitter_image %}
+{% if post.imagen_url %}
+{{ post.imagen_url }}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock%}
 
 {% block extra_schema %}
 {{ block.super }}
@@ -69,13 +74,13 @@
                 <span style="color: #eee; margin: 0 5px;">/</span>
                 <a href="{% url 'blog:post_list' %}" style="color: #999; text-decoration: none;">Blog</a>
                 <span style="color: #eee; margin: 0 5px;">/</span>
-                <span style="color: #CC0052; font-weight: bold;">{{ post.category.name }}</span>
+                <span style="color: #CC0052; font-weight: bold;"> {{ post.category.name }}</span>
             </nav>
 
             <h1 class="post-header-title">{{ post.title }}</h1>
             <p class="post-main-meta">
-                {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">{{ post.category.name
-                    }}</span> · {{ post.get_read_time }} min lectura
+                {{ post.publish|date:"d M Y" }} · <span style="color: #CC0052; font-weight: bold;">
+                    {{post.category.name}}</span> · {{ post.get_read_time }} min lectura
             </p>
 
             {% if post.image_url %}
@@ -111,8 +116,8 @@
                 <div class="related-grid">
                     {% for r_post in related_posts %}
                     <a href="{{ r_post.get_absolute_url }}" class="related-item">
-                        <span style="font-size: 1rem; color: #CC0052; font-weight: bold; text-transform: uppercase;">{{
-                            r_post.publish|date:"M Y" }}</span>
+                        <span style="font-size: 1rem; color: #CC0052; font-weight: bold; text-transform: uppercase;">
+                            {{r_post.publish|date:"M Y" }}</span>
                         <h4>{{ r_post.title }}</h4>
                         <div style="margin-top: 1.5rem; color: #CC0052; font-weight: bold; font-size: 1.1rem;">LEER MÁS
                             →</div>
@@ -123,8 +128,9 @@
             {% endif %}
 
             <footer style="text-align: center; margin-top: 4rem;">
-                <a href="{% url 'blog:post_list' %}" class="button stroke" style="width: 100%; max-width: 300px;">←
-                    Volver al Blog</a>
+                <a href="{% url 'blog:post_list' %}" class="button button-primary"
+                    style="width: 100%; max-width: 300px;">
+                    ←Volver al Blog</a>
             </footer>
         </div>
     </div>

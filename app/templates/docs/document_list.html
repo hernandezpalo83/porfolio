@@ -2,7 +2,7 @@
 
 {% block docs_content %}
 <div class="docs-breadcrumbs">
-    <a href="{% url 'docs:category_list' %}">Docs</a> / <span>{{ category.name }}</span>
+    <a href="{% url 'wiki:category_list' %}">Docs</a> / <span>{{ category.name }}</span>
 </div>
 
 <div class="docs-header">
@@ -17,7 +17,7 @@
     {% for doc in documents %}
     <div style="padding: 2.5rem; background: #fff; border-bottom: 1px solid #eee;">
         <h2 style="font-size: 2.2rem; margin-bottom: 1rem;">
-            <a href="{{ doc.get_absolute_url }}" style="text-decoration: none; color: #111; transition: color 0.2s;"
+            <a href="{{ wiki.get_absolute_url }}" style="text-decoration: none; color: #111; transition: color 0.2s;"
                 onmouseover="this.style.color='#CC0052'" onmouseout="this.style.color='#111'">
                 {{ doc.title }}
             </a>

@@ -10,7 +10,7 @@
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem;">
     {% for cat in categories %}
-    <a href="{% url 'docs:document_list' cat.slug %}" style="text-decoration: none; color: inherit;">
+    <a href="{% url 'wiki:document_list' cat.slug %}" style="text-decoration: none; color: inherit;">
         <div style="padding: 3rem; background: #fff; border: 1px solid #eee; border-radius: 12px; transition: transform 0.2s, box-shadow 0.2s;"
             onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.05)'"
             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">

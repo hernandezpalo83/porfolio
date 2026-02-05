@@ -1614,9 +1614,8 @@ button.full-width,
 .buttonbutton.large,
 .buttonbutton.stroke,
 .button.stroke {
-	background: transparent !important;
-	border: 3px solid #313131;
-	line-height: 4.8rem;
+	border: 3px solid #FF0077;
+	color: #FF0077;
 }
 
 button.stroke.medium,

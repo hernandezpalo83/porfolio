@@ -29,8 +29,8 @@
 {% block docs_content %}
 <article class="docs-article">
     <div class="docs-breadcrumbs">
-        <a href="{% url 'docs:category_list' %}">Docs</a> /
-        <a href="{% url 'docs:document_list' document.category.slug %}">{{ document.category.name }}</a> /
+        <a href="{% url 'wiki:category_list' %}">Docs</a> /
+        <a href="{% url 'wiki:document_list' document.category.slug %}">{{ document.category.name }}</a> /
         <span>{{ document.title }}</span>
     </div>
 
