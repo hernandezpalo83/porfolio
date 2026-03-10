@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from django.conf import settings
 from .models import Info, Skill, Experience, Education, Project, Contact, Contacto, Metric
 from .models import MenuItem, CompanyCollaboration
 
@@ -195,10 +196,19 @@ class CompanyCollaborationAdmin(admin.ModelAdmin):
     )
 
     def logo_preview(self, obj):
-        """Miniatura del logo en el listado y en el formulario de edición."""
+        """Miniatura del logo desde la CDN en el listado y en el formulario de edición."""
         if obj.logo:
+            base_url = getattr(settings, 'BRAND_ASSETS_URL', '')
+            # Comprobar para no duplicar slashes
+            if base_url.endswith('/') and obj.logo.startswith('/'):
+                full_url = base_url[:-1] + obj.logo
+            elif not base_url.endswith('/') and not obj.logo.startswith('/'):
+                full_url = base_url + '/' + obj.logo
+            else:
+                full_url = base_url + obj.logo
+
             return mark_safe(
-                f'<img src="{obj.logo.url}" height="40" style="object-fit:contain;" alt="{obj.name}">'
+                f'<img src="{full_url}" height="40" style="object-fit:contain;" alt="{obj.name}">'
             )
         return "—"
-    logo_preview.short_description = "Vista previa"
+    logo_preview.short_description = "Vista previa CDN"

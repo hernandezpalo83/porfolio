@@ -148,7 +148,13 @@ class CompanyCollaboration(models.Model):
     """Empresas y clientes con los que se ha colaborado, mostradas en el carrusel de la landing."""
     name = models.CharField(max_length=200, verbose_name="Nombre de la empresa")
     description = models.TextField(blank=True, default='', verbose_name="Descripción")
-    logo = models.ImageField(upload_to="companies/", verbose_name="Logo")
+    logo = models.CharField(
+        max_length=255, 
+        verbose_name="Ruta del Logo CDN", 
+        help_text="Ejemplo: /profile/Foto_perfil2.webp. Se concatenará con BRAND_ASSETS_URL.",
+        blank=True,
+        null=True
+    )
     website = models.URLField(blank=True, null=True, verbose_name="Sitio web")
     order = models.PositiveIntegerField(default=0, verbose_name="Orden")
     is_active = models.BooleanField(default=True, verbose_name="Activo")
