@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import Info, Skill, Experience, Education, Project, Contact, Contacto, Metric
-from .models import MenuItem
+from .models import MenuItem, CompanyCollaboration
 
 @admin.register(Info)
 class InfoAdmin(admin.ModelAdmin):
@@ -169,3 +170,35 @@ class MetricAdmin(admin.ModelAdmin):
         """Muestra el valor formateado en el listado"""
         return f"{obj.prefix}{obj.value}{obj.suffix}"
     get_display_value.short_description = 'Valor'
+
+
+@admin.register(CompanyCollaboration)
+class CompanyCollaborationAdmin(admin.ModelAdmin):
+    list_display = ('order', 'name', 'logo_preview', 'website', 'is_active')
+    list_display_links = ('name',)
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'description')
+    ordering = ('order',)
+    readonly_fields = ('logo_preview', 'created_at')
+
+    fieldsets = (
+        ('Información', {
+            'fields': ('name', 'description', 'website')
+        }),
+        ('Logo', {
+            'fields': ('logo', 'logo_preview')
+        }),
+        ('Configuración', {
+            'fields': ('is_active', 'order', 'created_at')
+        }),
+    )
+
+    def logo_preview(self, obj):
+        """Miniatura del logo en el listado y en el formulario de edición."""
+        if obj.logo:
+            return mark_safe(
+                f'<img src="{obj.logo.url}" height="40" style="object-fit:contain;" alt="{obj.name}">'
+            )
+        return "—"
+    logo_preview.short_description = "Vista previa"

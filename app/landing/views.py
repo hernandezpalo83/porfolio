@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Info, Skill, Experience, Education, Project, Contact, Metric
+from .models import Info, Skill, Experience, Education, Project, Contact, Metric, CompanyCollaboration
 from app.blog.models import Post
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -64,6 +64,7 @@ def home(request: HttpRequest) -> HttpResponse:
     projects = Project.objects.all()
     latest_posts = Post.objects.filter(status='published').order_by('-publish')[:3]
     metrics = Metric.objects.filter(is_visible=True).order_by('order')
+    companies = CompanyCollaboration.objects.filter(is_active=True)
     
     # 3. CONSTRUCCIÓN DEL CONTEXTO
     context: Dict[str, Any] = {
@@ -74,6 +75,7 @@ def home(request: HttpRequest) -> HttpResponse:
         'projects': projects,
         'latest_posts': latest_posts,
         'metrics': metrics,
+        'companies': companies,
         'form': form,  # Pasamos el objeto form (con o sin errores) al HTML
     }
 
