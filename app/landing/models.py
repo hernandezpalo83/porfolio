@@ -167,3 +167,16 @@ class CompanyCollaboration(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def logo_cdn_url(self):
+        """Devuelve la URL completa del logo resolviendo el slash entre CDN y ruta."""
+        if not self.logo:
+            return ""
+        from django.conf import settings
+        base_url = getattr(settings, 'BRAND_ASSETS_URL', '')
+        if base_url.endswith('/') and self.logo.startswith('/'):
+            return base_url[:-1] + self.logo
+        elif not base_url.endswith('/') and not self.logo.startswith('/'):
+            return f"{base_url}/{self.logo}"
+        return f"{base_url}{self.logo}"

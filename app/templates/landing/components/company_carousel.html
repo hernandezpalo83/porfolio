@@ -230,7 +230,7 @@
                      aria-label="{{ company.name }} — empresa con la que he colaborado">
                 {% endif %}
 
-                    <img src="{{ BRAND_ASSETS_URL }}{{ company.logo }}"
+                    <img src="{{ company.logo_cdn_url }}"
                          alt="{{ company.name }} — colaboración profesional"
                          width="130"
                          height="60"
@@ -260,7 +260,7 @@
                 <div class="company-card company-card-plain" aria-hidden="true">
                 {% endif %}
 
-                    <img src="{{ BRAND_ASSETS_URL }}{{ company.logo }}"
+                    <img src="{{ company.logo_cdn_url }}"
                          alt=""
                          width="130"
                          height="60"

@@ -3,5 +3,6 @@ from django.conf import settings
 
 def brand_assets(request):
     return {
-        'BRAND': settings.PERSONAL_BRAND
+        'BRAND': getattr(settings, 'PERSONAL_BRAND', {}),
+        'BRAND_ASSETS_URL': getattr(settings, 'BRAND_ASSETS_URL', '')
     }
