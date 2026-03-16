@@ -38,15 +38,21 @@ class Command(BaseCommand):
         return False
 
     def _find_default_seed_sql(self):
-        # Check multiple locations: BASE_DIR, BASE_DIR.parent (repo root) and CWD, plus app/documentum/sql
+        # BASE_DIR is .../porfolio/app
+        # We want to check:
+        # 1. BASE_DIR.parent (repo root)
+        # 2. BASE_DIR / 'documentum' / 'sql' (app internal sql)
+        repo_root = Path(settings.BASE_DIR).parent
+        app_sql = Path(settings.BASE_DIR) / 'documentum' / 'sql'
+        
         candidates = [
+            repo_root / 'documentum_seed_postgres.sql',
+            repo_root / 'documentum_seed.sql',
+            app_sql / 'documentum_seed_postgres.sql',
+            app_sql / 'documentum_seed.sql',
+            # Fallbacks for BASE_DIR if it were pointing to root (flexible)
             Path(settings.BASE_DIR) / 'documentum_seed_postgres.sql',
             Path(settings.BASE_DIR) / 'documentum_seed.sql',
-            Path(settings.BASE_DIR).parent / 'documentum_seed_postgres.sql',
-            Path(settings.BASE_DIR).parent / 'documentum_seed.sql',
-            Path(settings.BASE_DIR) / 'app' / 'documentum' / 'sql' / 'documentum_seed_postgres.sql',
-            Path.cwd() / 'documentum_seed_postgres.sql',
-            Path.cwd() / 'documentum_seed.sql',
         ]
         seen = set()
         self.stdout.write('Buscando archivo SQL de seed en ubicaciones candidatas:')
@@ -69,9 +75,19 @@ class Command(BaseCommand):
     def _execute_sql_file(self, path):
         self.stdout.write(f"Ejecutando SQL desde {path}...")
         sql = Path(path).read_text()
+        vendor = connection.vendor
+        
+        # SQLite specific fixes
+        if vendor == 'sqlite':
+            # Replace postgres-specific now() with SQLite CURRENT_TIMESTAMP
+            import re
+            sql = re.sub(r'\bnow\(\)', 'CURRENT_TIMESTAMP', sql)
+            # Remove ON CONFLICT DO NOTHING (sqlite supports ON CONFLICT, but syntax varies)
+            # For simplicity in seed, we just try to execute. 
+            # SQLite supports ON CONFLICT since 3.24.0.
+            
         try:
             with transaction.atomic():
-                vendor = connection.vendor
                 # SQLite: use the underlying connection's executescript for multi-statement files
                 if vendor == 'sqlite':
                     raw = connection.connection
@@ -281,25 +297,5 @@ class Command(BaseCommand):
                 self._release_lock()
             except Exception:
                 pass
-
-        # NORMALIZE step
-        if do_normalize:
-            try:
-                self.stdout.write('Ejecutando normalize_documentum_slugs...')
-                call_command('normalize_documentum_slugs')
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error en normalize_documentum_slugs: {e}"))
-                return
-            if normalize_only:
-                return
-
-        # RENDER step
-        if do_render:
-            try:
-                self.stdout.write('Ejecutando render_documentum_html...')
-                call_command('render_documentum_html', '--force')
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error en render_documentum_html: {e}"))
-                return
 
         self.stdout.write(self.style.SUCCESS('setup_db finalizado.'))

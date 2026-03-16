@@ -21,6 +21,16 @@ DATABASES = {
     }
 }
 
+# Override STORAGES to use local storage for tests (avoid WhiteNoise manifest errors)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 # Disable migrations for faster tests (if applicable)
 # WARNING: Only use if you're confident in your schema
 # MIGRATION_MODULES = {

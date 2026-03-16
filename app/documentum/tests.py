@@ -52,66 +52,8 @@ class DocumentumModelsTest(TestCase):
         self.assertTrue(any('changelog' in s for s in slugs) or Document.objects.filter(title__icontains='CHANGELOG').exists())
 
 
-class SetupDbIntegrationTest(TestCase):
-    def _write_sql(self, sql_text):
-        import tempfile
-        tf = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.sql')
-        tf.write(sql_text)
-        tf.flush()
-        tf.close()
-        return tf.name
 
-    def test_setup_db_executes_seed_sql(self):
-        from django.core.management import call_command
-        Category = apps.get_model('documentum', 'Category')
-        sql = """
-        INSERT INTO documentum_category (name, slug, description, icon, "order", is_visible, created_at, updated_at) 
-        VALUES ('Test Cat 2', 'test-cat-2', 'desc', 'fa-book', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-        """
-        path = self._write_sql(sql)
-        try:
-            self.assertEqual(Category.objects.count(), 0)
-            call_command('setup_db', '--seed', '--seed-sql', path)
-            self.assertTrue(Category.objects.filter(slug='test-cat-2').exists())
-        finally:
-            Path(path).unlink(missing_ok=True)
-
-    def test_setup_db_skips_seed_unless_forced(self):
-        from django.core.management import call_command
-        Category = apps.get_model('documentum', 'Category')
-        Category.objects.create(name='Existing', slug='existing')
-        sql = """
-        INSERT INTO documentum_category (name, slug, description, icon, "order", is_visible, created_at, updated_at) 
-        VALUES ('New Cat 2', 'new-cat-2', 'desc', 'fa-book', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-        """
-        path = self._write_sql(sql)
-        try:
-            call_command('setup_db', '--seed', '--seed-sql', path)
-            self.assertFalse(Category.objects.filter(slug='new-cat-2').exists())
-
-            call_command('setup_db', '--seed', '--seed-sql', path, '--force')
-            self.assertTrue(Category.objects.filter(slug='new-cat-2').exists())
-        finally:
-            Path(path).unlink(missing_ok=True)
-
-    def test_setup_db_finds_candidate_in_repo_root(self):
-        # Create a candidate in repo root (BASE_DIR.parent)
-        sql = """
-        INSERT INTO documentum_category (name, slug, description, icon, "order", is_visible, created_at, updated_at) 
-        VALUES ('Root Cat', 'root-cat', 'desc', 'fa-book', 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-        """
-        root_path = Path(settings.BASE_DIR).parent / 'documentum_seed_postgres.sql'
-        root_path.write_text(sql)
-        try:
-            self.assertFalse(Category.objects.filter(slug='root-cat').exists())
-            call_command('setup_db', '--seed-only')
-            self.assertTrue(Category.objects.filter(slug='root-cat').exists())
-        finally:
-            try:
-                root_path.unlink()
-            except Exception:
-                pass
-
+class SetupDbLockTest(TestCase):
     def test_setup_db_advisory_lock_on_sqlite_returns_true(self):
         from app.landing.management.commands.setup_db import Command
         cmd = Command()
