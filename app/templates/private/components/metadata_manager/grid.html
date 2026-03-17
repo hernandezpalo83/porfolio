@@ -1,0 +1,72 @@
+{% load static %}
+<div class="p-4 bg-light min-h-screen">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'landing:private_area' %}">Panel</a></li>
+                    <li class="breadcrumb-item active">Grid Manager</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800 fw-bold">Gestión de Productos</h1>
+            <p class="text-muted small">Administración dinámica mediante metadatos y AG Grid.</p>
+        </div>
+    </div>
+
+    <!-- AG Grid Container -->
+    <div id="ag-grid-container" class="ag-theme-quartz w-full shadow-sm rounded-4 overflow-hidden border" style="height: 650px;"></div>
+</div>
+
+<!-- Estilos para forzar el tema y colores del proyecto -->
+<style>
+    :root {
+        --ag-accent-color: #1a73e8;
+        --ag-active-color: #1a73e8;
+        --ag-selected-row-background-color: rgba(26, 115, 232, 0.05);
+        --ag-row-hover-color: rgba(26, 115, 232, 0.02);
+        --ag-font-family: 'Inter', sans-serif;
+        --ag-font-size: 14px;
+        --ag-border-radius: 12px;
+        --ag-header-background-color: #fcfdfe;
+        --ag-header-foreground-color: #444746;
+        --ag-header-column-separator-display: none;
+    }
+    
+    .ag-theme-quartz {
+        --ag-card-radius: 16px;
+    }
+    
+    .ag-header-cell-label {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.025em;
+    }
+
+    /* Modal Tweaks */
+    .modal-content {
+        border-radius: 1.2rem;
+    }
+    .form-control:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 0 0.25rem rgba(26, 115, 232, 0.1);
+    }
+</style>
+
+<!-- AG Grid Latest (v31+) -->
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+<!-- Bootstrap icons and Animate.css for JS effects -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<script src="{% static 'landing/js/ag-grid-manager.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const manager = new AGGridManager(
+            'ag-grid-container', 
+            '{{ config_url }}', 
+            '{{ api_url }}'
+        );
+        manager.init();
+    });
+</script>
