@@ -75,6 +75,8 @@ INSTALLED_APPS = [
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
+    'app.metadata_manager.apps.MetadataManagerConfig',
+    'rest_framework',
 ]
 
 SITE_ID = 1

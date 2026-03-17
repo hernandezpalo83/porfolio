@@ -1,0 +1,29 @@
+{% load static %}
+<div class="p-6 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Gestión de Productos (Gym)</h1>
+            <p class="mt-2 text-sm text-gray-600">Componente Metadata-Driven sincronizado con el modelo Producto de la app Gym</p>
+        </header>
+
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200">
+            <div id="ag-grid-container" class="ag-theme-alpine w-full h-[600px]"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
+<script src="{% static 'landing/js/ag-grid-manager.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const manager = new AGGridManager(
+            'ag-grid-container', 
+            '{{ config_url }}', 
+            '{{ api_url }}'
+        );
+        manager.init();
+    });
+</script>

@@ -17,4 +17,5 @@ django-htmlmin
 markdown
 pymdown-extensions
 pygments
+djangorestframework
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python
