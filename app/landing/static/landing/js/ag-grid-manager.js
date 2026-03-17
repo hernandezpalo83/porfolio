@@ -33,9 +33,8 @@ class AGGridManager {
                 },
                 pagination: true,
                 paginationPageSize: this.config.pagination_size || 20,
+                paginationPageSizeSelector: [10, 20, 50, 100],
                 onCellValueChanged: (params) => this.onCellValueChanged(params),
-                // Quartz theme customization via parameters
-                theme: 'quartz',
             };
 
             const eGridDiv = document.querySelector(`#${this.containerId}`);

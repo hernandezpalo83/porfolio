@@ -7,7 +7,7 @@ from django.shortcuts import render
 # Define the Metadata configuration for Producto
 class ProductoMetadata(MetadataManager):
     model = Producto
-    fields_to_display = ['id', 'nombre', 'precio', 'stock', 'fecha_creacion']
+    fields_to_display = ['nombre', 'precio', 'stock']
     editable_fields = ['nombre', 'precio', 'stock']
     mode = 'edit'
     inline_editing = True
