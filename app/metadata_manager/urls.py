@@ -1,11 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from app.gym.models import Producto
-from .base import MetadataManager
+from .base import Lista
 from django.shortcuts import render
 
 # Define the Metadata configuration for Producto
-class ProductoMetadata(MetadataManager):
+class ProductoMetadata(Lista):
     model = Producto
     fields_to_display = ['nombre', 'precio', 'stock']
     editable_fields = ['nombre', 'precio', 'stock']
