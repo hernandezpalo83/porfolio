@@ -2,7 +2,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .views import GenericMetadataViewSet
 
-class MetadataManager:
+class Lista:
     """
     Base class for configuring a Metadata-Driven component.
     """
