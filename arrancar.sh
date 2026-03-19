@@ -22,6 +22,12 @@ fi
 
 source venv/bin/activate
 
+# Cargar variables de entorno desde .env si existe
+if [ -f .env ]; then
+    printf "🔐 Cargando variables de entorno desde .env...\n"
+    export $(grep -v '^#' .env | xargs)
+fi
+
 # 3. Instalación de dependencias
 printf "🔄 Actualizando pip e instalando dependencias...\n"
 pip install --upgrade pip > /dev/null
