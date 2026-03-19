@@ -25,7 +25,9 @@ source venv/bin/activate
 # Cargar variables de entorno desde .env si existe
 if [ -f .env ]; then
     printf "🔐 Cargando variables de entorno desde .env...\n"
-    export $(grep -v '^#' .env | xargs)
+    set -a
+    source .env
+    set +a
 fi
 
 # 3. Instalación de dependencias

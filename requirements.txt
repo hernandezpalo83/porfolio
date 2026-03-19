@@ -18,7 +18,6 @@ markdown
 pymdown-extensions
 pygments
 djangorestframework
-django-components-ui @ git+https://git:${GITHUB_TOKEN_COMPONENTES}@github.com/hernandezpalo83/COMPONENTES.git#subdirectory=django_components_ui
-
+django-components-ui @ git+https://${GITHUB_TOKEN_COMPONENTES}@github.com/hernandezpalo83/COMPONENTES.git#subdirectory=django_components_ui
 
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python
