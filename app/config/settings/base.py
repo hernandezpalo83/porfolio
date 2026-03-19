@@ -63,12 +63,12 @@ INSTALLED_APPS = [
     'crispy_bootstrap5', 
     'django_ckeditor_5',
     'django_recaptcha',
-    'django_components_ui',
     'app.landing',
     'app.gym',
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
+    'components_ui'
 ]
 
 SITE_ID = 1
