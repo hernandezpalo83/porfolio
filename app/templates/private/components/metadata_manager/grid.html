@@ -5,11 +5,11 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'landing:private_area' %}">Panel</a></li>
-                    <li class="breadcrumb-item active">Grid Manager</li>
+                    <li class="breadcrumb-item active">{{ titulo }}</li>
                 </ol>
             </nav>
-            <h1 class="h3 mb-0 text-gray-800 fw-bold">Gestión de Productos</h1>
-            <p class="text-muted small">Administración dinámica mediante metadatos y AG Grid.</p>
+            <h1 class="h3 mb-0 text-gray-800 fw-bold">{{ titulo }}</h1>
+            <p class="text-muted small">{{ descripcion }}</p>
         </div>
     </div>
 

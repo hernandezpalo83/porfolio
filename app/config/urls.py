@@ -33,7 +33,7 @@ urlpatterns = [
     path('gym/', include('app.gym.urls')),
     path('prompts/', include('app.prompts.urls')),
     path('wiki/', include('app.documentum.urls', namespace='wiki')),
-    path('metadata/', include('app.metadata_manager.urls', namespace='metadata')),
+    path('mantenimiento/', include('app.metadata_manager.urls')),
 
     path('', include('app.landing.urls')),    
 ]

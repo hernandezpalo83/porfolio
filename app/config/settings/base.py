@@ -63,11 +63,13 @@ INSTALLED_APPS = [
     'crispy_bootstrap5', 
     'django_ckeditor_5',
     'django_recaptcha',
+    'rest_framework',
     'app.landing',
     'app.gym',
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
+    'app.metadata_manager',
     'components_ui'
 ]
 
@@ -187,3 +189,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'landing:private_area'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
