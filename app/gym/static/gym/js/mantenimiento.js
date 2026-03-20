@@ -29,11 +29,6 @@ const MantenimientoGenerico = {
             this.openEditModal(e.detail.row);
         });
 
-        // Escuchar evento de borrado
-        window.addEventListener('tabulator-delete', (e) => {
-            this.delete(e.detail.row.id);
-        });
-
         // El botón "Añadir Nuevo" llama a abrirModalCrear()
         window.abrirModalCrear = () => {
             this.openCreateModal();
@@ -138,6 +133,30 @@ const MantenimientoGenerico = {
             }
         } catch (e) {
             console.error("Save error:", e);
+        }
+    },
+
+    delete: async function(id) {
+        try {
+            const response = await fetch(`${this.apiUrl}${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': this.getCsrfToken()
+                }
+            });
+
+            if (response.ok) {
+                // Recargar tabla
+                if (window.tabulators && window.tabulators['main']) {
+                    window.tabulators['main'].setData();
+                } else {
+                    location.reload();
+                }
+            } else {
+                alert("Error al eliminar el registro.");
+            }
+        } catch (e) {
+            console.error("Delete error:", e);
         }
     },
 
