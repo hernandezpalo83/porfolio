@@ -97,7 +97,7 @@ Para gestionar cualquier tabla del sistema de forma rápida (CRUD completo), se 
    ```
 
 > [!WARNING]
-> **Troubleshooting**: Si obtienes `TemplateDoesNotExist` o `Invalid filter 'to_json'`, asegúrate de que la app `components_ui` esté copiada localmente en `app/components_ui` y que `INSTALLED_APPS` use `'app.components_ui'`. Consulta `COMPONENTS_AI_GUIDE.md` para más detalles.
+> **Troubleshooting**: Si obtienes `TemplateDoesNotExist` o `Invalid filter 'to_json'`, verifica que la librería `django-components-ui` tenga un archivo `MANIFEST.in` correcto que incluya las plantillas y que se haya reinstalado en el entorno virtual. Consulta `COMPONENTS_AI_GUIDE.md` para los detalles técnicos de empaquetado.
 
 ---
 

@@ -105,20 +105,20 @@ django-components-ui @ git+ssh://git@github.com/tu-usuario/tu-repo.git#subdirect
 ## Solución de Problemas (Troubleshooting)
 
 ### 1. Error: `TemplateDoesNotExist: components_ui/elementos/title.html`
-- **Causa**: La librería instalada vía `pip` puede no incluir la carpeta `templates`.
-- **Solución**: Seguir la **Opción B (Copia Directa)**. Copiar la carpeta `components_ui` íntegra a `app/components_ui` y registrarla en `INSTALLED_APPS` como `app.components_ui`. Esto asegura que las plantillas se carguen desde el sistema de archivos del proyecto.
+- **Causa**: Al instalar vía `pip`, Django no encuentra las plantillas si no se han incluido explícitamente en el paquete.
+- **Solución**: En la raíz de la librería de componentes (`django_components_ui/`), debe existir un archivo `MANIFEST.in` que incluya las carpetas de recursos:
+  ```text
+  recursive-include components_ui/templates *
+  recursive-include components_ui/static *
+  recursive-include components_ui/templatetags *
+  ```
+  Esto asegura que al ejecutar `pip install`, los archivos `.html` y `.js/css` se copien al entorno virtual.
 
 ### 2. Error: `Invalid filter: 'to_json'`
-- **Causa**: El filtro `to_json` es necesario para pasar configuraciones complejas (como columnas de Tabulator) al componente. Si no está definido en `templatetags/components_ui.py`, fallará.
-- **Solución**: Asegurarse de que `app/components_ui/templatetags/components_ui.py` incluya:
-  ```python
-  import json
-  from django.utils.safestring import mark_safe
-  @register.filter
-  def to_json(value):
-      return mark_safe(json.dumps(value))
-  ```
+- **Causa**: El filtro `to_json` no estaba presente en versiones antiguas de la librería.
+- **Solución**: Asegurarse de que `components_ui/templatetags/components_ui.py` tenga el filtro registrado. Ya se ha actualizado en el repositorio fuente.
 
 ---
-> [!IMPORTANT]
-> Siempre revisa que la versión local de `components_ui` en `app/` esté sincronizada con la del repositorio de componentes si realizas cambios estructurales.
+> [!TIP]
+> Para desarrollo local, es recomendable instalar la librería en modo editable:
+> `pip install -e /ruta/a/la/libreria/django_components_ui/`
