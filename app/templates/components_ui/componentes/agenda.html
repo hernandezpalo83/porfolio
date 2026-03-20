@@ -1,0 +1,57 @@
+{% load components_ui %}
+<div class="comp-agenda {{ classes }}" data-url="{{ data_url }}" data-locale="{{ locale }}">
+    <!-- Controls -->
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex gap-2">
+            {% comp_button text="Hoy" appearance="outlined" size="small" %}
+            <div class="flex">
+                <button type="button" class="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-50">&larr;</button>
+                <button type="button" class="px-3 py-1 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-50">&rarr;</button>
+            </div>
+        </div>
+        <h2 class="text-xl font-bold text-gray-900">Mes / Semana</h2>
+        <div class="flex bg-gray-100 rounded-lg p-1">
+            <button class="px-3 py-1 text-sm rounded-md {% if view_mode == 'month' %}bg-white shadow text-primary-600{% else %}text-gray-500 hover:text-gray-700{% endif %}">Mes</button>
+            <button class="px-3 py-1 text-sm rounded-md {% if view_mode == 'week' %}bg-white shadow text-primary-600{% else %}text-gray-500 hover:text-gray-700{% endif %}">Semana</button>
+            {% if not disable_day_mode %}
+            <button class="px-3 py-1 text-sm rounded-md {% if view_mode == 'day' %}bg-white shadow text-primary-600{% else %}text-gray-500 hover:text-gray-700{% endif %}">Día</button>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Calendar Grid base (Mock visualization for Showcase/Docs) -->
+    <div class="border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+        <div class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+            {% for day in "LMMJVSD" %}
+            <div class="py-2 text-center text-xs font-bold text-gray-500 uppercase">{{ day }}</div>
+            {% endfor %}
+        </div>
+        <div class="grid grid-cols-7 grid-rows-5 h-[500px] divide-x divide-y divide-gray-100">
+            {% for i in "12345678901234567890123456789012345" %}
+            <div class="p-2 bg-white relative hover:bg-gray-50 transition-colors group">
+                <span class="text-xs text-gray-400">{{ forloop.counter }}</span>
+                {% if forloop.counter == 12 %}
+                <div class="mt-1 p-1 bg-primary-100 text-primary-700 text-[10px] rounded border border-primary-200 truncate shadow-sm">
+                    Reunión Equipo
+                </div>
+                {% endif %}
+                {% if forloop.counter == 18 %}
+                <div class="mt-1 p-1 bg-green-100 text-green-700 text-[10px] rounded border border-green-200 truncate shadow-sm">
+                    Lanzamiento v2
+                </div>
+                {% endif %}
+                {% if forloop.counter == 25 %}
+                <div class="mt-1 p-1 bg-amber-100 text-amber-700 text-[10px] rounded border border-amber-200 truncate shadow-sm">
+                    Revisión QA
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if editable %}
+{% comp_modal id="modalEvento" title="Editar Evento" %}
+<!-- El contenido del modal se inyectaría aquí si el tag soportara bloque -->
+{% endif %}

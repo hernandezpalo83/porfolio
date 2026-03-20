@@ -1,7 +1,0 @@
-from django.apps import AppConfig
-
-class ListaConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'app.metadata_manager'
-    label = 'metadata_manager'
-    verbose_name = 'Lista'

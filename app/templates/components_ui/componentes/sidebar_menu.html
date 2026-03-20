@@ -1,0 +1,23 @@
+{% load components_ui %}
+<div class="{% if not is_open %}w-16{% else %}w-64{% endif %} flex-shrink-0 flex flex-col bg-gray-800 transition-all duration-300 min-h-screen {{ classes }}">
+    <div class="flex h-16 flex-shrink-0 items-center justify-center bg-gray-900 text-white font-bold tracking-widest uppercase">
+        {% if is_open %}MENÚ{% else %}*{% endif %}
+    </div>
+    <div class="flex flex-1 flex-col overflow-y-auto">
+        <nav class="flex-1 space-y-1 px-2 py-4">
+            {% for item in menu_items %}
+            <a href="{{ item.url }}" class="{% if item.active %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                {% if item.icon %}
+                    {% include "components_ui/elementos/icon.html" with name=item.icon size="w-6 h-6 mr-3 flex-shrink-0" %}
+                {% endif %}
+                {% if is_open %}{{ item.name }}{% endif %}
+            </a>
+            {% empty %}
+            <a href="/" class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                {% include "components_ui/elementos/icon.html" with name='HomeIcon' size="w-6 h-6 mr-3 flex-shrink-0" %}
+                {% if is_open %}Inicio{% endif %}
+            </a>
+            {% endfor %}
+        </nav>
+    </div>
+</div>

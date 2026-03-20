@@ -1,0 +1,8 @@
+<img 
+    src="{{ src }}" 
+    alt="{{ alt }}" 
+    class="object-{{ object_fit }} {% if rounded %}rounded-lg{% endif %} {{ classes }}"
+    {% if width and width != 'auto' %}width="{{ width }}"{% endif %}
+    {% if height and height != 'auto' %}height="{{ height }}"{% endif %}
+    loading="lazy"
+>

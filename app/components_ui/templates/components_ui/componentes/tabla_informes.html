@@ -1,0 +1,12 @@
+{% load components_ui %}
+<div class="bg-white p-6 shadow-sm rounded-lg border border-gray-200 {{ classes }}">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">Informe Detallado</h3>
+        {% if export_url %}
+        {% comp_button text="Exportar a Excel" appearance="outlined" icon="DownloadIcon" %}
+        {% endif %}
+    </div>
+    
+    <!-- Using tabla template logic inside -->
+    {% comp_tabla data_url=data_url columns=columns page_size=50 group_by=group_by height=height filterable=filterable %}
+</div>

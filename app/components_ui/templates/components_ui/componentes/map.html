@@ -1,0 +1,28 @@
+<div class="w-full relative rounded-2xl overflow-hidden border border-gray-200 {{ classes }}" style="height: {{ height|default:'400px' }}">
+    <!-- Simulation of a MAP (using a stylish stylized SVG or image) -->
+    <div class="absolute inset-0 bg-[#e5e7eb] overflow-hidden">
+        <svg class="w-full h-full text-white/50" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+            <path d="M0,0 L800,0 L800,500 L0,500 Z" fill="#f3f4f6"></path>
+            <!-- Mock "roads" -->
+            <path d="M100,0 L120,500 M0,200 L800,220 M400,0 L420,500 M0,400 L800,380" stroke="#d1d5db" stroke-width="10" fill="none"></path>
+            <!-- Mock "buildings" -->
+            <rect x="150" y="50" width="40" height="60" fill="#e5e7eb"></rect>
+            <rect x="220" y="80" width="30" height="40" fill="#e5e7eb"></rect>
+            <rect x="500" y="300" width="80" height="40" fill="#e5e7eb"></rect>
+            <!-- Mock Pin -->
+            <circle cx="{{ center_lat|default:40.41 }}" cy="{{ center_lng|default:-3.70|add:200 }}" r="8" fill="#ef4444" class="animate-bounce"></circle>
+        </svg>
+    </div>
+    <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg border border-white/20 z-20">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Coordenadas Actuales</p>
+                <p class="text-xs font-mono text-gray-700">{{ center_lat }}, {{ center_lng }}</p>
+            </div>
+            <div class="flex -space-x-2">
+                <div class="w-6 h-6 rounded-full border-2 border-white bg-blue-500 shadow-sm"></div>
+                <div class="w-6 h-6 rounded-full border-2 border-white bg-green-500 shadow-sm"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+{% load components_ui %}
+<div class="space-y-2 {{ classes }}" id="acordeon-{{ id|default:'main' }}">
+    {% for item in items %}
+    <div class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow transition-shadow">
+        <details class="group" {% if forloop.first %}open{% endif %}>
+            <summary class="flex items-center justify-between p-4 cursor-pointer list-none outline-none select-none">
+                <div class="flex items-center gap-3">
+                    {% if item.icon %}
+                        <div class="text-primary-500">
+                            {% comp_icon name=item.icon size="w-5 h-5" %}
+                        </div>
+                    {% endif %}
+                    <span class="font-bold text-gray-900">{{ item.title }}</span>
+                </div>
+                <div class="flex-shrink-0 ml-2 text-gray-400 group-open:rotate-180 transition-transform duration-300">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+            </summary>
+            <div class="px-4 pb-5 text-sm text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
+                {{ item.content|default:item.description|default:"Sin contenido detallado disponible." }}
+            </div>
+        </details>
+    </div>
+    {% endfor %}
+</div>

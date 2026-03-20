@@ -1,0 +1,14 @@
+<div id="{{ id }}" class="text-center {{ classes }}">
+    <div class="relative inline-flex items-center justify-center w-32 h-32 rounded-full border-8 border-gray-100">
+        <!-- Barra de progreso simulada -->
+        {% widthratio value max_val 100 as percent %}
+        <div class="absolute inset-0 rounded-full border-8 border-{{ color }}-500" style="clip-path: polygon(0 0, 100% 0, 100% {{ percent }}%, 0 {{ percent }}%); transform: rotate(-90deg);"></div>
+        
+        <div class="absolute flex flex-col items-center justify-center">
+            <span class="text-2xl font-bold text-gray-900">{{ value }}</span>
+        </div>
+    </div>
+    {% if label %}
+    <p class="mt-2 text-sm font-medium text-gray-500 uppercase">{{ label }}</p>
+    {% endif %}
+</div>

@@ -35,3 +35,23 @@ def lista_productos(request: HttpRequest) -> HttpResponse:
         "table": table,
         "filter": producto_filter
     })
+
+def mantenimiento_productos(request: HttpRequest) -> HttpResponse:
+    """
+    Vista de mantenimiento para el modelo Producto usando comp_tabla_mantenimiento.
+    """
+    columnas = [
+        {"title": "ID", "field": "id", "width": 70},
+        {"title": "Nombre", "field": "nombre", "headerFilter": "input"},
+        {"title": "Precio", "field": "precio", "hozAlign": "right", "formatter": "money", "formatterParams": {"symbol": "$"}},
+        {"title": "Stock", "field": "stock", "hozAlign": "center", "editor": "number"},
+        {"title": "Descripción", "field": "descripcion", "width": 300},
+        {"title": "Fecha", "field": "fecha_creacion", "formatter": "datetime", "formatterParams": {"outputFormat": "DD/MM/YYYY HH:mm"}},
+    ]
+    
+    return render(request, "gym/mantenimiento_productos.html", {
+        "titulo": "Mantenimiento de Productos",
+        "descripcion": "Gestión completa de inventario de productos.",
+        "cols": columnas,
+        "api_url": "/gym/api/productos-api/"
+    })

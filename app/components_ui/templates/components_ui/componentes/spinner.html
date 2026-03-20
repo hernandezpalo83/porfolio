@@ -1,0 +1,19 @@
+<div class="flex flex-col items-center justify-center gap-4 {{ classes }}">
+    <div class="relative">
+        <div class="w-12 h-12 rounded-full border-4 border-gray-100 border-t-primary-600 animate-spin shadow-xl shadow-primary-500/10"></div>
+        <div class="absolute inset-0 w-12 h-12 rounded-full border-4 border-transparent border-b-secondary-500 animate-spin-reverse opacity-50 blur-sm"></div>
+    </div>
+    {% if text %}
+    <span class="text-xs font-black uppercase tracking-widest text-gray-500 animate-pulse">{{ text }}</span>
+    {% endif %}
+</div>
+
+<style>
+@keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+.animate-spin-reverse {
+    animation: spin-reverse 1.5s linear infinite;
+}
+</style>

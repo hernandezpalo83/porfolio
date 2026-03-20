@@ -30,10 +30,9 @@ urlpatterns = [
         
     path('blog/', include('app.blog.urls', namespace='blog')),
 
-    path('gym/', include('app.gym.urls')),
+    path('gym/', include('app.gym.urls', namespace='gym')),
     path('prompts/', include('app.prompts.urls')),
     path('wiki/', include('app.documentum.urls', namespace='wiki')),
-    path('mantenimiento/', include('app.metadata_manager.urls')),
 
     path('', include('app.landing.urls')),    
 ]

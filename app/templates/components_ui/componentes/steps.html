@@ -1,0 +1,28 @@
+<div class="w-full relative py-6 {{ classes }}">
+    <div class="flex items-center justify-between relative group">
+        <!-- Connecting Line -->
+        <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-100 -translate-y-1/2 z-0"></div>
+        <div class="absolute top-1/2 left-0 h-1 bg-{{ color|default:'primary' }}-500 -translate-y-1/2 z-10 transition-all duration-700 shadow-lg shadow-{{ color|default:'primary' }}-500/30" 
+             style="width: {% widthratio current_step|default:1 steps|length|default:1 100 %}%"></div>
+        
+        {% for step in steps %}
+        <div class="flex flex-col items-center relative z-20">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center 
+                 {% if forloop.counter <= current_step|default:1 %} 
+                    bg-{{ color|default:'primary' }}-600 text-white shadow-xl shadow-{{ color|default:'primary' }}-500/30 font-black
+                 {% else %} 
+                    bg-white border-2 border-gray-200 text-gray-400 font-bold 
+                 {% endif %} 
+                 transition-all duration-500 transform group-hover:scale-105">
+                {{ forloop.counter }}
+            </div>
+            <div class="absolute top-12 whitespace-nowrap">
+                <span class="text-xs font-black uppercase tracking-widest 
+                {% if forloop.counter <= current_step|default:1 %} text-gray-900 {% else %} text-gray-300 {% endif %}">
+                    {{ step.title|default:"Paso" }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

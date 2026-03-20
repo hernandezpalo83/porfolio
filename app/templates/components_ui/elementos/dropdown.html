@@ -1,0 +1,27 @@
+<div class="{{ classes }}">
+    {% if label %}
+    <label for="{{ name }}" class="comp-label">
+        {{ label }}{% if required %} <span class="text-error-600">*</span>{% endif %}
+    </label>
+    {% endif %}
+    <select 
+        name="{{ name }}" 
+        id="{{ name }}" 
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 
+               {% if disabled %}bg-gray-100 text-gray-400 cursor-not-allowed{% endif %}"
+        {% if required %}required{% endif %}
+        {% if disabled %}disabled{% endif %}
+        {% if multiple %}multiple{% endif %}
+    >
+        <option value="" disabled {% if not value %}selected{% endif %}>Seleccione una opción</option>
+        {% for option in options %}
+            {% if option.items %}  <!-- Si es un diccionario {value: label} -->
+                {% for val, text in option.items %}
+                    <option value="{{ val }}" {% if value|stringformat:"s" == val|stringformat:"s" %}selected{% endif %}>{{ text }}</option>
+                {% endfor %}
+            {% else %} <!-- Si es una tupla o array simple (value, label) -->
+                <option value="{{ option.0 }}" {% if value|stringformat:"s" == option.0|stringformat:"s" %}selected{% endif %}>{{ option.1 }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</div>

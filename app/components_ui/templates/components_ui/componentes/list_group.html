@@ -1,0 +1,30 @@
+{% load components_ui %}
+<div class="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden {{ classes }}">
+    <div class="bg-gray-50/80 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <h3 class="text-sm font-black text-gray-900 uppercase tracking-widest">{{ title|default:"Lista de Elementos" }}</h3>
+        <span class="px-2 py-0.5 bg-gray-200 text-gray-500 rounded-full text-[10px] font-bold">{{ items|length }}</span>
+    </div>
+    
+    <ul class="divide-y divide-gray-50">
+        {% for item in items %}
+        <li class="group hover:bg-primary-50 px-6 py-4 flex items-center gap-4 transition-all duration-300">
+            <div class="flex-shrink-0 w-10 h-10 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white group-hover:scale-110 transition-all">
+                {% comp_icon name=item.icon|default:'StarIcon' size="w-6 h-6" %}
+            </div>
+            
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-gray-900 truncate group-hover:text-primary-700 transition-colors">{{ item.title }}</p>
+                {% if item.description %}
+                <p class="text-xs text-gray-500 truncate mt-0.5 group-hover:text-primary-600 transition-colors">{{ item.description }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </div>
+        </li>
+        {% empty %}
+        <li class="px-8 py-12 text-center text-gray-300 italic text-sm">No hay elementos registrados</li>
+        {% endfor %}
+    </ul>
+</div>

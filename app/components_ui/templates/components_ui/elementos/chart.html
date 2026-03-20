@@ -1,0 +1,14 @@
+<div class="w-full relative {{ classes }} group" style="height: {{ height }}">
+    <!-- Visual Mock SVG fallback if no Chart.js is initialized -->
+    <div class="absolute inset-0 flex items-end justify-between p-4 bg-gray-50 border border-gray-200 rounded-2xl opacity-40 group-hover:opacity-60 transition-opacity overflow-hidden">
+        {% if type == 'bar' %}
+        <div class="w-1/6 bg-primary-500 h-[30%] rounded-t-sm"></div><div class="w-1/6 bg-primary-500 h-[60%] rounded-t-sm"></div><div class="w-1/6 bg-primary-500 h-[45%] rounded-t-sm"></div><div class="w-1/6 bg-primary-500 h-[80%] rounded-t-sm"></div><div class="w-1/6 bg-primary-500 h-[55%] rounded-t-sm"></div><div class="w-1/6 bg-primary-500 h-[70%] rounded-t-sm"></div>
+        {% else %}
+        <svg class="w-full h-full text-primary-500" viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0,35 Q15,10 30,25 T60,5 T85,30 T100,15 L100,40 L0,40 Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1"></path></svg>
+        {% endif %}
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center z-20">
+         <span class="bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-gray-500 uppercase tracking-widest shadow-sm">Vista Previa {{ type|title }}</span>
+    </div>
+    <canvas id="{{ id }}" class="w-full h-full relative z-10"></canvas>
+</div>

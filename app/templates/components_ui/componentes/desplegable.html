@@ -1,0 +1,22 @@
+{% load components_ui %}
+<div class="{{ classes }}">
+    {% if label %}
+    <label class="comp-label">
+        {{ label }}{% if required %} <span class="text-error-600">*</span>{% endif %}
+    </label>
+    {% endif %}
+    <div class="relative">
+        <!-- Simulates a React-Select / Select2 element with search -->
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+        <div class="comp-input flex items-center justify-between cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md">
+            <span class="block truncate {% if not display_value %}text-gray-400{% endif %}">
+                {{ display_value|default:"Seleccionar opciones..." }}
+            </span>
+            <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                {% comp_icon name="ChevronUpDownIcon" size="h-5 w-5 text-gray-400" %}
+            </span>
+        </div>
+        <!-- Dropdown con buscador se abriría al hacer click con JS... -->
+        <!-- URL de carga remota: {{ lookup_url }} -->
+    </div>
+</div>

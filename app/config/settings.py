@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
-    'app.metadata_manager.apps.ListaConfig',
+    'app.components_ui',
     'rest_framework',
 ]
 
