@@ -1,0 +1,23 @@
+{% extends "private/layouts/base.html" %}
+{% load static %}
+{% load components_ui %}
+
+{% block content %}
+<div class="w-full">
+    {% comp_title text=titulo|default:"Mantenimiento Genérico" level=2 hr=True %}
+    <p class="text-muted small mb-6">{{ descripcion|default:"Gestión de datos del sistema." }}</p>
+
+    <div class="bg-white shadow-sm rounded-lg p-0 md:p-6 overflow-hidden">
+        {% comp_tabla_mantenimiento data_url=api_url columns=cols searchable=True filterable=True %}
+    </div>
+</div>
+
+{% csrf_token %}
+
+<script src="{% static 'gym/js/mantenimiento.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        MantenimientoGenerico.init('{{ api_url }}');
+    });
+</script>
+{% endblock %}

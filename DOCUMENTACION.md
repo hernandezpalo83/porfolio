@@ -75,7 +75,7 @@
 │   ├── config/
 │   ├── landing/
 │   ├── blog/
-│   ├── gym/
+│   ├── gym/                          ← Includes Products Maintenance
 │   └── prompts/
 │
 └── [otros archivos del proyecto]
