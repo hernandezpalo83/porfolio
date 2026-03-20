@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
-    'app.components_ui'
+    'components_ui'
 ]
 
 SITE_ID = 1

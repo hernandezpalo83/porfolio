@@ -1,9 +1,0 @@
-{# Note: Los template tags inclusion_tag no evaluan slots internos en Django nativo sin un for-loop interno o block logic de custom templatetagNode.  #}
-{# Como fallback generamos solo un wrapper de visibilidad condicional si se quisiera usar en JS. En Django usualmente se usa `if has_perm` en el propio HTML. #}
-
-<!-- comp_permisos (Check en vista/template es recomendado) -->
-{% if has_permission %}
-    <!-- Content Wrapper for Permitted Users -->
-{% else %}
-    <!-- Acceso Denegado / Oculto -->
-{% endif %}

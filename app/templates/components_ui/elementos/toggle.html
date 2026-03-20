@@ -1,7 +1,0 @@
-<label class="relative inline-flex items-center cursor-pointer {{ classes }}">
-    <input type="checkbox" name="{{ name }}" class="sr-only peer" {% if checked %}checked{% endif %} {% if disabled %}disabled{% endif %}>
-    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-{{ color }}-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-{{ color }}-600 {% if disabled %}opacity-50 cursor-not-allowed{% endif %}"></div>
-    {% if label %}
-    <span class="ml-3 text-sm font-medium text-gray-900 {% if disabled %}text-gray-400{% endif %}">{{ label }}</span>
-    {% endif %}
-</label>
