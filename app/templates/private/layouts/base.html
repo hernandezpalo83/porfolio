@@ -27,7 +27,19 @@
                 }
             }
         }
+        
+        // Suprimir el aviso de Tailwind CDN en consola
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            originalWarn.apply(console, args);
+        };
     </script>
+    <style>
+        /* Ajustes para redondeado perfecto en Tabulator */
+        .tabulator { border-radius: inherit !important; border: none !important; }
+        .tabulator-header { border-top-left-radius: inherit !important; border-top-right-radius: inherit !important; }
+    </style>
 
     <!-- Tabulator Dependencies -->
     <link href="https://unpkg.com/tabulator-tables@6.2.1/dist/css/tabulator_modern.min.css" rel="stylesheet">

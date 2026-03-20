@@ -7,7 +7,7 @@
     {% comp_title text=titulo|default:"Mantenimiento Genérico" level=2 hr=True %}
     <p class="text-muted small mb-6">{{ descripcion|default:"Gestión de datos del sistema." }}</p>
 
-    <div class="bg-white shadow-sm rounded-lg p-0 md:p-6 overflow-hidden">
+    <div class="w-full">
         {% comp_tabla_mantenimiento data_url=api_url columns=cols searchable=True filterable=True %}
     </div>
 </div>
