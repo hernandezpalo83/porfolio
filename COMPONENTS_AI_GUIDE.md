@@ -40,6 +40,27 @@ django-components-ui @ git+ssh://git@github.com/tu-usuario/tu-repo.git#subdirect
 - **Iconos**: Heroicons v2 (nombres como `HomeIcon`, `ChartBarIcon`, `UsersIcon`).
 - **Colores**: Soporta `primary`, `success`, `error`, `warning`, `blue`, `indigo`, etc.
 
+## Requisitos del Layout
+
+Para que los componentes se rendericen correctamente y las tablas carguen datos, el archivo `base.html` debe incluir las siguientes dependencias:
+
+1.  **Tailwind CSS**: Obligatorio para todos los estilos `comp_`.
+2.  **Tabulator JS/CSS**: Necesario para `comp_tabla` y `comp_tabla_mantenimiento`.
+3.  **Support JS**: El archivo `components.js` de la librería.
+
+Ejemplo de configuración en `base.html`:
+```html
+<!-- CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://unpkg.com/tabulator-tables@6.2.1/dist/css/tabulator_modern.min.css" rel="stylesheet">
+
+<!-- JS (al final del body) -->
+<script src="https://unpkg.com/tabulator-tables@6.2.1/dist/js/tabulator.min.js"></script>
+<script src="{% static 'components_ui/js/components.js' %}"></script>
+```
+
+---
+
 ## Listado de Componentes (52 Disponibles)
 
 ### 1. Elementos Atómicos (Bloques base)

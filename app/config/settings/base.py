@@ -92,7 +92,10 @@ ROOT_URLCONF = 'app.config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            '/Users/hernandezpalo/Documents/Javi/Desarrollo/Django/COMPONENTES/django_components_ui/components_ui/templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
