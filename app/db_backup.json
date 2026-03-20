@@ -1,265 +1,221 @@
 [
-{
-  "model": "landing.info",
-  "pk": 1,
-  "fields": {
-    "name": "Javier Hernandez Martin",
-    "bio": "Mi trayectoria profesional se inicia en 2005 como analista programador, donde el foco inicial estaba en la entrega técnica. Con el tiempo, y tras participar en proyectos complejos en sectores como aviación y medios de comunicación, mi rol evolucionó de la ejecución técnica a la definición de producto y la toma de decisiones estratégicas. \r\nhernandezpalo.es\r\nEsta transición me permitió desarrollar una visión end-to-end del ciclo de vida de un producto: desde identificar problemas reales, priorizar con criterios de negocio y usuario, definir roadmaps accionables, hasta entregar valor medible y evaluar resultados. \r\nhernandezpalo.es\r\nEn proyectos para diferentes organizaciones, he liderado iniciativas que mejoran la coordinación entre negocio y equipo técnico, optimizan procesos de desarrollo y priorizan funcionalidades con impacto real. (Aquí puedes añadir una métrica concreta si tienes una: ej. “Logré reducir tiempos de entrega un 25 %…”)\r\nHoy, como Product Owner / Product Manager, actúo como nexo entre negocio, usuarios y equipos técnicos, adoptando un enfoque orientado a datos, experiencia de usuario y mejora continua para construir productos útiles, escalables y alineados con objetivos estratégicos.",
-    "perfil": "Product Owner / Product Manager\r\nBusiness-driven · User-centered · Tech-enabled",
-    "skill": "Product Management · Agile Delivery · Data-Driven Decision Making · Stakeholder Management",
-    "resumen": "Product Owner / Product Manager Especializado en transformar necesidades de negocio en productos claros, priorizados y alineados con objetivos reales.",
-    "web": "www.hernandezpalo.es",
-    "nacimiento": "8 de Noviembre de 1983",
-    "trabajo": "Product Owner / Product Manager",
-    "email": "hernandezpalo@gmail.com",
-    "phone": "657157829",
-    "address": "a",
-    "photo": "photos/avatar.webp",
-    "porfolio_title": "Product Portfolio",
-    "porfolio_subtitle": "Productos, iniciativas y soluciones orientadas a negocio",
-    "porfolio_description": "Una selección de proyectos en los que he participado como Product Owner / Product Manager, cubriendo todo el ciclo de vida del producto: identificación de problemas, definición de requisitos, priorización, coordinación con equipos técnicos y mejora continua. Cada iniciativa refleja mi enfoque en la entrega de valor, la toma de decisiones basada en datos y la alineación entre negocio, tecnología y usuario final.",
-    "Experience_title": "Professional Experience",
-    "Experience_subtitle": "Product management, delivery y liderazgo en entornos tecnológicos",
-    "Experience_description": "<p>Mi experiencia profesional se centra en <strong>transformar ideas en productos digitales de alto impacto</strong>. A lo largo de mi carrera, he liderado proyectos complejos, definiendo estrategias, priorizando funcionalidades y asegurando la entrega de valor continuo a usuarios y negocio.</p><p>Trabajo de manera cercana con <strong>stakeholders, equipos técnicos y áreas de negocio</strong>, alineando objetivos estratégicos con la ejecución, aplicando metodologías ágiles como Scrum y Kanban para optimizar resultados y acelerar la innovación.</p><p>Como <strong>Product Owner / Product Manager</strong>, combino visión estratégica y conocimiento técnico para convertir problemas complejos en soluciones claras, sostenibles y escalables, siempre con foco en la experiencia del usuario, la mejora continua y la generación de impacto medible para la empresa.</p>"
+  {
+    "model": "landing.info",
+    "pk": 1,
+    "fields": {
+      "name": "Javier Hernandez Martin",
+      "bio": "Mi trayectoria profesional se inicia en 2005 como analista programador, donde el foco inicial estaba en la entrega técnica. Con el tiempo, y tras participar en proyectos complejos en sectores como aviación y medios de comunicación, mi rol evolucionó de la ejecución técnica a la definición de producto y la toma de decisiones estratégicas. \r\nhernandezpalo.es\r\nEsta transición me permitió desarrollar una visión end-to-end del ciclo de vida de un producto: desde identificar problemas reales, priorizar con criterios de negocio y usuario, definir roadmaps accionables, hasta entregar valor medible y evaluar resultados. \r\nhernandezpalo.es\r\nEn proyectos para diferentes organizaciones, he liderado iniciativas que mejoran la coordinación entre negocio y equipo técnico, optimizan procesos de desarrollo y priorizan funcionalidades con impacto real. (Aquí puedes añadir una métrica concreta si tienes una: ej. “Logré reducir tiempos de entrega un 25 %…”)\r\nHoy, como Product Owner / Product Manager, actúo como nexo entre negocio, usuarios y equipos técnicos, adoptando un enfoque orientado a datos, experiencia de usuario y mejora continua para construir productos útiles, escalables y alineados con objetivos estratégicos.",
+      "perfil": "Product Owner / Product Manager\r\nBusiness-driven · User-centered · Tech-enabled",
+      "skill": "Product Management · Agile Delivery · Data-Driven Decision Making · Stakeholder Management",
+      "resumen": "Product Owner / Product Manager Especializado en transformar necesidades de negocio en productos claros, priorizados y alineados con objetivos reales.",
+      "web": "www.hernandezpalo.es",
+      "nacimiento": "8 de Noviembre de 1983",
+      "trabajo": "Product Owner / Product Manager",
+      "email": "hernandezpalo@gmail.com",
+      "phone": "657157829",
+      "address": "a",
+      "photo": "photos/avatar.webp",
+      "porfolio_title": "Product Portfolio",
+      "porfolio_subtitle": "Productos, iniciativas y soluciones orientadas a negocio",
+      "porfolio_description": "Una selección de proyectos en los que he participado como Product Owner / Product Manager, cubriendo todo el ciclo de vida del producto: identificación de problemas, definición de requisitos, priorización, coordinación con equipos técnicos y mejora continua. Cada iniciativa refleja mi enfoque en la entrega de valor, la toma de decisiones basada en datos y la alineación entre negocio, tecnología y usuario final.",
+      "Experience_title": "Professional Experience",
+      "Experience_subtitle": "Product management, delivery y liderazgo en entornos tecnológicos",
+      "Experience_description": "<p>Mi experiencia profesional se centra en <strong>transformar ideas en productos digitales de alto impacto</strong>. A lo largo de mi carrera, he liderado proyectos complejos, definiendo estrategias, priorizando funcionalidades y asegurando la entrega de valor continuo a usuarios y negocio.</p><p>Trabajo de manera cercana con <strong>stakeholders, equipos técnicos y áreas de negocio</strong>, alineando objetivos estratégicos con la ejecución, aplicando metodologías ágiles como Scrum y Kanban para optimizar resultados y acelerar la innovación.</p><p>Como <strong>Product Owner / Product Manager</strong>, combino visión estratégica y conocimiento técnico para convertir problemas complejos en soluciones claras, sostenibles y escalables, siempre con foco en la experiencia del usuario, la mejora continua y la generación de impacto medible para la empresa.</p>"
+    }
+  },
+  {
+    "model": "landing.skill",
+    "pk": 1,
+    "fields": {
+      "name": "Product Discovery & Delivery",
+      "score": 90
+    }
+  },
+  {
+    "model": "landing.skill",
+    "pk": 2,
+    "fields": {
+      "name": "Stakeholder Management",
+      "score": 94
+    }
+  },
+  {
+    "model": "landing.skill",
+    "pk": 3,
+    "fields": {
+      "name": "Roadmap & Prioritization",
+      "score": 90
+    }
+  },
+  {
+    "model": "landing.skill",
+    "pk": 4,
+    "fields": {
+      "name": "Agile / Scrum",
+      "score": 96
+    }
+  },
+  {
+    "model": "landing.skill",
+    "pk": 5,
+    "fields": {
+      "name": "OKRs / KPIs",
+      "score": 86
+    }
+  },
+  {
+    "model": "landing.experience",
+    "pk": 1,
+    "fields": {
+      "company": "Sandav",
+      "position": "Product Owner / Product Manager (IT)",
+      "resumen": "<p><strong>Contexto</strong><br>Gestión y evolución de productos y plataformas internas en entornos corporativos, trabajando con equipos multidisciplinares y stakeholders de negocio y tecnología.</p><p><strong>Responsabilidad y rol</strong></p><ul><li>Evolución desde <strong>Jefe de Proyecto TI</strong> hacia un rol claramente orientado a <strong>Product Owner / Product Manager</strong>.</li><li>Definición y priorización del <strong>backlog</strong> en base a valor de negocio, riesgos y dependencias técnicas.</li><li>Traducción de necesidades de negocio en <strong>requisitos funcionales y user stories claras</strong>.</li><li>Coordinación continua con stakeholders para alinear roadmap, expectativas y entregables.</li><li>Gestión de soporte y mantenimiento de aplicaciones <strong>Big Data</strong>, con foco en estabilidad, calidad y eficiencia operativa.</li></ul><p><strong>Cómo trabajo como Product</strong></p><ul><li>Toma de decisiones basada en impacto y viabilidad.</li><li>Mejora continua de procesos y producto.</li><li>Implementación de <strong>Scrum y Kanban</strong> según el contexto del equipo.</li><li>Uso de métricas operativas y feedback para ajustar prioridades.</li></ul><p><strong>Impacto</strong></p><ul><li>Mayor alineación entre negocio y equipo técnico.</li><li>Mejora de la previsibilidad en entregas.</li><li>Reducción de incidencias y retrabajo mediante mejor definición funcional.</li></ul><blockquote><p><i>Este rol consolida mi perfil como Product Owner con fuerte base técnica, capaz de conectar visión de negocio y ejecución.</i></p></blockquote>",
+      "start_date": "2015-01-01",
+      "end_date": null
+    }
+  },
+  {
+    "model": "landing.experience",
+    "pk": 2,
+    "fields": {
+      "company": "Coforge / NIIT",
+      "position": "Analista Programador — Proyecto IBERIA",
+      "resumen": "<p><strong>Contexto</strong><br>Sistemas críticos para la gestión de incentivos, acuerdos comerciales y operaciones internas de IBERIA, en entornos nacionales e internacionales.</p><p><strong>Aportación</strong></p><ul><li>Desarrollo y evolución de aplicaciones core de negocio.</li><li>Participación en iniciativas de cumplimiento normativo (LOPD).</li><li>Colaboración con usuarios finales y áreas funcionales.</li></ul><p><strong>Valor como Product Manager</strong></p><blockquote><p>Esta etapa me dio una comprensión profunda de sistemas críticos, dependencias y limitaciones técnicas, clave para priorizar correctamente como Product Owner.</p></blockquote>",
+      "start_date": "2011-01-01",
+      "end_date": "2015-01-01"
+    }
+  },
+  {
+    "model": "landing.experience",
+    "pk": 4,
+    "fields": {
+      "company": "Sogecable ( Canal + )",
+      "position": "Analista Programador",
+      "resumen": "<ul><li>Desarrollo y mantenimiento de sistemas del área comercial y financiera.</li><li>Participación en proyectos de optimización de procesos internos.</li></ul>",
+      "start_date": "2010-01-04",
+      "end_date": "2011-01-03"
+    }
+  },
+  {
+    "model": "landing.experience",
+    "pk": 5,
+    "fields": {
+      "company": "Unisoft X",
+      "position": "Analista Programador",
+      "resumen": "<p><strong>Contexto</strong><br>ERP/CRM propio implantado en múltiples clientes.</p><p><strong>Valor diferencial</strong></p><ul><li>Visión completa del ciclo de vida del producto: análisis, desarrollo, implantación y soporte.</li><li>Contacto directo con clientes y usuarios finales.</li><li>Formación a usuarios y equipos.</li></ul>",
+      "start_date": "2005-01-06",
+      "end_date": "2011-01-03"
+    }
+  },
+  {
+    "model": "landing.education",
+    "pk": 1,
+    "fields": {
+      "institution": "José Ramón Otero",
+      "degree": "Técnico Superior en Desarrollo de Aplicaciones Informáticas",
+      "resumen": "<p><span style=\"color:rgb(0,0,0);\">Formación en desarrollo de software, bases de datos y programación, que sienta la base técnica para entender la ejecución de proyectos tecnológicos.</span></p>",
+      "link": "",
+      "start_date": "2022-01-01",
+      "end_date": "2024-01-01"
+    }
+  },
+  {
+    "model": "landing.education",
+    "pk": 2,
+    "fields": {
+      "institution": "CertJoin / SPOCE",
+      "degree": "Scrum Product Owner Certified Expert",
+      "resumen": "<p><span style=\"color:rgb(0,0,0);\">Certificación profesional en metodologías ágiles y gestión de producto, centrada en la definición de requisitos, priorización y entrega de valor.</span></p>",
+      "link": "",
+      "start_date": "2022-01-01",
+      "end_date": "2022-01-01"
+    }
+  },
+  {
+    "model": "landing.education",
+    "pk": 3,
+    "fields": {
+      "institution": "Cisco",
+      "degree": "Python Essentials 1 & 2",
+      "resumen": "<p><span style=\"color:rgb(0,0,0);\">Formación en Python aplicada a desarrollo de soluciones, soporte a la automatización y análisis de datos en entornos de producto.</span></p>",
+      "link": "",
+      "start_date": "2024-01-01",
+      "end_date": "2024-01-01"
+    }
+  },
+  {
+    "model": "landing.education",
+    "pk": 4,
+    "fields": {
+      "institution": "Cisco",
+      "degree": "Cybersecurity Pathway",
+      "resumen": "<p><span style=\"color:rgb(0,0,0);\">Fundamentos de ciberseguridad, esenciales para gestionar productos tecnológicos con enfoque en seguridad y cumplimiento normativo.</span></p>",
+      "link": "",
+      "start_date": "2024-01-01",
+      "end_date": "2024-01-01"
+    }
+  },
+  {
+    "model": "landing.project",
+    "pk": 1,
+    "fields": {
+      "title": "Portfolio Personal – Presentación profesional y showcase",
+      "description": "<p>Página web personal para mostrar trayectoria, habilidades y proyectos como Product Manager.<br><strong>Problema / necesidad:</strong> Necesitaba un espacio centralizado y profesional para presentar mi experiencia, metodología y proyectos, accesible para clientes y reclutadores.<br><strong>Mi rol:</strong></p><ul><li data-list-item-id=\"eaabe33544e5de69534738abb21737935\">Definí la propuesta de valor y estructura de contenido (qué mostrar y por qué)</li><li data-list-item-id=\"e4098ce31c262b2aedc8385bba5b98eda\">Priorizé funcionalidades (presentación, experiencia, proyectos, contacto)</li><li data-list-item-id=\"e8e49769d870ebae2e7907c3ff9a72187\">Diseñé y planifiqué roadmap de entregables</li><li data-list-item-id=\"ef88e46c31f8a0d62ae1c573dac0f7f2e\">Medí mejoras de engagement desde métricas (tiempo medio en página, clics a contacto)<br><strong>Cómo se resolvió:</strong><br>Usando Django + React, se creó una SPA/PWA que permite navegar por secciones clave. Se usó metodología ágil para iterar contenido y mejorar la UX en función de feedback directo.<br><strong>Resultado / impacto:</strong></li><li data-list-item-id=\"e763122f84a223b17947b4971473a8813\">Reducción de bounce rate en perfiles profesionales</li><li data-list-item-id=\"ef764a69637cf45370453ee9eb2166c1c\">Claro soporte para candidaturas y networking</li><li data-list-item-id=\"ecc6ec1bc58241721f06cc8f571d66f48\">Herramienta recurrente para presentar propuestas comerciales<br><strong>Tecnologías:</strong> Django, React, API Rest, GitHub + CI/CD</li></ul>",
+      "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/Proyecto Porfolio.png",
+      "categoria": "WEB, DJANGO",
+      "link": ""
+    }
+  },
+  {
+    "model": "landing.project",
+    "pk": 2,
+    "fields": {
+      "title": "Sitio “Restaurante”",
+      "description": "<p><strong>Título:</strong> Sitio web de ejemplo “Restaurante”<br><strong>Descripción:</strong> Web de ejemplo con catálogo, contacto y presentación de servicios.<br><strong>Problema / necesidad:</strong> Demostrar capacidad de digitalización de pequeños negocios (caso de uso real en contextos de negocio local).<br><strong>Mi rol:</strong></p><ul><li data-list-item-id=\"edea675e19f03791906e7c73bb52da80f\">Identifiqué requisitos del cliente ficticio: menú, contacto, mapas</li><li data-list-item-id=\"efbd58aac1b45d37380de1ff5b8b61d74\">Priorización de historias de usuario</li><li data-list-item-id=\"e22fc854110868290cc5cccb03505bcc2\">Coordiné diseño, data y pruebas de usabilidad<br><strong>Cómo se resolvió:</strong><br>Se construyó con diseño responsive, funcionalidades claras (platos, secciones de contacto) y métricas de conversión para formularios.<br><strong>Resultado / impacto:</strong></li><li data-list-item-id=\"ef07b27a00830ffdfd985d959ce075652\">Demostración real de un embudo básico (visitas → contacto)</li><li data-list-item-id=\"ef358d7d730982e4a8a1e8f22f775853f\">Puede adaptarse a negocios reales como MVP<br><strong>Tecnologías:</strong> Reflex ( python )&nbsp;</li></ul>",
+      "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/reflex-restaurante.png",
+      "categoria": "Reflex, Python, Web",
+      "link": "https://reflex-restaurante.hernandezpalo.es/"
+    }
+  },
+  {
+    "model": "landing.project",
+    "pk": 3,
+    "fields": {
+      "title": "Blob",
+      "description": "<p>&lt;p&gt;&lt;strong&gt;El Reto:&lt;/strong&gt; Crear una plataforma de comunicación propia para compartir conocimientos sobre la transición de perfiles técnicos a roles de gestión de producto (TPM), evitando la dependencia de plataformas externas.&lt;/p&gt;</p><p>&lt;ul style=\"margin-top: 10px; margin-bottom: 10px;\"&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;Arquitectura Django 6:&lt;/strong&gt; Implementación de un motor de contenidos optimizado para SEO y legibilidad.&lt;/li&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;Gestión de Contenidos:&lt;/strong&gt; Integración de editores enriquecidos para storytelling técnico avanzado.&lt;/li&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;UX Focus:&lt;/strong&gt; Diseño minimalista centrado en la experiencia de lectura (Typography-first).&lt;/li&gt;<br>&lt;/ul&gt;</p><p>&lt;p&gt;&lt;strong&gt;Resultado:&lt;/strong&gt; Un canal directo de &lt;em&gt;Thought Leadership&lt;/em&gt; que centraliza mi huella digital y demuestra mi capacidad para comunicar la visión técnica desde una perspectiva estratégica de producto.&lt;/p&gt;</p>",
+      "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/blog.png",
+      "categoria": "Blog, Django",
+      "link": "https://hernandezpalo.pythonanywhere.com/"
+    }
+  },
+  {
+    "model": "landing.contact",
+    "pk": 1,
+    "fields": {
+      "email": "hernandezpalo@gmail.com",
+      "phone": "657157829"
+    }
+  },
+  {
+    "model": "gym.producto",
+    "pk": 1,
+    "fields": {
+      "nombre": "1",
+      "descripcion": "1",
+      "precio": "1.00",
+      "stock": 1,
+      "fecha_creacion": "2025-12-25T12:29:28.777Z"
+    }
+  },
+  {
+    "model": "gym.producto",
+    "pk": 2,
+    "fields": {
+      "nombre": "2",
+      "descripcion": "2",
+      "precio": "2.00",
+      "stock": 2,
+      "fecha_creacion": "2025-12-25T12:29:35.827Z"
+    }
   }
-},
-{
-  "model": "landing.skill",
-  "pk": 1,
-  "fields": {
-    "name": "Product Discovery & Delivery",
-    "score": 90
-  }
-},
-{
-  "model": "landing.skill",
-  "pk": 2,
-  "fields": {
-    "name": "Stakeholder Management",
-    "score": 94
-  }
-},
-{
-  "model": "landing.skill",
-  "pk": 3,
-  "fields": {
-    "name": "Roadmap & Prioritization",
-    "score": 90
-  }
-},
-{
-  "model": "landing.skill",
-  "pk": 4,
-  "fields": {
-    "name": "Agile / Scrum",
-    "score": 96
-  }
-},
-{
-  "model": "landing.skill",
-  "pk": 5,
-  "fields": {
-    "name": "OKRs / KPIs",
-    "score": 86
-  }
-},
-{
-  "model": "landing.experience",
-  "pk": 1,
-  "fields": {
-    "company": "Sandav",
-    "position": "Product Owner / Product Manager (IT)",
-    "resumen": "<p><strong>Contexto</strong><br>Gestión y evolución de productos y plataformas internas en entornos corporativos, trabajando con equipos multidisciplinares y stakeholders de negocio y tecnología.</p><p><strong>Responsabilidad y rol</strong></p><ul><li>Evolución desde <strong>Jefe de Proyecto TI</strong> hacia un rol claramente orientado a <strong>Product Owner / Product Manager</strong>.</li><li>Definición y priorización del <strong>backlog</strong> en base a valor de negocio, riesgos y dependencias técnicas.</li><li>Traducción de necesidades de negocio en <strong>requisitos funcionales y user stories claras</strong>.</li><li>Coordinación continua con stakeholders para alinear roadmap, expectativas y entregables.</li><li>Gestión de soporte y mantenimiento de aplicaciones <strong>Big Data</strong>, con foco en estabilidad, calidad y eficiencia operativa.</li></ul><p><strong>Cómo trabajo como Product</strong></p><ul><li>Toma de decisiones basada en impacto y viabilidad.</li><li>Mejora continua de procesos y producto.</li><li>Implementación de <strong>Scrum y Kanban</strong> según el contexto del equipo.</li><li>Uso de métricas operativas y feedback para ajustar prioridades.</li></ul><p><strong>Impacto</strong></p><ul><li>Mayor alineación entre negocio y equipo técnico.</li><li>Mejora de la previsibilidad en entregas.</li><li>Reducción de incidencias y retrabajo mediante mejor definición funcional.</li></ul><blockquote><p><i>Este rol consolida mi perfil como Product Owner con fuerte base técnica, capaz de conectar visión de negocio y ejecución.</i></p></blockquote>",
-    "start_date": "2015-01-01",
-    "end_date": null
-  }
-},
-{
-  "model": "landing.experience",
-  "pk": 2,
-  "fields": {
-    "company": "Coforge / NIIT",
-    "position": "Analista Programador — Proyecto IBERIA",
-    "resumen": "<p><strong>Contexto</strong><br>Sistemas críticos para la gestión de incentivos, acuerdos comerciales y operaciones internas de IBERIA, en entornos nacionales e internacionales.</p><p><strong>Aportación</strong></p><ul><li>Desarrollo y evolución de aplicaciones core de negocio.</li><li>Participación en iniciativas de cumplimiento normativo (LOPD).</li><li>Colaboración con usuarios finales y áreas funcionales.</li></ul><p><strong>Valor como Product Manager</strong></p><blockquote><p>Esta etapa me dio una comprensión profunda de sistemas críticos, dependencias y limitaciones técnicas, clave para priorizar correctamente como Product Owner.</p></blockquote>",
-    "start_date": "2011-01-01",
-    "end_date": "2015-01-01"
-  }
-},
-{
-  "model": "landing.experience",
-  "pk": 4,
-  "fields": {
-    "company": "Sogecable ( Canal + )",
-    "position": "Analista Programador",
-    "resumen": "<ul><li>Desarrollo y mantenimiento de sistemas del área comercial y financiera.</li><li>Participación en proyectos de optimización de procesos internos.</li></ul>",
-    "start_date": "2010-01-04",
-    "end_date": "2011-01-03"
-  }
-},
-{
-  "model": "landing.experience",
-  "pk": 5,
-  "fields": {
-    "company": "Unisoft X",
-    "position": "Analista Programador",
-    "resumen": "<p><strong>Contexto</strong><br>ERP/CRM propio implantado en múltiples clientes.</p><p><strong>Valor diferencial</strong></p><ul><li>Visión completa del ciclo de vida del producto: análisis, desarrollo, implantación y soporte.</li><li>Contacto directo con clientes y usuarios finales.</li><li>Formación a usuarios y equipos.</li></ul>",
-    "start_date": "2005-01-06",
-    "end_date": "2011-01-03"
-  }
-},
-{
-  "model": "landing.education",
-  "pk": 1,
-  "fields": {
-    "institution": "José Ramón Otero",
-    "degree": "Técnico Superior en Desarrollo de Aplicaciones Informáticas",
-    "resumen": "<p><span style=\"color:rgb(0,0,0);\">Formación en desarrollo de software, bases de datos y programación, que sienta la base técnica para entender la ejecución de proyectos tecnológicos.</span></p>",
-    "link": "",
-    "start_date": "2022-01-01",
-    "end_date": "2024-01-01"
-  }
-},
-{
-  "model": "landing.education",
-  "pk": 2,
-  "fields": {
-    "institution": "CertJoin / SPOCE",
-    "degree": "Scrum Product Owner Certified Expert",
-    "resumen": "<p><span style=\"color:rgb(0,0,0);\">Certificación profesional en metodologías ágiles y gestión de producto, centrada en la definición de requisitos, priorización y entrega de valor.</span></p>",
-    "link": "",
-    "start_date": "2022-01-01",
-    "end_date": "2022-01-01"
-  }
-},
-{
-  "model": "landing.education",
-  "pk": 3,
-  "fields": {
-    "institution": "Cisco",
-    "degree": "Python Essentials 1 & 2",
-    "resumen": "<p><span style=\"color:rgb(0,0,0);\">Formación en Python aplicada a desarrollo de soluciones, soporte a la automatización y análisis de datos en entornos de producto.</span></p>",
-    "link": "",
-    "start_date": "2024-01-01",
-    "end_date": "2024-01-01"
-  }
-},
-{
-  "model": "landing.education",
-  "pk": 4,
-  "fields": {
-    "institution": "Cisco",
-    "degree": "Cybersecurity Pathway",
-    "resumen": "<p><span style=\"color:rgb(0,0,0);\">Fundamentos de ciberseguridad, esenciales para gestionar productos tecnológicos con enfoque en seguridad y cumplimiento normativo.</span></p>",
-    "link": "",
-    "start_date": "2024-01-01",
-    "end_date": "2024-01-01"
-  }
-},
-{
-  "model": "landing.project",
-  "pk": 1,
-  "fields": {
-    "title": "Portfolio Personal – Presentación profesional y showcase",
-    "description": "<p>Página web personal para mostrar trayectoria, habilidades y proyectos como Product Manager.<br><strong>Problema / necesidad:</strong> Necesitaba un espacio centralizado y profesional para presentar mi experiencia, metodología y proyectos, accesible para clientes y reclutadores.<br><strong>Mi rol:</strong></p><ul><li data-list-item-id=\"eaabe33544e5de69534738abb21737935\">Definí la propuesta de valor y estructura de contenido (qué mostrar y por qué)</li><li data-list-item-id=\"e4098ce31c262b2aedc8385bba5b98eda\">Priorizé funcionalidades (presentación, experiencia, proyectos, contacto)</li><li data-list-item-id=\"e8e49769d870ebae2e7907c3ff9a72187\">Diseñé y planifiqué roadmap de entregables</li><li data-list-item-id=\"ef88e46c31f8a0d62ae1c573dac0f7f2e\">Medí mejoras de engagement desde métricas (tiempo medio en página, clics a contacto)<br><strong>Cómo se resolvió:</strong><br>Usando Django + React, se creó una SPA/PWA que permite navegar por secciones clave. Se usó metodología ágil para iterar contenido y mejorar la UX en función de feedback directo.<br><strong>Resultado / impacto:</strong></li><li data-list-item-id=\"e763122f84a223b17947b4971473a8813\">Reducción de bounce rate en perfiles profesionales</li><li data-list-item-id=\"ef764a69637cf45370453ee9eb2166c1c\">Claro soporte para candidaturas y networking</li><li data-list-item-id=\"ecc6ec1bc58241721f06cc8f571d66f48\">Herramienta recurrente para presentar propuestas comerciales<br><strong>Tecnologías:</strong> Django, React, API Rest, GitHub + CI/CD</li></ul>",
-    "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/Proyecto Porfolio.png",
-    "categoria": "WEB, DJANGO",
-    "link": ""
-  }
-},
-{
-  "model": "landing.project",
-  "pk": 2,
-  "fields": {
-    "title": "Sitio “Restaurante”",
-    "description": "<p><strong>Título:</strong> Sitio web de ejemplo “Restaurante”<br><strong>Descripción:</strong> Web de ejemplo con catálogo, contacto y presentación de servicios.<br><strong>Problema / necesidad:</strong> Demostrar capacidad de digitalización de pequeños negocios (caso de uso real en contextos de negocio local).<br><strong>Mi rol:</strong></p><ul><li data-list-item-id=\"edea675e19f03791906e7c73bb52da80f\">Identifiqué requisitos del cliente ficticio: menú, contacto, mapas</li><li data-list-item-id=\"efbd58aac1b45d37380de1ff5b8b61d74\">Priorización de historias de usuario</li><li data-list-item-id=\"e22fc854110868290cc5cccb03505bcc2\">Coordiné diseño, data y pruebas de usabilidad<br><strong>Cómo se resolvió:</strong><br>Se construyó con diseño responsive, funcionalidades claras (platos, secciones de contacto) y métricas de conversión para formularios.<br><strong>Resultado / impacto:</strong></li><li data-list-item-id=\"ef07b27a00830ffdfd985d959ce075652\">Demostración real de un embudo básico (visitas → contacto)</li><li data-list-item-id=\"ef358d7d730982e4a8a1e8f22f775853f\">Puede adaptarse a negocios reales como MVP<br><strong>Tecnologías:</strong> Reflex ( python )&nbsp;</li></ul>",
-    "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/reflex-restaurante.png",
-    "categoria": "Reflex, Python, Web",
-    "link": "https://reflex-restaurante.hernandezpalo.es/"
-  }
-},
-{
-  "model": "landing.project",
-  "pk": 3,
-  "fields": {
-    "title": "Blob",
-    "description": "<p>&lt;p&gt;&lt;strong&gt;El Reto:&lt;/strong&gt; Crear una plataforma de comunicación propia para compartir conocimientos sobre la transición de perfiles técnicos a roles de gestión de producto (TPM), evitando la dependencia de plataformas externas.&lt;/p&gt;</p><p>&lt;ul style=\"margin-top: 10px; margin-bottom: 10px;\"&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;Arquitectura Django 6:&lt;/strong&gt; Implementación de un motor de contenidos optimizado para SEO y legibilidad.&lt;/li&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;Gestión de Contenidos:&lt;/strong&gt; Integración de editores enriquecidos para storytelling técnico avanzado.&lt;/li&gt;<br>&nbsp; &nbsp;&lt;li&gt;&lt;strong&gt;UX Focus:&lt;/strong&gt; Diseño minimalista centrado en la experiencia de lectura (Typography-first).&lt;/li&gt;<br>&lt;/ul&gt;</p><p>&lt;p&gt;&lt;strong&gt;Resultado:&lt;/strong&gt; Un canal directo de &lt;em&gt;Thought Leadership&lt;/em&gt; que centraliza mi huella digital y demuestra mi capacidad para comunicar la visión técnica desde una perspectiva estratégica de producto.&lt;/p&gt;</p>",
-    "imagen": "https://raw.githubusercontent.com/hernandezpalo83/cdn/main/project/blog.png",
-    "categoria": "Blog, Django",
-    "link": "https://hernandezpalo.pythonanywhere.com/"
-  }
-},
-{
-  "model": "landing.contact",
-  "pk": 1,
-  "fields": {
-    "email": "hernandezpalo@gmail.com",
-    "phone": "657157829"
-  }
-},
-{
-  "model": "gym.product",
-  "pk": 1,
-  "fields": {
-    "name": "1",
-    "category": "1",
-    "price": "1.00",
-    "cost": "1.00",
-    "status": 1
-  }
-},
-{
-  "model": "gym.product",
-  "pk": 2,
-  "fields": {
-    "name": "2",
-    "category": "1",
-    "price": "2.00",
-    "cost": "2.00",
-    "status": 1
-  }
-},
-{
-  "model": "gym.product",
-  "pk": 3,
-  "fields": {
-    "name": "3",
-    "category": "1",
-    "price": "3.00",
-    "cost": "3.00",
-    "status": 1
-  }
-},
-{
-  "model": "gym.product",
-  "pk": 4,
-  "fields": {
-    "name": "4",
-    "category": "4",
-    "price": "4.00",
-    "cost": "4.00",
-    "status": 1
-  }
-},
-{
-  "model": "gym.producto",
-  "pk": 1,
-  "fields": {
-    "nombre": "1",
-    "descripcion": "1",
-    "precio": "1.00",
-    "stock": 1,
-    "fecha_creacion": "2025-12-25T12:29:28.777Z"
-  }
-},
-{
-  "model": "gym.producto",
-  "pk": 2,
-  "fields": {
-    "nombre": "2",
-    "descripcion": "2",
-    "precio": "2.00",
-    "stock": 2,
-    "fecha_creacion": "2025-12-25T12:29:35.827Z"
-  }
-}
 ]
