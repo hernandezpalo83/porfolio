@@ -10,14 +10,17 @@ Usage:
 """
 
 import os
-from django.core.management import execute_from_command_line
+import sys
 
 # Determine which settings to load
 DJANGO_ENV = os.getenv('DJANGO_ENV', 'development').lower()
 
+# Auto-detect test runner
+_is_testing = 'test' in sys.argv
+
 if DJANGO_ENV == 'production':
     from .production import *
-elif DJANGO_ENV == 'testing':
+elif DJANGO_ENV == 'testing' or _is_testing:
     from .testing import *
 else:
     # Default to development

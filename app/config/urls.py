@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from django.http import HttpResponse # Importante añadir esto
 
 from django.contrib.sitemaps.views import sitemap
 from app.landing.sitemaps import StaticViewSitemap
@@ -11,6 +10,11 @@ from django.conf.urls.static import static
 from app.documentum.sitemaps import DocumentSitemap, CategorySitemap
 
 from django.views.generic import TemplateView
+from django.http import JsonResponse
+
+
+def health_check(request):
+    return JsonResponse({"status": "ok"})
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -20,6 +24,7 @@ sitemaps = {
 }
 
 urlpatterns = [
+    path("health/", health_check, name="health_check"),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 

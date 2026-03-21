@@ -13,6 +13,7 @@ psycopg[binary]
 dj-database-url
 requests
 django-recaptcha
+django-ratelimit
 django-htmlmin
 markdown
 pymdown-extensions

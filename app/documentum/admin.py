@@ -5,7 +5,6 @@ Django Admin Configuration for Documentation Hub
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from django.utils.safestring import mark_safe
 from .models import Category, Document, DocumentVersion
 
 
@@ -80,11 +79,16 @@ class DocumentAdmin(admin.ModelAdmin):
     inlines = [DocumentVersionInline]
     
     def content_preview(self, obj):
-        """Show HTML preview of Markdown content"""
+        """Show sanitized text preview of Markdown content"""
         if obj and obj.pk:
-            return mark_safe(f'<div style="border:1px solid #ddd; padding:15px; background:#f9f9f9; max-height:400px; overflow:auto;">{obj.content_html}</div>')
+            from django.utils.html import strip_tags
+            preview = strip_tags(obj.content_html)[:500] if obj.content_html else ""
+            return format_html(
+                '<div style="border:1px solid #ddd; padding:15px; background:#f9f9f9; max-height:400px; overflow:auto; white-space:pre-wrap;">{}</div>',
+                preview
+            )
         return "(Save to see preview)"
-    content_preview.short_description = "HTML Preview"
+    content_preview.short_description = "Content Preview"
     
     def reading_time_display(self, obj):
         return f"{obj.reading_time} min"

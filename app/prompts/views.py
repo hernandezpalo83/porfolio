@@ -4,7 +4,6 @@ import json
 import os
 import logging
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 logger = logging.getLogger(__name__)
@@ -72,44 +71,67 @@ def save_to_github(updated_data, commit_message):
         logger.error(f"Error writing data to GitHub: {e}", exc_info=True)
         return False
 
-@login_required
+from django.core.exceptions import PermissionDenied
+
+
+def _superuser_required(view_func):
+    """Decorator: requiere superusuario. Da 403 si ya está autenticado pero no es super."""
+    from functools import wraps
+
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            from django.contrib.auth.views import redirect_to_login
+            return redirect_to_login(request.get_full_path())
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+@_superuser_required
 def prompt_library(request):
     """
     Vista principal: Gestiona la visualización, creación y edición de prompts.
+    Solo accesible por superusuarios.
     """
     prompts_data, _ = get_github_data()
 
     if request.method == 'POST':
         edit_id = request.POST.get('id')
+        title = (request.POST.get('title') or '').strip()
         new_prompt = {
-            "title": request.POST.get('title'),
-            "category": request.POST.get('category'),
-            "description": request.POST.get('description'),
-            "prompt": request.POST.get('prompt') 
+            "title": title,
+            "category": (request.POST.get('category') or '').strip(),
+            "description": (request.POST.get('description') or '').strip(),
+            "prompt": (request.POST.get('prompt') or '').strip(),
         }
+
+        if not title:
+            messages.error(request, "El título del prompt es obligatorio.")
+            return redirect('prompts:prompt_library')
 
         # Lógica de actualización o creación
         if edit_id and edit_id.isdigit():
             idx = int(edit_id) - 1
             if 0 <= idx < len(prompts_data):
                 prompts_data[idx] = new_prompt
-                msg_user = f"Prompt '{new_prompt['title']}' actualizado."
-                commit_msg = f"🔧 Edit: {new_prompt['title']} via Admin"
+                msg_user = f"Prompt '{title}' actualizado."
+                commit_msg = f"Edit: {title} via Admin"
             else:
-                prompts_data.append(new_prompt)
-                msg_user = "Nuevo prompt creado."
-                commit_msg = f"✨ Add: {new_prompt['title']} via Admin"
+                messages.error(request, f"El ID de prompt '{edit_id}' no existe.")
+                return redirect('prompts:prompt_library')
         else:
             prompts_data.append(new_prompt)
-            msg_user = "Nuevo prompt creado."
-            commit_msg = f"✨ Add: {new_prompt['title']} via Admin"
+            msg_user = f"Nuevo prompt '{title}' creado."
+            commit_msg = f"Add: {title} via Admin"
 
         # Sincronización con GitHub
         if save_to_github(prompts_data, commit_msg):
             messages.success(request, msg_user)
         else:
             messages.error(request, "Error de sincronización con el repositorio remoto.")
-        
+
         return redirect('prompts:prompt_library')
 
     # Filtrado dinámico
@@ -129,7 +151,7 @@ def prompt_library(request):
         'query': query
     })
 
-@login_required
+@_superuser_required
 def delete_prompt(request, index):
     """
     Elimina un elemento del JSON por índice y realiza commit en GitHub.

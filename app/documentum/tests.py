@@ -2,11 +2,8 @@ from django.test import TestCase
 from django.apps import apps
 from unittest.mock import patch
 import types
-from pathlib import Path
-from django.conf import settings
-from django.core.management import call_command
 
-from app.documentum.models import Category, Document, DocumentVersion
+from app.documentum.models import Category, Document
 
 
 class DocumentumModelsTest(TestCase):

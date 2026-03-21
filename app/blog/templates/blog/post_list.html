@@ -2,9 +2,15 @@
 {% load static %}
 
 {% block title %}Blog | Javier Hernández Martin | TPM{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+{% block twitter_title %}Blog | Javier Hernández Martin{% endblock %}
+{% block twitter_description %}{{ meta_description }}{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'blog/css/blog_list.css' %}">
+{# SEO: paginación para crawlers #}
+{% if posts.has_previous %}<link rel="prev" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}">{% endif %}
+{% if posts.has_next %}<link rel="next" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}">{% endif %}
 {% endblock %}
 
 {% block content %}

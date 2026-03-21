@@ -10,24 +10,34 @@ from .models import Category, Document
 class CategoryListView(ListView):
     """List all visible categories"""
     model = Category
-    # Templates are located under app/templates/docs/
     template_name = 'documentum/category_list.html'
     context_object_name = 'categories'
-    
+
     def get_queryset(self):
-        return Category.objects.filter(is_visible=True).prefetch_related('documents')
+        return (
+            Category.objects.filter(is_visible=True)
+            .order_by('order', 'name')
+            .prefetch_related('documents')
+        )
 
 
 class DocumentListView(ListView):
-    """List published documents in a specific category"""
+    """List published documents in a specific category (paginated)"""
     model = Document
     template_name = 'documentum/document_list.html'
     context_object_name = 'documents'
-    
+    paginate_by = 20
+
     def get_queryset(self):
-        self.category = get_object_or_404(Category, slug=self.kwargs['category_slug'])
-        return Document.published.filter(category=self.category)
-    
+        self.category = get_object_or_404(
+            Category, slug=self.kwargs['category_slug'], is_visible=True
+        )
+        return (
+            Document.published.filter(category=self.category)
+            .only('title', 'slug', 'meta_description', 'updated_at', 'stack_version')
+            .order_by('-updated_at')
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = self.category

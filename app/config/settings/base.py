@@ -7,7 +7,6 @@ Environment-specific overrides are in: development.py, production.py, testing.py
 
 from pathlib import Path
 import os
-import logging.config
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -93,8 +92,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-            '/Users/hernandezpalo/Documents/Javi/Desarrollo/Django/COMPONENTES/django_components_ui/components_ui/templates'
+            BASE_DIR / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -105,6 +103,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'app.config.context_processors.brand_assets',
                 'app.landing.context_processors.menu_int_processor',
+                'app.documentum.context_processors.docs_navigation',
             ],
         },
     },
@@ -195,5 +194,21 @@ LOGIN_URL = 'login'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '20/hour',
+        'user': '200/hour',
+    },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
 }

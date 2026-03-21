@@ -1,7 +1,5 @@
 from .models import MenuItem
 from django.db.models import Q
-from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
 from django.core.cache import cache
 
 def menu_int_processor(request):

@@ -1,6 +1,5 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
-from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
@@ -74,9 +73,10 @@ class Education(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=100)
     description = CKEditor5Field('Text', config_name='default', blank=True, default="")
-    imagen = models.TextField(blank=True, default='')
+    imagen = models.CharField(max_length=500, blank=True, default='',
+                              help_text="Ruta CDN relativa, ej: /projects/foto.webp")
     categoria = models.CharField(max_length=100, blank=True, default='')
-    link = models.TextField(blank=True, default='')
+    link = models.URLField(max_length=500, blank=True, default='')
 
     def __str__(self):
         return self.title
@@ -101,6 +101,10 @@ class Contacto(models.Model):
         verbose_name = "Mensaje de Contacto"
         verbose_name_plural = "Mensajes de Contacto"
         ordering = ['-fecha_envio']
+        indexes = [
+            models.Index(fields=['-fecha_envio']),
+            models.Index(fields=['leido']),
+        ]
 
     def __str__(self):
         return f"{self.nombre} - {self.asunto}"
@@ -130,15 +134,22 @@ class Metric(models.Model):
     description = models.TextField(help_text="Descripción detallada")
     is_visible = models.BooleanField(default=True, verbose_name="Visible")
     order = models.IntegerField(default=0, help_text="Orden de aparición (menor = primero)")
-    
+
     class Meta:
         ordering = ['order', 'id']
         verbose_name = "Métrica de Impacto"
         verbose_name_plural = "Métricas de Impacto"
-    
+        indexes = [
+            models.Index(fields=['is_visible', 'order']),
+        ]
+
+    def clean(self):
+        if self.value < 0:
+            raise ValidationError("El valor de la métrica no puede ser negativo.")
+
     def __str__(self):
         return f"{self.prefix}{self.value}{self.suffix} - {self.title}"
-    
+
     def get_percent(self):
         """Calcula el porcentaje para el círculo de progreso (máximo 100)"""
         return min(self.value, 100)
@@ -149,8 +160,8 @@ class CompanyCollaboration(models.Model):
     name = models.CharField(max_length=200, verbose_name="Nombre de la empresa")
     description = models.TextField(blank=True, default='', verbose_name="Descripción")
     logo = models.CharField(
-        max_length=255, 
-        verbose_name="Ruta del Logo CDN", 
+        max_length=255,
+        verbose_name="Ruta del Logo CDN",
         help_text="Ejemplo: /profile/Foto_perfil2.webp. Se concatenará con BRAND_ASSETS_URL.",
         blank=True,
         null=True
@@ -164,6 +175,9 @@ class CompanyCollaboration(models.Model):
         ordering = ["order"]
         verbose_name = "Empresa Colaboradora"
         verbose_name_plural = "Empresas Colaboradoras"
+        indexes = [
+            models.Index(fields=['is_active', 'order']),
+        ]
 
     def __str__(self) -> str:
         return self.name

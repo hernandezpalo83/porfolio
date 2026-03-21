@@ -1,6 +1,14 @@
 User-agent: *
-Allow: /
 Disallow: /admin/
+Disallow: /private/
 Disallow: /login/
+Disallow: /logout/
+Disallow: /gym/
+Disallow: /prompts/
+Disallow: /ckeditor5/
+
+Allow: /blog/
+Allow: /wiki/
+Allow: /static/
 
 Sitemap: https://hernandezpalo.es/sitemap.xml

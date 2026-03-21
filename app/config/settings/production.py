@@ -38,7 +38,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Logging to file and syslog in production
-import logging.handlers
 
 LOGGING = {
     'version': 1,

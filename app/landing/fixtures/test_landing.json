@@ -1,0 +1,46 @@
+[
+  {
+    "model": "landing.info",
+    "pk": 1,
+    "fields": {
+      "name": "Test User",
+      "bio": "Bio de prueba.",
+      "perfil": "Perfil de prueba.",
+      "resumen": "Resumen de prueba.",
+      "web": "",
+      "nacimiento": "1990-01-01",
+      "trabajo": "Developer",
+      "email": "test@example.com",
+      "phone": "",
+      "address": "Madrid",
+      "photo": "",
+      "porfolio_title": "Test Portfolio",
+      "porfolio_subtitle": "subtitle",
+      "porfolio_description": "description",
+      "Experience_title": "Experiencia",
+      "Experience_subtitle": "",
+      "Experience_description": ""
+    }
+  },
+  {
+    "model": "landing.skill",
+    "pk": 1,
+    "fields": {
+      "name": "Python",
+      "score": 90
+    }
+  },
+  {
+    "model": "landing.metric",
+    "pk": 1,
+    "fields": {
+      "value": 10,
+      "prefix": "",
+      "suffix": "+",
+      "title": "Proyectos",
+      "description": "proyectos completados",
+      "is_visible": true,
+      "order": 1
+    }
+  }
+]
