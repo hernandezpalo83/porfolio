@@ -5,7 +5,6 @@ from django.urls import reverse
 from django_ckeditor_5.fields import CKEditor5Field
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
-import math
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -49,7 +48,8 @@ class Post(models.Model):
         verbose_name = "Post"
         verbose_name_plural = "Posts"
         indexes = [
-            models.Index(fields=['-publish']),
+            models.Index(fields=['status', '-publish']),
+            models.Index(fields=['category', 'status']),
             models.Index(fields=['slug']),
         ]
 
@@ -69,10 +69,13 @@ class Post(models.Model):
         return reverse('blog:post_detail', args=[self.slug])
 
     
-    def get_read_time(self):
+    def get_read_time(self) -> int:
+        """Calcula el tiempo de lectura estimado a 200 palabras/minuto."""
         try:
             if not self.content:
                 return 1
-            return 6
+            texto_plano = strip_tags(self.content)
+            palabras = len(texto_plano.split())
+            return max(1, round(palabras / 200))
         except Exception:
-            return 1 # Fallback seguro para que la web no se cuelgue
+            return 1

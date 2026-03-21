@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from django.conf import settings
 from .models import Info, Skill, Experience, Education, Project, Contact, Contacto, Metric
 from .models import MenuItem, CompanyCollaboration
 
@@ -60,10 +59,11 @@ class ProjectAdmin(admin.ModelAdmin):
     get_description_short.short_description = "Descripción"
     
     def get_description_preview(self, obj):
-        """Preview HTML de la descripción en readonly"""
+        """Preview HTML de la descripción en readonly (sanitizado)"""
         if obj and obj.pk:
-            from django.utils.safestring import mark_safe
-            return mark_safe(obj.description) if obj.description else "(vacío)"
+            from django.utils.html import strip_tags, format_html
+            preview_text = strip_tags(obj.description)[:300] if obj.description else ""
+            return format_html('<div style="padding:8px;background:#f9f9f9;border:1px solid #ddd;">{}</div>', preview_text)
         return "(Guarda primero para ver el preview)"
     get_description_preview.short_description = "Preview"
 

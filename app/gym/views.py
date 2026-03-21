@@ -1,12 +1,10 @@
 from django.shortcuts import render
-from django_tables2 import RequestConfig
-from django_tables2 import SingleTableMixin
-from django_filters.views import FilterView
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
-from typing import Any
 
-from app.gym.models import Producto
 
+
+@login_required
 def mantenimiento_productos(request: HttpRequest) -> HttpResponse:
     """
     Vista de mantenimiento para el modelo Producto usando comp_tabla_mantenimiento.

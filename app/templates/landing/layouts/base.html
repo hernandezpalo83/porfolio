@@ -33,13 +33,19 @@
     <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
     <meta name="twitter:site" content="@HernandezPalo">
     <meta name="twitter:title"
-        content="{% block twitter_title %}{% block og_title_fallback %}{% endblock %}{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{% endblock %}">
+        content="{% block twitter_title %}Javier Hernández Martin | TPM & Senior Developer{% endblock %}">
+    <meta name="twitter:description"
+        content="{% block twitter_description %}Javier Hernández Martin: Technical Product Manager Senior en Madrid. Experto en alinear visión de producto con ingeniería escalable.{% endblock %}">
+    <meta name="twitter:image"
+        content="{% block twitter_image %}{% static 'landing/img/og-image.webp' %}{% endblock %}">
 
     {# 🚀 FAVICON #}
-    <link rel="icon" type="image/x-icon" href="{% static 'landing/img/favicon.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'landing/img/favicon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'landing/img/favicon.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/img/favicon.png' %}">
+
+    {# 🚀 PRECONNECT — CDNs remotos (imágenes GitHub) #}
+    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+    <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
 
     {# 🚀 FUENTES PRELOAD #}
     <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-regular-webfont.woff2' %}" as="font"
@@ -53,11 +59,7 @@
     {# 🚀 LOCAL FONTS #}
     <link rel="stylesheet" href="{% static 'landing/css/fonts.css' %}">
 
-    {# 🚀 ICONS (Restored) #}
-    <link rel="stylesheet" href="{% static 'landing/css/font-awesome/css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/micons/micons.css' %}">
-
-    {# 🚀 ICONS (Restored) #}
+    {# 🚀 ICONS #}
     <link rel="stylesheet" href="{% static 'landing/css/font-awesome/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'landing/css/micons/micons.css' %}">
 
@@ -131,29 +133,17 @@
     {# REMOVED: jQuery and Plugins (Refactored to Vanilla JS) #}
     <script src="{% static 'landing/js/main.js' %}" defer></script>
 
-    {# 🚀 TYPING EFFECT & MODERN PLUGINS #}
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
-    {# 🚀 AOS ANIMATIONS #}
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    {# 🚀 TYPING EFFECT & AOS ANIMATIONS — vendor local (sin CDN externo) #}
+    <link rel="stylesheet" href="{% static 'landing/css/vendor/aos.min.css' %}">
+    <script src="{% static 'landing/js/vendor/typed.min.js' %}"></script>
+    <script src="{% static 'landing/js/vendor/aos.min.js' %}"></script>
     <script>
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            mirror: false
-        });
-    </script>
-
-    <script>
+        AOS.init({ duration: 800, easing: 'ease-in-out', once: true, mirror: false });
         document.addEventListener('DOMContentLoaded', function () {
             if (document.getElementById('typed-roles')) {
                 new Typed('#typed-roles', {
                     strings: ['Technical Product Manager', 'Senior Software Engineer', 'Agile & Data-Driven Leader'],
-                    typeSpeed: 50,
-                    backSpeed: 30,
-                    backDelay: 2000,
-                    loop: true
+                    typeSpeed: 50, backSpeed: 30, backDelay: 2000, loop: true
                 });
             }
         });

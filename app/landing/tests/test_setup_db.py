@@ -3,7 +3,6 @@ from django.core.management import call_command
 from django.apps import apps
 from django.conf import settings
 from pathlib import Path
-import os
 import tempfile
 
 

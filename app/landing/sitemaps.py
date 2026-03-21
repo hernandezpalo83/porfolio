@@ -1,16 +1,27 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
+
 class StaticViewSitemap(Sitemap):
-    priority = 1.0
-    changefreq = 'daily' # Tu home cambia a menudo si editas el porfolio
+    protocol = 'https'
 
     def items(self):
-        # Aquí solo ponemos las páginas que tienen su propia URL real
-        return ['landing:index', 'login'] 
+        # Solo páginas públicas con contenido real. Login excluido.
+        return ['landing:index', 'blog:post_list']
 
     def location(self, item):
         return reverse(item)
 
-# Eliminamos ProjectSitemap si no tienes páginas individuales para cada proyecto.
-# Google ya leerá los proyectos al entrar en 'home'.
+    def priority(self, item):
+        priorities = {
+            'landing:index': 0.9,
+            'blog:post_list': 0.7,
+        }
+        return priorities.get(item, 0.5)
+
+    def changefreq(self, item):
+        freqs = {
+            'landing:index': 'weekly',
+            'blog:post_list': 'daily',
+        }
+        return freqs.get(item, 'monthly')

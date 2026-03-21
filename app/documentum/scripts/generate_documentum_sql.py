@@ -10,7 +10,6 @@ Diseñado para SQLite (usa CURRENT_TIMESTAMP para timestamps).
 
 import argparse
 from pathlib import Path
-import re
 
 IGNORED_DIRS = {'.git', '__pycache__', 'node_modules', '.venv', 'venv', 'env', '.idea', '.github'}
 MD_GLOBS = ['*.md', '*.markdown']
