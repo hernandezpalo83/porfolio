@@ -34,7 +34,18 @@ jobs:
           GITHUB_TOKEN_COMPONENTES: ${{ secrets.GITHUB_TOKEN_COMPONENTES }}
         run: |
           pip install --upgrade pip
-          # envsubst expande ${GITHUB_TOKEN_COMPONENTES} en la URL del paquete privado
+
+          # Configurar credenciales git para el paquete privado.
+          # .netrc es el método más fiable: git usa x-access-token:PAT como credencial.
+          printf "machine github.com login x-access-token password %s\n" "${GITHUB_TOKEN_COMPONENTES}" > ~/.netrc
+          chmod 600 ~/.netrc
+
+          # Reescribir la URL con token embebido → URL limpia (las credenciales vienen de .netrc).
+          # Esto permite que requirements.txt use ${GITHUB_TOKEN_COMPONENTES} en la URL sin que
+          # git lo trate como username y pida password por separado.
+          git config --global url."https://github.com/".insteadOf "https://${GITHUB_TOKEN_COMPONENTES}@github.com/"
+
+          # envsubst expande ${GITHUB_TOKEN_COMPONENTES}; git reescribe la URL a https://github.com/
           envsubst < requirements.txt | pip install -r /dev/stdin
 
       - name: Run tests
