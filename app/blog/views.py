@@ -25,7 +25,6 @@ def _search_posts(queryset, query: str):
     if 'postgresql' in db_engine or 'postgis' in db_engine:
         try:
             from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-            from django.db.models import F
             vector = SearchVector('title', weight='A') + SearchVector('excerpt', weight='B')
             search_query = SearchQuery(query, config='spanish')
             return (

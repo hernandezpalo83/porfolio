@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Fuerza Node.js 24 en las actions para evitar el warning de deprecación de Node 20
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   test:
     name: Tests (Python ${{ matrix.python-version }})
@@ -30,18 +34,22 @@ jobs:
           GITHUB_TOKEN_COMPONENTES: ${{ secrets.GITHUB_TOKEN_COMPONENTES }}
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          # envsubst expande ${GITHUB_TOKEN_COMPONENTES} en la URL del paquete privado
+          envsubst < requirements.txt | pip install -r /dev/stdin
 
       - name: Run tests
         env:
           DJANGO_ENV: testing
+          DJANGO_SETTINGS_MODULE: app.config.settings
           DEBUG: "True"
           SECRET_KEY: "ci-secret-key-not-used-in-prod"
-          RECAPTCHA_PUBLIC_KEY: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-          RECAPTCHA_PRIVATE_KEY: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+          # Claves ficticias: SILENCED_SYSTEM_CHECKS ya desactiva la validación de recaptcha
+          RECAPTCHA_PUBLIC_KEY: "ci-fake-public-key"
+          RECAPTCHA_PRIVATE_KEY: "ci-fake-private-key"
           ALLOWED_HOSTS: "localhost,127.0.0.1"
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          python manage.py test --verbosity=2
+          python app/manage.py test --verbosity=2
 
   lint:
     name: Lint (ruff)

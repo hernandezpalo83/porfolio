@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.cache import cache
 from django.core.management import call_command
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
-from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration
 from app.blog.models import Post

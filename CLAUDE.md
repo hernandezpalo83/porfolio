@@ -199,6 +199,23 @@ La BD de Render (free tier) tiene persistencia limitada. El proyecto implementa:
   pip install -r requirements.txt && python manage.py migrate && python manage.py setup_db --seed --seed-sql documentum_seed_postgres.sql --normalize --render && python create_admin.py && python manage.py collectstatic --noinput
   ```
 
+### Pre-deploy checklist (ejecutar siempre antes de merge a `main`)
+
+```bash
+# 1. Todos los tests pasan
+PYTHONPATH=. python app/manage.py test
+
+# 2. collectstatic no falla (detecta referencias a .map faltantes, imports rotos, etc.)
+DEBUG=False SECRET_KEY=test PYTHONPATH=. python app/manage.py collectstatic --noinput --clear
+
+# 3. Verificar URLs del proyecto
+PYTHONPATH=. python app/manage.py verify_urls
+```
+
+> **Trampa habitual**: archivos JS de vendor con `//# sourceMappingURL=*.map` sin el `.map` correspondiente.
+> WhiteNoise falla en `collectstatic` silenciosamente en local si no se usa `CompressedManifestStaticFilesStorage`.
+> Ejecutar siempre el paso 2 con `DEBUG=False` para replicar las condiciones de producción.
+
 ---
 
 ## 11. Testing
@@ -228,6 +245,10 @@ python manage.py verify_urls        # verificación de URLs (pre-commit)
 | Crear modelos sin `__str__`, `Meta.ordering`, ni `clean()` | Incoherencia con el resto del codebase |
 | Instalar paquetes sin añadirlos a `requirements.txt` | Rompe el despliegue en Render |
 | Crear una nueva vista de mantenimiento sin seguir la receta canónica | Inconsistencia con el sistema Tabulator |
+| **[RECURRENTE]** Dejar comentarios `//# sourceMappingURL=*.map` en archivos JS de vendor sin incluir el `.map` | `CompressedManifestStaticFilesStorage` de WhiteNoise falla en `collectstatic` y rompe el deploy en Render. Al añadir/actualizar un vendor JS, eliminar siempre la línea `sourceMappingURL` si el `.map` no está presente |
+| Poner claves de API reales (aunque sean de test) en `ci.yml` como literales | GitGuardian las detecta y bloquea el PR. Usar claves ficticias (`ci-fake-*`) cuando `SILENCED_SYSTEM_CHECKS` ya desactiva la validación, o referenciar `${{ secrets.* }}` |
+| Añadir imports en ficheros sin verificar con ruff antes del commit | El lint de CI falla. Ejecutar siempre `ruff check app/ --select F401,F811,E711,E712` antes de mergear |
+| Ejecutar `python manage.py` en CI sin `PYTHONPATH=$GITHUB_WORKSPACE` y sin apuntar a `app/manage.py` | Django no encuentra el módulo `app.*` porque el proyecto no está instalado. El CI usa `PYTHONPATH: ${{ github.workspace }}` y `python app/manage.py` |
 
 ---
 
