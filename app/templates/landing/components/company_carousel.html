@@ -6,9 +6,7 @@
        Paleta: dark #0d0d0d | accent #CC0052 | muted #333
        ===================================================== */
     #companies {
-        /* Más espacio en la parte de arriba respecto a la sección enterior */
-        padding: 12rem 0 9rem 0; 
-        /* Fondo blanco según solicitud */
+        padding: 12rem 0 9rem 0;
         background: #ffffff;
         border-top: 1px solid rgba(0, 0, 0, 0.05);
         overflow: hidden;
@@ -29,7 +27,6 @@
     }
 
     #companies .section-intro h2 {
-        /* Texto en negro profundo sobre fondo blanco */
         color: #111111;
         font-family: "poppins-medium", sans-serif;
         font-size: 3.6rem;
@@ -38,7 +35,6 @@
     }
 
     #companies .section-intro .companies-microcopy {
-        /* Gris medio para el subtítulo */
         color: #555555;
         font-family: "lora-regular", serif;
         font-size: 1.6rem;
@@ -51,21 +47,24 @@
     .companies-carousel-wrapper {
         position: relative;
         width: 100%;
-        /* Máscaras de fade lateral para que se difumine al borde blanco */
+        /* Máscaras de fade lateral */
         mask-image: linear-gradient(
             to right,
             transparent 0%,
-            #fff 10%,
-            #fff 90%,
+            #fff 12%,
+            #fff 88%,
             transparent 100%
         );
         -webkit-mask-image: linear-gradient(
             to right,
             transparent 0%,
-            #fff 10%,
-            #fff 90%,
+            #fff 12%,
+            #fff 88%,
             transparent 100%
         );
+        /* Perspectiva 3D para el efecto de profundidad */
+        perspective: 1200px;
+        perspective-origin: 50% 50%;
     }
 
     /* ── Track: fila continua de logos ── */
@@ -88,26 +87,21 @@
         to   { transform: translateX(-50%); }
     }
 
-    /* ── Tarjeta individual (Sin recuadro) ── */
+    /* ── Tarjeta individual ── */
     .company-card {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        /* Reducimos el padding horizontal al no haber caja */
         padding: 1rem 3.5rem;
         margin: 0 1rem;
         min-width: 180px;
         background: transparent;
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* JS controla transform; transición suave */
+        transition: transform 0.2s ease-out;
+        transform-origin: center center;
         text-decoration: none;
-    }
-
-    .company-card:hover,
-    .company-card:focus {
-        /* Efecto de elevación/zoom sutil sin añadir bordes ni background */
-        transform: translateY(-5px) scale(1.05);
-        outline: none;
+        will-change: transform;
     }
 
     .company-card img {
@@ -115,16 +109,10 @@
         width: 130px;
         height: 60px;
         object-fit: contain;
-        /* Como el fondo es blanco, quitamos invert(1). Mostramos logos reales.
-           Ponemos escala de grises y revelamos color original en hover */
-        filter: grayscale(100%) opacity(0.5);
-        transition: opacity 0.4s ease, filter 0.4s ease;
-    }
-
-    .company-card:hover img,
-    .company-card:focus img {
-        opacity: 1;
-        filter: grayscale(0%);
+        /* JS controla filter; transición suave */
+        transition: filter 0.25s ease-out, box-shadow 0.25s ease-out;
+        will-change: filter;
+        border-radius: 4px;
     }
 
     .company-card .company-name {
@@ -135,27 +123,22 @@
         text-transform: uppercase;
         letter-spacing: .2rem;
         margin-top: 1.2rem;
-        transition: color 0.3s ease;
+        transition: color 0.25s ease-out;
     }
 
-    .company-card:hover .company-name {
+    /* Tarjeta central — clase añadida por JS */
+    .company-card.is-center .company-name {
         color: #CC0052;
     }
 
-    /* Tarjeta sin enlace (solo div) */
+    /* Tarjeta sin enlace */
     .company-card-plain {
         cursor: default;
-    }
-
-    .company-card-plain:hover,
-    .company-card-plain:focus {
-        transform: scale(1.03);
     }
 
     /* ── Responsive ── */
     @media only screen and (max-width: 768px) {
         #companies {
-            /* Más espacio arriba en móvil también */
             padding: 9rem 0 7rem 0;
         }
 
@@ -209,10 +192,6 @@
     </div>
 
     <div class="companies-carousel-wrapper" role="region" aria-label="Carrusel de empresas colaboradoras">
-        <!--
-            Se duplica la lista para crear el efecto de scroll infinito CSS puro.
-            El track tiene el doble de ancho; la animación desplaza exactamente el 50%.
-        -->
         <div class="companies-track" aria-hidden="false">
             {% for company in companies %}
               {% if company.name and company.logo %}
@@ -279,25 +258,100 @@
 </section>
 
 <script>
-    /**
-     * Company Carousel — Ajuste dinámico de velocidad MÁS RÁPIDO
-     */
     (function () {
         const track = document.querySelector('.companies-track');
         if (!track) return;
 
+        /* ── Velocidad dinámica ── */
         const cards = track.querySelectorAll('.company-card, .company-card-plain');
-        const uniqueCount = Math.ceil(cards.length / 2); // la lista está duplicada
-
-        // Velocidad MÁS RÁPIDA: 3.5s por empresa, mínimo 12s, máximo 35s
+        const uniqueCount = Math.ceil(cards.length / 2);
         const duration = Math.min(Math.max(uniqueCount * 3.5, 12), 35);
         track.style.animationDuration = duration + 's';
 
-        // Respeta prefers-reduced-motion
+        /* ── Respeta prefers-reduced-motion ── */
         const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
         if (mq.matches) {
             track.style.animationPlayState = 'paused';
+            return; // sin efecto 3D si el usuario prefiere menos movimiento
         }
+
+        /* ── Efecto 3D: distancia al centro ──
+         *
+         *  normalized = 0  → centro exacto   → grande + a color + glow
+         *  normalized = 1  → borde del área  → pequeño + gris + opaco
+         *
+         *  Parámetros calibrados para un efecto sutil pero visible:
+         *    scale:     1.22 (centro) → 0.80 (borde)
+         *    grayscale: 0%  (centro) → 100% (borde)
+         *    opacity:   1.0 (centro) → 0.35 (borde)
+         */
+        const SCALE_CENTER  = 1.22;
+        const SCALE_EDGE    = 0.80;
+        const OPACITY_CENTER = 1.0;
+        const OPACITY_EDGE   = 0.35;
+        const GLOW_COLOR     = 'rgba(204, 0, 82, 0.18)'; // accent #CC0052
+
+        const wrapper = track.closest('.companies-carousel-wrapper');
+        let rafId = null;
+
+        function applyDepthEffect() {
+            const wrapperRect = wrapper.getBoundingClientRect();
+            const wrapperCenterX = wrapperRect.left + wrapperRect.width / 2;
+            // Zona "activa" = 45% del ancho a cada lado del centro
+            const activeZone = wrapperRect.width * 0.45;
+
+            cards.forEach(function (card) {
+                const rect = card.getBoundingClientRect();
+                const cardCenterX = rect.left + rect.width / 2;
+                const dist = Math.abs(cardCenterX - wrapperCenterX);
+                // 0 = centro, 1 = en el borde de la zona activa o más lejos
+                const norm = Math.min(dist / activeZone, 1);
+
+                const scale   = SCALE_CENTER - norm * (SCALE_CENTER - SCALE_EDGE);
+                const gs      = Math.round(norm * 100);
+                const opacity = OPACITY_CENTER - norm * (OPACITY_CENTER - OPACITY_EDGE);
+
+                card.style.transform = 'scale(' + scale.toFixed(3) + ')';
+
+                const img = card.querySelector('img');
+                if (img) {
+                    img.style.filter = 'grayscale(' + gs + '%) opacity(' + opacity.toFixed(2) + ')';
+                    // Glow suave solo en las tarjetas muy centradas
+                    if (norm < 0.15) {
+                        img.style.boxShadow = '0 8px 28px ' + GLOW_COLOR;
+                    } else {
+                        img.style.boxShadow = 'none';
+                    }
+                }
+
+                // Clase semántica para el logo central (también útil para accesibilidad/debug)
+                if (norm < 0.12) {
+                    card.classList.add('is-center');
+                } else {
+                    card.classList.remove('is-center');
+                }
+            });
+
+            rafId = requestAnimationFrame(applyDepthEffect);
+        }
+
+        /* Iniciar efecto solo cuando el carrusel es visible */
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        if (!rafId) rafId = requestAnimationFrame(applyDepthEffect);
+                    } else {
+                        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+                    }
+                });
+            }, { threshold: 0.1 });
+            io.observe(wrapper);
+        } else {
+            // Fallback navegadores sin IO
+            rafId = requestAnimationFrame(applyDepthEffect);
+        }
+
     })();
 </script>
 {% endif %}
