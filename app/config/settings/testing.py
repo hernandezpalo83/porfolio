@@ -8,6 +8,10 @@ from .base import *
 
 DEBUG = True
 
+# Reemplazar el paquete privado por el stub local para CI (sin acceso a GitHub)
+INSTALLED_APPS = [app for app in INSTALLED_APPS if app != 'components_ui']
+INSTALLED_APPS.append('app.components_ui_stub')
+
 # Faster password hashing in testing
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',  # Fast for testing only

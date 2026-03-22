@@ -6,9 +6,11 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  # Fuerza Node.js 24 en las actions para evitar el warning de deprecación de Node 20
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+# Cancela ejecuciones previas del mismo workflow en la misma rama/PR
+# para evitar checks duplicados al hacer push a una rama con PR abierto.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -29,24 +31,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Install dependencies
-        env:
-          GITHUB_TOKEN_COMPONENTES: ${{ secrets.GITHUB_TOKEN_COMPONENTES }}
+      - name: Install dependencies (sin paquete privado)
         run: |
           pip install --upgrade pip
-
-          # Configurar credenciales git para el paquete privado.
-          # .netrc es el método más fiable: git usa x-access-token:PAT como credencial.
-          printf "machine github.com login x-access-token password %s\n" "${GITHUB_TOKEN_COMPONENTES}" > ~/.netrc
-          chmod 600 ~/.netrc
-
-          # Reescribir la URL con token embebido → URL limpia (las credenciales vienen de .netrc).
-          # Esto permite que requirements.txt use ${GITHUB_TOKEN_COMPONENTES} en la URL sin que
-          # git lo trate como username y pida password por separado.
-          git config --global url."https://github.com/".insteadOf "https://${GITHUB_TOKEN_COMPONENTES}@github.com/"
-
-          # envsubst expande ${GITHUB_TOKEN_COMPONENTES}; git reescribe la URL a https://github.com/
-          envsubst < requirements.txt | pip install -r /dev/stdin
+          # Instala todo excepto django-components-ui (paquete privado sin acceso en CI).
+          # En testing se usa app.components_ui_stub como reemplazo local.
+          grep -v "django-components-ui" requirements.txt | pip install -r /dev/stdin
 
       - name: Run tests
         env:
@@ -54,7 +44,6 @@ jobs:
           DJANGO_SETTINGS_MODULE: app.config.settings
           DEBUG: "True"
           SECRET_KEY: "ci-secret-key-not-used-in-prod"
-          # Claves ficticias: SILENCED_SYSTEM_CHECKS ya desactiva la validación de recaptcha
           RECAPTCHA_PUBLIC_KEY: "ci-fake-public-key"
           RECAPTCHA_PRIVATE_KEY: "ci-fake-private-key"
           ALLOWED_HOSTS: "localhost,127.0.0.1"
