@@ -8,7 +8,6 @@ TTL de la caché: 30 min (ver landing/views.py :: _CACHE_TTL).
 """
 import logging
 from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
 from django.core.cache import cache
 
 from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration
