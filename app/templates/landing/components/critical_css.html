@@ -323,14 +323,41 @@
         text-align: center;
     }
 
+    /* VIS-003: Gradiente animado en el hero ─────────────────────────────
+       El overlay oscuro original se sustituye por un gradiente que varía
+       suavemente de color (accent #CC0052 → oscuro) en loop infinito.
+       La opacidad sigue siendo alta para mantener la legibilidad del texto.
+       ─────────────────────────────────────────────────────────────────── */
+    @keyframes hero-gradient-shift {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
     .intro-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: #111111;
-        opacity: .85;
+        /* Gradiente: oscuro dominante con toque de accent en las esquinas */
+        background: linear-gradient(
+            135deg,
+            rgba(10, 10, 10, 0.96) 0%,
+            rgba(100, 0, 30, 0.80) 35%,
+            rgba(10, 10, 10, 0.96) 65%,
+            rgba(80, 0, 25, 0.82) 100%
+        );
+        background-size: 300% 300%;
+        animation: hero-gradient-shift 12s ease infinite;
+        /* Respeta prefers-reduced-motion */
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .intro-overlay {
+            animation: none;
+            background: rgba(17, 17, 17, 0.88);
+        }
     }
 
     .intro-content {

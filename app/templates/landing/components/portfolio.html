@@ -1,3 +1,191 @@
+<style>
+    /* ── VIS-004: Project Showcase Mejorado ─────────────────────────────
+       Mejoras:
+       - Tech tags (split de 'categoria' por coma → pills individuales)
+       - Indicador de estado: EN PRODUCCIÓN (tiene link) / EN DESARROLLO
+       - Overlay de descripción con reveal en hover
+       - Placeholder gradient cuando no hay imagen
+       - Primera tarjeta destacada (2 columnas en desktop)
+       ─────────────────────────────────────────────────────────────────── */
+
+    /* Badge de estado */
+    .project-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 1.0rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 1.2rem;
+    }
+
+    .project-status--live {
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .project-status--dev {
+        background: rgba(99, 102, 241, 0.10);
+        color: #4f46e5;
+        border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+
+    .project-status__dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .project-status--live .project-status__dot {
+        background: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+        animation: status-pulse 2s infinite;
+    }
+
+    .project-status--dev .project-status__dot {
+        background: #6366f1;
+    }
+
+    @keyframes status-pulse {
+        0%, 100% { box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25); }
+        50%       { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.08); }
+    }
+
+    /* Tech tags */
+    .project-tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: auto;
+        padding-top: 1.6rem;
+    }
+
+    .project-tech-tag {
+        font-size: 1.05rem;
+        font-family: 'JetBrains Mono', monospace;
+        color: #555;
+        background: #f5f5f5;
+        border: 1px solid #e5e5e5;
+        border-radius: 4px;
+        padding: 3px 8px;
+        white-space: nowrap;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .project-card:hover .project-tech-tag {
+        background: rgba(204, 0, 82, 0.06);
+        color: #CC0052;
+        border-color: rgba(204, 0, 82, 0.2);
+    }
+
+    /* Overlay de descripción en hover (para tarjetas con imagen) */
+    .project-image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(0,0,0,0) 0%,
+            rgba(0,0,0,0.75) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        display: flex;
+        align-items: flex-end;
+        padding: 2rem;
+        z-index: 3;
+    }
+
+    .project-card:hover .project-image-overlay {
+        opacity: 1;
+    }
+
+    .project-image-overlay-text {
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.3rem;
+        line-height: 1.6;
+        max-height: 80px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    /* Placeholder cuando no hay imagen */
+    .project-image-placeholder {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+
+    .project-image-placeholder-icon {
+        font-size: 4rem;
+        color: rgba(204, 0, 82, 0.5);
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .project-card:hover .project-image-placeholder-icon {
+        color: rgba(204, 0, 82, 0.9);
+        transform: scale(1.15);
+    }
+
+    /* Primera tarjeta: destacada en 2 columnas */
+    @media (min-width: 769px) {
+        .project-card--featured {
+            grid-column: span 2;
+        }
+
+        .project-card--featured .project-image-wrapper {
+            aspect-ratio: 21 / 9;
+        }
+    }
+
+    /* Botón de acción mejorado */
+    .btn-view-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 1.6rem;
+        padding: 0.8rem 1.8rem;
+        background: #CC0052;
+        color: #fff;
+        border-radius: 6px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.25s ease, transform 0.2s ease;
+        align-self: flex-start;
+    }
+
+    .btn-view-more:hover {
+        background: #a8003f;
+        transform: translateY(-2px);
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .btn-view-more svg {
+        flex-shrink: 0;
+        transition: transform 0.25s ease;
+    }
+
+    .btn-view-more:hover svg {
+        transform: translateX(3px);
+    }
+</style>
+
+{% load landing_filters %}
 <section id="portfolio">
     <div class="row section-intro">
         <div class="col-twelve">
@@ -7,23 +195,63 @@
     </div>
     <div class="portfolio-grid">
         {% for project in projects %}
-        <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+        {% with tags=project.categoria|split:"," %}
+        <div class="project-card{% if forloop.first %} project-card--featured{% endif %}" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
             <div class="project-image-wrapper">
-                {% if project.categoria %}
-                <span class="project-badge">{{ project.categoria }}</span>
+                {# Badge: primera tag como categoría principal #}
+                {% if tags %}
+                <span class="project-badge">{{ tags|first }}</span>
                 {% endif %}
+
                 {% if project.imagen %}
-                <img src="{{ project.imagen }}" alt="{{ project.title }}" loading="lazy">
+                <img src="{{ project.imagen }}" alt="{{ project.title }}" loading="lazy" decoding="async">
+                <div class="project-image-overlay">
+                    <p class="project-image-overlay-text">{{ project.description|striptags|truncatechars:120 }}</p>
+                </div>
+                {% else %}
+                <div class="project-image-placeholder">
+                    <i class="fa fa-code project-image-placeholder-icon" aria-hidden="true"></i>
+                </div>
                 {% endif %}
             </div>
             <div class="project-card-info">
+                {# Estado: EN PRODUCCIÓN si tiene link, EN DESARROLLO si no #}
+                {% if project.link %}
+                <span class="project-status project-status--live">
+                    <span class="project-status__dot"></span>En Producción
+                </span>
+                {% else %}
+                <span class="project-status project-status--dev">
+                    <span class="project-status__dot"></span>En Desarrollo
+                </span>
+                {% endif %}
+
                 <h3 class="project-title">{{ project.title }}</h3>
                 <div class="project-description">{{ project.description|safe }}</div>
+
+                {# Tech tags: cada elemento de 'categoria' separado por coma #}
+                {% if tags %}
+                <div class="project-tech-tags" aria-label="Tecnologías usadas">
+                    {% for tag in tags %}
+                    {% if tag %}<span class="project-tech-tag">{{ tag }}</span>{% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 {% if project.link %}
-                <a href="{{ project.link }}" target="_blank" class="btn-view-more">Ver Proyecto</a>
+                <a href="{{ project.link }}" target="_blank" rel="noopener noreferrer" class="btn-view-more">
+                    Ver Proyecto
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </a>
                 {% endif %}
             </div>
         </div>
+        {% endwith %}
         {% endfor %}
     </div>
 </section>

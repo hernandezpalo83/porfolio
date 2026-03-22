@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 
 from django.contrib.sitemaps.views import sitemap
 from app.landing.sitemaps import StaticViewSitemap
-from app.blog.sitemaps import PostSitemap
+from app.blog.sitemaps import PostSitemap, BlogCategorySitemap
 from django.conf import settings
 from django.conf.urls.static import static
 from app.documentum.sitemaps import DocumentSitemap, CategorySitemap
@@ -19,6 +19,7 @@ def health_check(request):
 sitemaps = {
     'static': StaticViewSitemap,
     'blog': PostSitemap,
+    'blog_cats': BlogCategorySitemap,
     'wiki_docs': DocumentSitemap,
     'wiki_cats': CategorySitemap,
 }

@@ -1,10 +1,52 @@
+<style>
+    /* ── VIS-002: Animación del timeline de experiencia ─────────────────
+       La línea vertical se "dibuja" desde arriba hacia abajo al entrar en
+       viewport. Los iconos de cada hito hacen pop-in con stagger.
+       ──────────────────────────────────────────────────────────────────── */
+
+    /* Estado inicial: línea invisible (scaleY 0 desde arriba) */
+    #resume .timeline-wrap::before {
+        transform: scaleY(0);
+        transform-origin: top center;
+        transition: transform var(--timeline-duration, 2s) cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Cuando el wrapper recibe la clase: línea se dibuja */
+    #resume .timeline-wrap.tl-visible::before {
+        transform: scaleY(1);
+    }
+
+    /* Iconos de hito — estado inicial oculto */
+    #resume .timeline-ico {
+        transform: scale(0);
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.5),
+                    opacity 0.3s ease;
+    }
+
+    /* Cuando el bloque es visible: pop-in del icono */
+    #resume .timeline-block.tl-ico-visible .timeline-ico {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    /* Línea del conector: añadir contraste cuando está activa */
+    #resume .timeline-wrap.tl-visible::before {
+        background: linear-gradient(
+            to bottom,
+            rgba(204, 0, 82, 0.8) 0%,
+            rgba(204, 0, 82, 0.15) 100%
+        );
+    }
+</style>
+
 <section id="resume" class="grey-section">
    <div class="row resume-timeline">
       <div class="col-twelve resume-header">
          <h2 data-aos="fade-right">Experiencia Laboral</h2>
       </div>
       <div class="col-twelve">
-         <div class="timeline-wrap">
+         <div class="timeline-wrap" id="js-timeline-wrap">
             {% for experience in experiences %}
             <div class="timeline-block" data-aos="fade-up">
                <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
@@ -23,6 +65,55 @@
       </div>
    </div>
 </section>
+
+<script>
+    (function () {
+        'use strict';
+        const wrap = document.getElementById('js-timeline-wrap');
+        if (!wrap) return;
+
+        const blocks = wrap.querySelectorAll('.timeline-block');
+
+        // Duración de la línea proporcional al nº de hitos (0.5s por hito, [1s, 4s])
+        const lineDuration = Math.min(Math.max(blocks.length * 0.5, 1), 4).toFixed(1) + 's';
+        wrap.style.setProperty('--timeline-duration', lineDuration);
+
+        if (!('IntersectionObserver' in window)) {
+            // Fallback: activar todo inmediatamente
+            wrap.classList.add('tl-visible');
+            blocks.forEach(function (b) { b.classList.add('tl-ico-visible'); });
+            return;
+        }
+
+        // Observador para el wrapper completo → activa la línea
+        const lineObserver = new IntersectionObserver(function (entries) {
+            if (entries[0].isIntersecting) {
+                wrap.classList.add('tl-visible');
+                lineObserver.disconnect();
+
+                // Activar iconos con stagger: cada icono aparece cuando su bloque
+                // entra en viewport (con un pequeño retraso adicional)
+                const icoObserver = new IntersectionObserver(function (icoEntries) {
+                    icoEntries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            // Pequeño retraso proporcional al índice del bloque
+                            const block = entry.target;
+                            const idx = Array.prototype.indexOf.call(blocks, block);
+                            setTimeout(function () {
+                                block.classList.add('tl-ico-visible');
+                            }, idx * 80);
+                            icoObserver.unobserve(block);
+                        }
+                    });
+                }, { threshold: 0.3 });
+
+                blocks.forEach(function (block) { icoObserver.observe(block); });
+            }
+        }, { threshold: 0.1 });
+
+        lineObserver.observe(wrap);
+    })();
+</script>
 
 <section id="education" class="edu-section-dark">
    <div class="row section-intro">

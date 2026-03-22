@@ -1,0 +1,64 @@
+name: CI — Tests & Lint
+
+on:
+  push:
+    branches: [Develop, main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        env:
+          GITHUB_TOKEN_COMPONENTES: ${{ secrets.GITHUB_TOKEN_COMPONENTES }}
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        env:
+          DJANGO_ENV: testing
+          DEBUG: "True"
+          SECRET_KEY: "ci-secret-key-not-used-in-prod"
+          RECAPTCHA_PUBLIC_KEY: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+          RECAPTCHA_PRIVATE_KEY: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+          ALLOWED_HOSTS: "localhost,127.0.0.1"
+        run: |
+          python manage.py test --verbosity=2
+
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Run ruff
+        run: ruff check app/ --select F401,F811,E711,E712 --output-format=github
