@@ -1,0 +1,25 @@
+{% extends "landing/layouts/base.html" %}
+{% load static %}
+
+{% block title %}Suscripción confirmada · Blog{% endblock %}
+{% block meta_description %}Tu suscripción al blog de Javier Hernández Martín ha sido confirmada.{% endblock %}
+
+{% block content %}
+<div class="blog-wrapper">
+    <section class="blog-hero" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+        <div class="row text-center">
+            <div class="col-twelve">
+                <h5 class="hero-sub" style="color: #10b981;">¡Confirmado!</h5>
+                <h1 class="hero-title" style="font-size: 3.6rem;">Bienvenido al blog</h1>
+                <p style="color: #aaa; font-size: 1.6rem; margin-top: 1.5rem;">
+                    <strong style="color:#fff;">{{ email }}</strong> está ahora suscrito.<br>
+                    Recibirás un aviso cada vez que publique un nuevo artículo.
+                </p>
+                <a href="{% url 'blog:post_list' %}" class="button stroke" style="margin-top: 3rem; display: inline-block;">
+                    Ver todos los artículos
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

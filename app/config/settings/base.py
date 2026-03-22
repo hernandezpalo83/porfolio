@@ -84,7 +84,47 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
+
+# ── TECH-003: Content Security Policy (Report-Only) ──────────────────────────
+# Modo Report-Only: no bloquea nada, solo reporta violaciones al endpoint.
+# Una vez limpias las violaciones en producción, cambiar a enforce.
+CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+    "DIRECTIVES": {
+        "default-src": ["'self'"],
+        "script-src": [
+            "'self'",
+            "'unsafe-inline'",          # CKEditor, AOS inline init
+            "www.google.com",           # reCAPTCHA
+            "www.gstatic.com",          # reCAPTCHA
+            "raw.githubusercontent.com",  # CDN logos
+        ],
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'",          # estilos inline en componentes
+            "fonts.googleapis.com",
+        ],
+        "font-src": [
+            "'self'",
+            "fonts.gstatic.com",
+        ],
+        "img-src": [
+            "'self'",
+            "data:",
+            "raw.githubusercontent.com",  # CDN imágenes
+            "*.supabase.co",            # por si hay media en Supabase
+        ],
+        "connect-src": ["'self'"],
+        "frame-src": [
+            "www.google.com",           # reCAPTCHA iframe
+        ],
+        "object-src": ["'none'"],
+        "base-uri": ["'self'"],
+        "form-action": ["'self'"],
+        "report-uri": ["/csp-report/"],
+    },
+}
 
 ROOT_URLCONF = 'app.config.urls'
 

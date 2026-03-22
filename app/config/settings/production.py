@@ -5,6 +5,17 @@ Used in production (Render, AWS, etc). Strict security, DEBUG=False.
 """
 
 from .base import *
+import sentry_sdk
+
+# --- SENTRY (error monitoring) ---
+_sentry_dsn = os.getenv('SENTRY_DSN', '')
+if _sentry_dsn:
+    sentry_sdk.init(
+        dsn=_sentry_dsn,
+        traces_sample_rate=0.1,
+        environment='production',
+        send_default_pii=False,
+    )
 
 DEBUG = False
 

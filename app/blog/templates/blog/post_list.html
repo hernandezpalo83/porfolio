@@ -135,6 +135,33 @@
                         {% endfor %}
                     </ul>
                 </div>
+
+                <div class="sidebar-widget" style="background: rgba(204,0,82,0.06); border: 1px solid rgba(204,0,82,0.2); border-radius: 6px; padding: 2rem;">
+                    <h4 style="color: #CC0052; margin-bottom: 0.8rem;">Newsletter</h4>
+                    <p style="font-size: 1.3rem; color: #888; margin-bottom: 1.4rem; line-height: 1.6;">
+                        Recibe los nuevos artículos directamente en tu correo.
+                    </p>
+                    <form action="{% url 'blog:subscribe' %}" method="post">
+                        {% csrf_token %}
+                        <input type="email" name="email" placeholder="tu@email.com" required
+                            style="width:100%; padding: 0.8rem; border: 1px solid #333; background: #111; color: #fff; border-radius: 4px; font-size: 1.3rem; margin-bottom: 0.8rem;">
+                        <button type="submit" class="button full-width btn-primary"
+                            style="background: #CC0052; color: #fff; border-color: #CC0052; width: 100%;">
+                            Suscribirme
+                        </button>
+                    </form>
+                    <p style="font-size: 1.1rem; color: #555; margin-top: 0.8rem; text-align: center;">
+                        Sin spam. Cancelación en cualquier momento.
+                    </p>
+                </div>
+
+                <div class="sidebar-widget">
+                    <h4>Feed RSS</h4>
+                    <ul class="widget-list">
+                        <li><a href="{% url 'blog:post_feed_rss' %}">RSS 2.0</a></li>
+                        <li><a href="{% url 'blog:post_feed_atom' %}">Atom</a></li>
+                    </ul>
+                </div>
             </aside>
         </div>
     </section>

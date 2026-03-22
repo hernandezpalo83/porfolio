@@ -1,0 +1,36 @@
+{% extends "landing/layouts/base.html" %}
+{% load static %}
+
+{% block title %}Suscripción pendiente · Blog{% endblock %}
+{% block meta_description %}Revisa tu correo para confirmar tu suscripción al blog de Javier Hernández Martín.{% endblock %}
+
+{% block content %}
+<div class="blog-wrapper">
+    <section class="blog-hero" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+        <div class="row text-center">
+            <div class="col-twelve">
+                {% if already_subscribed %}
+                <h5 class="hero-sub" style="color: #10b981;">Ya estás suscrito</h5>
+                <h1 class="hero-title" style="font-size: 3.6rem;">¡Ya formas parte del blog!</h1>
+                <p style="color: #aaa; font-size: 1.6rem; margin-top: 1.5rem;">
+                    El correo <strong style="color:#fff;">{{ email }}</strong> ya está confirmado.
+                </p>
+                {% else %}
+                <h5 class="hero-sub" style="color: #CC0052;">Casi listo</h5>
+                <h1 class="hero-title" style="font-size: 3.6rem;">Confirma tu suscripción</h1>
+                <p style="color: #aaa; font-size: 1.6rem; margin-top: 1.5rem;">
+                    Te hemos enviado un email a <strong style="color:#fff;">{{ email }}</strong>.<br>
+                    Haz clic en el enlace de confirmación para completar tu suscripción.
+                </p>
+                <p style="color: #666; font-size: 1.3rem; margin-top: 1rem;">
+                    ¿No lo encuentras? Revisa la carpeta de spam.
+                </p>
+                {% endif %}
+                <a href="{% url 'blog:post_list' %}" class="button stroke" style="margin-top: 3rem; display: inline-block;">
+                    Volver al blog
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

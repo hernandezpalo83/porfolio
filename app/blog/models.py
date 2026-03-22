@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -79,3 +81,27 @@ class Post(models.Model):
             return max(1, round(palabras / 200))
         except Exception:
             return 1
+
+
+# ── NEW-003: Newsletter ───────────────────────────────────────────────────────
+
+class Subscriber(models.Model):
+    """Suscriptor al newsletter del blog con double opt-in."""
+
+    email = models.EmailField(unique=True)
+    confirmed = models.BooleanField(default=False)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ('-subscribed_at',)
+        verbose_name = "Suscriptor"
+        verbose_name_plural = "Suscriptores"
+
+    def __str__(self):
+        status = "✓" if self.confirmed else "⏳"
+        return f"{status} {self.email}"
+
+    def get_confirm_url(self):
+        return reverse('blog:confirm_subscription', args=[str(self.token)])

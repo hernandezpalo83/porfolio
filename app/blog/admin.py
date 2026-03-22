@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Category
+from .models import Post, Category, Subscriber
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -14,3 +14,12 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     date_hierarchy = 'publish'
     ordering = ('status', '-publish')
+
+
+@admin.register(Subscriber)
+class SubscriberAdmin(admin.ModelAdmin):
+    list_display = ('email', 'confirmed', 'subscribed_at', 'confirmed_at')
+    list_filter = ('confirmed',)
+    search_fields = ('email',)
+    readonly_fields = ('token', 'subscribed_at', 'confirmed_at')
+    ordering = ('-subscribed_at',)
