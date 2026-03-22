@@ -1,0 +1,32 @@
+{# Override de django_recaptcha/includes/js_v3.html
+   Añade 'async' al script para que no sea render-blocking (+289ms en desktop LH).
+   grecaptcha.ready() ya hace queue internamente, por lo que async es compatible. #}
+<script src="https://{{ recaptcha_domain }}/recaptcha/api.js?render={{ public_key }}{% if api_params %}&{{ api_params }}{% endif %}" async></script>
+<script>
+    var element
+    function _initRecaptcha{{ widget_uuid|cut:"-" }}() {
+        element = document.querySelector('.g-recaptcha[data-widget-uuid="{{ widget_uuid }}"]');
+        if (element) element.form.addEventListener('submit', recaptchaFormSubmit{{ widget_uuid|cut:"-" }});
+    }
+    function recaptchaFormSubmit{{ widget_uuid|cut:"-" }}(event) {
+        event.preventDefault();
+        {% if action %}
+        grecaptcha.execute('{{ public_key }}', {action: '{{ action|escape }}'})
+        {% else %}
+        grecaptcha.execute('{{ public_key }}', {})
+        {% endif %}
+        .then(function(token) {
+            element.value = token;
+            element.form.submit();
+        });
+    }
+    if (typeof grecaptcha !== 'undefined') {
+        grecaptcha.ready(_initRecaptcha{{ widget_uuid|cut:"-" }});
+    } else {
+        window.addEventListener('load', function() {
+            if (typeof grecaptcha !== 'undefined') {
+                grecaptcha.ready(_initRecaptcha{{ widget_uuid|cut:"-" }});
+            }
+        });
+    }
+</script>

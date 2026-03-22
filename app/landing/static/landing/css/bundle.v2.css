@@ -4088,3 +4088,13 @@ a {
 .about-image-column img:hover {
 	box-shadow: 0 0 25px rgba(204, 0, 82, 0.4);
 }
+/* =====================================================================
+ * CLS Fix: typed-cursor — ancho fijo para evitar layout shift
+ * El cursor de Typed.js puede causar shifts si no tiene dimensión reservada
+ * ===================================================================== */
+.typed-cursor {
+    display: inline-block;
+    width: 0.075em;
+    overflow: hidden;
+    vertical-align: middle;
+}

@@ -43,9 +43,13 @@
     <link rel="icon" type="image/png" href="{% static 'landing/img/favicon.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/img/favicon.png' %}">
 
-    {# 🚀 PRECONNECT — CDNs remotos (imágenes GitHub) #}
+    {# 🚀 PRECONNECT — CDNs remotos #}
     <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
     <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+    {# reCAPTCHA v3 — preconnect para reducir latencia del script #}
+    <link rel="preconnect" href="https://www.google.com">
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
 
     {# 🚀 FUENTES PRELOAD #}
     <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-regular-webfont.woff2' %}" as="font"
@@ -68,6 +72,11 @@
 
     {# 🚀 CRITICAL CSS (Above the Fold) #}
     {% include "landing/components/critical_css.html" %}
+
+    {# 🚀 AOS CSS (deferred — 25KB, solo afecta animaciones scroll) #}
+    <link rel="preload" href="{% static 'landing/css/vendor/aos.min.css' %}" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'landing/css/vendor/aos.min.css' %}"></noscript>
 
     {# 🚀 CSS CONSOLIDADO (Defered) #}
     <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.2.5" as="style"
@@ -134,7 +143,6 @@
     <script src="{% static 'landing/js/main.js' %}" defer></script>
 
     {# 🚀 TYPING EFFECT & AOS ANIMATIONS — vendor local (sin CDN externo) #}
-    <link rel="stylesheet" href="{% static 'landing/css/vendor/aos.min.css' %}">
     <script src="{% static 'landing/js/vendor/typed.min.js' %}"></script>
     <script src="{% static 'landing/js/vendor/aos.min.js' %}"></script>
     <script>
