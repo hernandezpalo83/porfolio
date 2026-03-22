@@ -19,6 +19,8 @@ markdown
 pymdown-extensions
 pygments
 djangorestframework
+sentry-sdk[django]>=2.0
+django-csp>=3.7
 django-components-ui @ git+https://${GITHUB_TOKEN_COMPONENTES}@github.com/hernandezpalo83/COMPONENTES.git#subdirectory=django_components_ui
 
 # Si usas SQLite, no necesitas agregarlo aquí, ya viene con Python

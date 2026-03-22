@@ -1,5 +1,4 @@
 # ROADMAP — HernandezPalo Portfolio
-
 > Registro vivo de ideas, mejoras y funcionalidades. Ordenado por estado y prioridad.
 > Última revisión: **2026-03-22**
 
@@ -11,8 +10,8 @@
 |------|--------|
 | Tests | 83 · 100% pass |
 | Lighthouse Mobile | ~85 |
-| Lighthouse Desktop | ~82 (fix `font-display: optional`, `async reCAPTCHA`, preconnect) |
-| CLS | ~0.05 (fix aplicado) |
+| Lighthouse Desktop | ~82 (TTFB cold start free tier) |
+| CLS | ~0.05 |
 | CI/CD | GitHub Actions activo (Develop + main) |
 | django-components-ui | v1.1.0 · 46 componentes |
 
@@ -25,7 +24,11 @@
 | FEAT-003 | Cache invalidation signals para modelos landing | 2026-03-22 |
 | TECH-001 | Sitemap de categorías del blog (`BlogCategorySitemap`) | 2026-03-22 |
 | TECH-002 | `width`/`height` explícitos en imagen de perfil (CLS fix) | 2026-03-22 |
+| TECH-003 | CSP en modo Report-Only (`django-csp`, endpoint `/csp-report/`) | 2026-03-22 |
+| TECH-006 | Sentry SDK integrado en producción (activable con `SENTRY_DSN`) | 2026-03-22 |
 | TECH-007 | GitHub Actions CI: tests + ruff en cada PR a `main` | 2026-03-22 |
+| TECH-008 | RSS Feed del blog (`/blog/feed/` RSS 2.0 + `/blog/feed/atom/` Atom) | 2026-03-22 |
+| TECH-009 | Cache invalidation signals para `blog.Post` | 2026-03-22 |
 | VIS-002 | Animación del timeline: línea que se dibuja al hacer scroll | 2026-03-22 |
 | VIS-003 | Gradiente animado en la sección hero | 2026-03-22 |
 | VIS-004 | Project Showcase: tech-tags, estado, overlay, tarjeta destacada | 2026-03-22 |
@@ -38,6 +41,8 @@
 | SEC-002 | Honeypot + ratelimit (5/h) en formulario de contacto | 2026-03-21 |
 | SEO-001 | Blog category sitemap + `rel=prev/next` en paginación | 2026-03-21 |
 | SEO-002 | Twitter Cards completas con defaults en base.html | 2026-03-21 |
+| NEW-003 | Newsletter con double opt-in: modelo `Subscriber`, admin, sidebar widget | 2026-03-22 |
+| NEW-004 | Búsqueda full-text: `SearchVector`/`SearchQuery` (Postgres) + fallback SQLite | 2026-03-22 |
 
 ---
 
@@ -83,20 +88,15 @@ Render Starter ($7/mes) mantiene el servidor caliente → TTFB < 200ms.
 
 ## 🛠️ Mejoras Técnicas
 
-### TECH-003 · CSP (Content Security Policy)
-**Descripción:** Cabeceras CSP para reforzar seguridad XSS.
+### TECH-003 · CSP — Pasar a modo Enforce
+**Estado:** Report-Only activo. Las violaciones se reciben en `/csp-report/`.
+**Proceso restante:**
+1. Recoger violaciones en producción durante 1-2 semanas
+2. Refinar la política hasta que esté limpia
+3. Cambiar `CONTENT_SECURITY_POLICY_REPORT_ONLY` → `CONTENT_SECURITY_POLICY` en `base.py`
 
-**Proceso recomendado:**
-1. Activar en modo `Report-Only` (sin bloquear nada)
-2. Recoger reportes de violaciones en producción
-3. Refinar política hasta que sea limpia
-4. Cambiar a modo `enforce`
-
-**Dominios que necesitan whitelist:** `www.google.com`, `www.gstatic.com` (reCAPTCHA),
-`raw.githubusercontent.com` (CDN logos), `unpkg.com` si queda alguna referencia.
-
-**Riesgo:** Alto si se configura mal. Requiere testing exhaustivo en staging.
-**Complejidad:** Alta · 2-3 sesiones
+**Riesgo:** Medio. El paso de Report-Only a Enforce puede romper features si quedan violaciones.
+**Complejidad:** Baja (ya implementado Report-Only) · 1 sesión de ajuste
 
 ---
 
@@ -132,72 +132,34 @@ npx tailwindcss -o app/landing/static/landing/css/tailwind.output.css --minify
 
 ---
 
-### TECH-006 · Monitorización con Sentry
-**Descripción:** Captura de errores en producción con contexto completo.
-
-```python
-# requirements.txt
-sentry-sdk[django]>=2.0
-
-# settings/production.py
-import sentry_sdk
-sentry_sdk.init(
-    dsn=env('SENTRY_DSN'),
-    traces_sample_rate=0.1,
-    environment='production',
-)
-```
-
-**Variable nueva:** `SENTRY_DSN` en Render.
+### TECH-006 · Sentry — Activar en Render
+**Estado:** Código integrado. Solo falta añadir la variable de entorno.
+**Acción:** Dashboard Render → Environment → `SENTRY_DSN = <dsn del proyecto>`
 **Coste:** Free tier de Sentry cubre el volumen de este proyecto.
-**Complejidad:** Baja · 30 min
 
 ---
 
-### TECH-008 · RSS Feed del blog
-**Descripción:** Feed RSS/Atom usando `django.contrib.syndication`.
+### NEW-003 · Newsletter — Conectar email backend
+**Estado:** Modelo `Subscriber`, double opt-in, admin y widget del sidebar implementados.
+**Pendiente:** Conectar un backend de email para enviar la confirmación.
 
 ```python
-# blog/feeds.py
-from django.contrib.syndication.views import Feed
-class LatestPostsFeed(Feed):
-    title = "Blog — Javier Hernández Martin"
-    link = "/blog/"
-    def items(self): return Post.objects.filter(status='published').order_by('-publish')[:20]
+# settings/production.py — añadir cuando se tenga cuenta SendGrid
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'noreply@hernandezpalo.es'
 ```
 
-**Valor:** Distribución automática de contenido. Compatible con lectores RSS y agregadores.
-**Complejidad:** Baja · 30 min
-
----
-
-### TECH-009 · Cache invalidation para posts relacionados
-**Descripción:** Cuando se publica o edita un post, invalidar `related_posts_{category_id}`.
-Similar a los signals de landing (ya implementados), aplicar a `blog.Post`.
-
-```python
-# blog/signals.py
-@receiver(post_save, sender=Post)
-def invalidate_related_cache(sender, instance, **kwargs):
-    cache.delete(f'related_posts_{instance.category_id}')
-```
-
-**Complejidad:** Baja · 15 min
+**Variable nueva en Render:** `SENDGRID_API_KEY`
+**Complejidad:** Baja · 30 min (ya tiene el TODO en `views.py`)
 
 ---
 
 ## ✨ Nuevas Funcionalidades
-
-### NEW-001 · Formulario de contacto con feedback en tiempo real
-**Descripción:** Mejorar el formulario con Vanilla JS:
-- Validación en tiempo real (antes del submit)
-- Spinner durante el envío (fetch API, sin recarga)
-- Mensaje éxito/error inline
-- Contador de caracteres en "mensaje"
-
-**Complejidad:** Media · 1-2 sesiones
-
----
 
 ### NEW-002 · Modo oscuro
 **Descripción:** Dark mode toggle persistido en `localStorage`.
@@ -211,39 +173,6 @@ Requiere refactorizar variables CSS o añadir capa de override.
 3. Toggle button en navbar con icono luna/sol
 
 **Complejidad:** Alta · 3-4 sesiones
-
----
-
-### NEW-003 · Newsletter / Suscripción al blog
-**Descripción:** Formulario de suscripción con double opt-in.
-
-Modelo mínimo:
-```python
-class Subscriber(models.Model):
-    email = models.EmailField(unique=True)
-    confirmed = models.BooleanField(default=False)
-    token = models.UUIDField(default=uuid.uuid4, editable=False)
-    subscribed_at = models.DateTimeField(auto_now_add=True)
-```
-
-**Integraciones:** SendGrid (API gratuita hasta 100 emails/día) o Mailchimp.
-**Complejidad:** Media · 2-3 sesiones
-
----
-
-### NEW-004 · Búsqueda full-text con Postgres FTS
-**Descripción:** Búsqueda global en blog + wiki usando `SearchVector` + `SearchQuery` de Django.
-
-```python
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-posts = Post.objects.annotate(
-    search=SearchVector('title', 'content')
-).filter(search=SearchQuery(q)).order_by('-rank')
-```
-
-**Alternativa:** Algolia (mejor UX, autocomplete, plan free generoso).
-**Limitación:** Solo funciona con PostgreSQL (no con SQLite local).
-**Complejidad:** Media · 2 sesiones
 
 ---
 
@@ -332,6 +261,7 @@ Similar al tab indicator de Material Design, implementado con CSS y ResizeObserv
 | TTFB (paid tier) | < 200ms | < 150ms |
 | Tests | 83 | ≥ 120 |
 | Cobertura | ~65% | ≥ 80% |
+| Suscriptores newsletter | 0 | — |
 
 ---
 
@@ -339,7 +269,8 @@ Similar al tab indicator de Material Design, implementado con CSS y ResizeObserv
 
 | Versión | Fecha | Highlights |
 |---------|-------|-----------|
-| v2.3.1 | 2026-03-22 | Cache signals, CI GitHub Actions, sitemap categorías blog, timeline animado, hero gradiente, portfolio mejorado (tags, estado, featured) |
+| v2.4.0 | 2026-03-22 | Sentry, CSP Report-Only, RSS Feed (RSS+Atom), blog cache signals, newsletter con double opt-in, FTS con SearchVector/PostgreSQL |
+| v2.3.1 | 2026-03-22 | Cache signals landing, CI GitHub Actions, sitemap categorías blog, timeline animado, hero gradiente, portfolio mejorado |
 | v2.3.0 | 2026-03-22 | Perf: font-display optional, reCAPTCHA async, AOS CSS defer, preconnect, carrusel 3D |
 | v2.2.5 | 2026-03-21 | Seguridad: honeypot, ratelimit, DRF auth. SEO: Twitter Cards, rel=prev/next. CDN → local vendors. 83 tests |
 | v2.2.0 | 2026-03-20 | Sistema mantenimiento genérico (Tabulator + MetadataMixin), delete endpoint |
