@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
+    'app.analytics',
     'components_ui'
 ]
 
@@ -85,6 +86,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     'csp.middleware.CSPMiddleware',
+    'app.analytics.middleware.AnalyticsTrackingMiddleware',
 ]
 
 # ── TECH-003: Content Security Policy (Report-Only) ──────────────────────────

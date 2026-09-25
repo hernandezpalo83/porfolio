@@ -40,7 +40,8 @@ app/
 ├── blog/            # Engine de contenidos con SEO por post
 ├── documentum/      # Wiki técnica con navegación jerárquica (/wiki/)
 ├── gym/             # Seguimiento/inventario (Productos). Sistema de mantenimiento tabular
-└── prompts/         # Biblioteca de prompts IA. Arquitectura No-DB (sincroniza con GitHub API)
+├── prompts/         # Biblioteca de prompts IA. Arquitectura No-DB (sincroniza con GitHub API)
+└── analytics/       # Analytics Privacy-First + Blog Trending. Dashboards en /private/analytics/
 
 app/templates/
 ├── landing/         # Tailwind + components_ui (área pública)
