@@ -86,25 +86,29 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     'csp.middleware.CSPMiddleware',
+    'app.config.middleware.CSPNonceMiddleware',  # Must be after CSPMiddleware
     'app.analytics.middleware.AnalyticsTrackingMiddleware',
 ]
 
-# ── TECH-003: Content Security Policy (Report-Only) ──────────────────────────
-# Modo Report-Only: no bloquea nada, solo reporta violaciones al endpoint.
-# Una vez limpias las violaciones en producción, cambiar a enforce.
-CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+# ── TECH-003: Content Security Policy (ENFORCE mode + Nonce) ──────────────────────────
+# Cambio de Report-Only a ENFORCE: CSP ahora bloquea activamente XSS en lugar de solo reportar.
+# Usa nonce para permitir scripts inline específicos (CKEditor, AOS).
+#
+# Nonce es generado por CSPNonceMiddleware (único por request).
+# Uso en templates: <script nonce="{{ request.csp_nonce }}">...</script>
+CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
         "default-src": ["'self'"],
         "script-src": [
             "'self'",
-            "'unsafe-inline'",          # CKEditor, AOS inline init
+            "'nonce-{{ csp_nonce }}'",  # Nonce para scripts inline (CKEditor, AOS)
             "www.google.com",           # reCAPTCHA
             "www.gstatic.com",          # reCAPTCHA
             "raw.githubusercontent.com",  # CDN logos
         ],
         "style-src": [
             "'self'",
-            "'unsafe-inline'",          # estilos inline en componentes
+            "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap, inline en templates)
             "fonts.googleapis.com",
         ],
         "font-src": [
@@ -144,6 +148,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.config.context_processors.brand_assets',
+                'app.config.context_processors.csp_nonce',  # CSP nonce para scripts inline
                 'app.landing.context_processors.menu_int_processor',
                 'app.documentum.context_processors.docs_navigation',
             ],
