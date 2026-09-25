@@ -118,12 +118,22 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+let chartsInstances = {};
+
+function destroyChart(chartId) {
+    if (chartsInstances[chartId]) {
+        chartsInstances[chartId].destroy();
+        delete chartsInstances[chartId];
+    }
+}
+
 // Gráfico de vistas diarias
 fetch('/private/analytics/api/views-by-day/')
     .then(r => r.json())
     .then(data => {
+        destroyChart('viewsChart');
         const ctx = document.getElementById('viewsChart').getContext('2d');
-        new Chart(ctx, {
+        chartsInstances['viewsChart'] = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: data.data.map(d => d.date),
@@ -138,7 +148,7 @@ fetch('/private/analytics/api/views-by-day/')
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
                 plugins: {
                     legend: { display: false }
                 },
@@ -153,8 +163,9 @@ fetch('/private/analytics/api/views-by-day/')
 fetch('/private/analytics/api/devices-distribution/')
     .then(r => r.json())
     .then(data => {
+        destroyChart('devicesChart');
         const ctx = document.getElementById('devicesChart').getContext('2d');
-        new Chart(ctx, {
+        chartsInstances['devicesChart'] = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: data.data.map(d => d.device),
@@ -165,7 +176,7 @@ fetch('/private/analytics/api/devices-distribution/')
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
                 plugins: {
                     legend: { position: 'bottom' }
                 }
@@ -177,8 +188,9 @@ fetch('/private/analytics/api/devices-distribution/')
 fetch('/private/analytics/api/countries-distribution/')
     .then(r => r.json())
     .then(data => {
+        destroyChart('countriesChart');
         const ctx = document.getElementById('countriesChart').getContext('2d');
-        new Chart(ctx, {
+        chartsInstances['countriesChart'] = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: data.data.map(d => d.country),
@@ -190,7 +202,7 @@ fetch('/private/analytics/api/countries-distribution/')
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
                 indexAxis: 'y',
                 plugins: { legend: { display: false } }
             }
