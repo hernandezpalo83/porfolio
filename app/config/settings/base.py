@@ -91,18 +91,16 @@ MIDDLEWARE = [
     'app.analytics.middleware.AnalyticsTrackingMiddleware',
 ]
 
-# ── TECH-003: Content Security Policy (ENFORCE mode + Nonce) ──────────────────────────
-# Cambio de Report-Only a ENFORCE: CSP ahora bloquea activamente XSS en lugar de solo reportar.
-# Usa nonce para permitir scripts inline específicos (CKEditor, AOS).
-#
-# Nonce es generado por CSPNonceMiddleware (único por request).
-# Uso en templates: <script nonce="{{ request.csp_nonce }}">...</script>
-CONTENT_SECURITY_POLICY = {
+# ── TECH-003: Content Security Policy (Report-Only mode) ──────────────────────────
+# REVERTIDO a Report-Only: Detectados problemas con nonce rendering en producción.
+# TODO: Implementar nonce correctamente en FIX #3 (próxima iteración).
+# Por ahora, solo reportamos violaciones sin bloquear (más seguro que romper el sitio).
+CONTENT_SECURITY_POLICY_REPORT_ONLY = {
     "DIRECTIVES": {
         "default-src": ["'self'"],
         "script-src": [
             "'self'",
-            "'nonce-{{ csp_nonce }}'",  # Nonce para scripts inline (CKEditor, AOS)
+            "'unsafe-inline'",          # CKEditor, AOS inline init (temporal)
             "www.google.com",           # reCAPTCHA
             "www.gstatic.com",          # reCAPTCHA
             "raw.githubusercontent.com",  # CDN logos
