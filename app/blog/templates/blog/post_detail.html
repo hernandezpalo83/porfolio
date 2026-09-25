@@ -1,5 +1,6 @@
 {% extends "landing/layouts/base.html" %}
 {% load static %}
+{% load template_filters %}
 
 {% block title %} {{ post.title }} | Javier Hernández Martin {% endblock %}
 
@@ -91,7 +92,7 @@
             {% endif %}
 
             <div class="post-content-body">
-                {{ post.content|safe }}
+                {{ post.content|sanitize_html }}
             </div>
 
             <div class="author-card">

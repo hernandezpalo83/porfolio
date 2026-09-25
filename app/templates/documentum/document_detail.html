@@ -1,5 +1,6 @@
 {% extends "documentum/base_docs.html" %}
 {% load static %}
+{% load template_filters %}
 
 {% block extra_schema %}
 <script type="application/ld+json">
@@ -47,7 +48,7 @@
     </header>
 
     <div class="docs-body">
-        {{ document.content_html|safe }}
+        {{ document.content_html|sanitize_html }}
     </div>
 
     <footer style="margin-top: 8rem; padding-top: 4rem; border-top: 1px solid #eee;">
@@ -80,7 +81,7 @@
 <aside class="docs-toc">
     <h4>En esta página</h4>
     <div class="toc-container">
-        {{ toc|safe }}
+        {{ toc|sanitize_html }}
     </div>
 
     <div style="margin-top: 6rem;">

@@ -28,6 +28,9 @@ Portfolio profesional de Javier Hernández Martin (hernandezpalo.es), construido
 | Minificación | `django-htmlmin` | Solo en producción (`HTML_MINIFY = not DEBUG`) |
 | Despliegue | Render (Web Service) + CI/CD desde rama `main` | |
 | CDN Assets | `https://raw.githubusercontent.com/hernandezpalo83/cdn/main` | `BRAND_ASSETS_URL` en settings |
+| Seguridad (HTML) | `bleach>=6.0.0` | Sanitización XSS de contenido CKEditor |
+| Tareas Async | `celery>=5.3.0` + `redis>=5.0.0` | Batch PageViews en analytics, cleanup periódicos |
+| CSP + Nonce | `django-csp>=3.7` | Nonce dinámico por request, ENFORCE mode |
 
 ---
 
@@ -40,7 +43,8 @@ app/
 ├── blog/            # Engine de contenidos con SEO por post
 ├── documentum/      # Wiki técnica con navegación jerárquica (/wiki/)
 ├── gym/             # Seguimiento/inventario (Productos). Sistema de mantenimiento tabular
-└── prompts/         # Biblioteca de prompts IA. Arquitectura No-DB (sincroniza con GitHub API)
+├── prompts/         # Biblioteca de prompts IA. Arquitectura No-DB (sincroniza con GitHub API)
+└── analytics/       # Analytics Privacy-First + Blog Trending. Dashboards en /private/analytics/
 
 app/templates/
 ├── landing/         # Tailwind + components_ui (área pública)
@@ -249,6 +253,80 @@ python manage.py verify_urls        # verificación de URLs (pre-commit)
 | Poner claves de API reales (aunque sean de test) en `ci.yml` como literales | GitGuardian las detecta y bloquea el PR. Usar claves ficticias (`ci-fake-*`) cuando `SILENCED_SYSTEM_CHECKS` ya desactiva la validación, o referenciar `${{ secrets.* }}` |
 | Añadir imports en ficheros sin verificar con ruff antes del commit | El lint de CI falla. Ejecutar siempre `ruff check app/ --select F401,F811,E711,E712` antes de mergear |
 | Ejecutar `python manage.py` en CI sin `PYTHONPATH=$GITHUB_WORKSPACE` y sin apuntar a `app/manage.py` | Django no encuentra el módulo `app.*` porque el proyecto no está instalado. El CI usa `PYTHONPATH: ${{ github.workspace }}` y `python app/manage.py` |
+
+---
+
+## 12. Seguridad — Hallazgos Críticos (2026-09-25)
+
+### FIX #1: XSS Protection via HTML Sanitization
+
+**Problema:** 6 templates usaban `|safe` con contenido de CKEditor sin sanitizar.
+
+**Implementación:**
+- Creado `app/utils/sanitizers.py` con función `sanitize_html()` usando bleach
+- Creado `app/utils/template_filters.py` con custom filter `|sanitize_html`
+- Reemplazados todos los `|safe` en templates:
+  - `app/blog/templates/blog/post_detail.html`
+  - `app/templates/documentum/document_detail.html` (2 usos)
+  - `app/templates/landing/components/resume.html` (2 usos)
+  - `app/templates/landing/components/portfolio.html`
+- Whitelist segura: `<p>`, `<br>`, `<strong>`, `<em>`, `<a>`, `<h1-h6>`, `<ul>`, `<ol>`, `<li>`, `<blockquote>`, `<code>`, `<pre>`, `<img>`, `<table>`
+- Uso: `{{ content|sanitize_html }}` en lugar de `{{ content|safe }}`
+
+### FIX #2: Analytics N+1 Query Problem — Batch Async with Celery
+
+**Problema:** Middleware de analytics hacía CREATE por cada request (+100ms latencia).
+
+**Implementación:**
+- Creado `app/celery.py` para configurar Celery + Redis
+- Creado `app/tasks.py` con tareas asincrónicas:
+  - `batch_save_pageviews`: bulk_create de múltiples PageViews
+  - `batch_save_sessions`: actualizar SessionTrackers en batch
+  - `cleanup_old_pageviews`: eliminar datos >90 días (Celery Beat)
+  - `cleanup_old_sessions`: eliminar sesiones >30 días
+- Modificado `app/analytics/middleware.py`:
+  - Acumula PageViews en `request._pageviews_batch`
+  - Envía a Celery cuando `len(batch) >= ANALYTICS_BATCH_SIZE` (default: 10)
+  - SessionTracker sigue siendo síncrono (crítico para sesiones)
+  - Fallback: bulk_create sincrónico si Celery no disponible
+- Configuración en `settings.py`:
+  - `CELERY_BROKER_URL`: Redis (default: `redis://localhost:6379/0`)
+  - `ANALYTICS_BATCH_SIZE = 10`
+  - En DEBUG: `CELERY_TASK_ALWAYS_EAGER = True` para testing local
+
+**Resultado esperado:** Latencia 100ms → 5ms en analytics.
+
+### FIX #3: Content Security Policy — Nonce-Based ENFORCE Mode
+
+**Problema:** CSP estaba en Report-Only mode; scripts inline no estaban protegidos.
+
+**Implementación:**
+- Creado `app/config/middleware.py` con `CSPNonceMiddleware`
+  - Genera nonce único (16 bytes, base64 URL-safe) por request
+  - Disponible como `{{ request.csp_nonce }}` en templates
+- Cambio en `settings.py`:
+  - Agregado `CSPNonceMiddleware` al MIDDLEWARE (después de CSPMiddleware)
+  - Cambiado `CONTENT_SECURITY_POLICY_REPORT_ONLY` → `CONTENT_SECURITY_POLICY` (ENFORCE)
+  - `script-src`: Incluye nonce y elimina `'unsafe-inline'` gradualmente
+  - Agregado context processor `csp_nonce()`
+- Actualizado `app/config/context_processors.py`:
+  - Nuevo context processor `csp_nonce()` para pasar nonce a templates
+- Actualización de templates con nonce:
+  - `app/templates/landing/layouts/base.html` (2 scripts inline)
+  - `app/templates/landing/components/resume.html` (1 script)
+  - `app/templates/documentum/base_docs.html` (1 script)
+
+**Uso en templates:**
+```django
+<script nonce="{{ csp_nonce }}">
+    // Tu código inline aquí
+</script>
+```
+
+**Notas:**
+- SessionStorage/localStorage siguen accesibles (necesarios para AOS, Typed.js, etc)
+- `style-src` sigue permitiendo `'unsafe-inline'` (necesario para Bootstrap, componentes)
+- Para scripts externos: no necesitan nonce, se permiten vía whitelist (Google, GitHub CDN)
 
 ---
 

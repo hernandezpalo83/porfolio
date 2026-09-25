@@ -186,6 +186,7 @@
 </style>
 
 {% load landing_filters %}
+{% load template_filters %}
 <section id="portfolio">
     <div class="row section-intro">
         <div class="col-twelve">
@@ -227,7 +228,7 @@
                 {% endif %}
 
                 <h3 class="project-title">{{ project.title }}</h3>
-                <div class="project-description">{{ project.description|safe }}</div>
+                <div class="project-description">{{ project.description|sanitize_html }}</div>
 
                 {# Tech tags: cada elemento de 'categoria' separado por coma #}
                 {% if tags %}

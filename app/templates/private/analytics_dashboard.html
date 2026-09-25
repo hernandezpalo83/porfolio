@@ -1,0 +1,240 @@
+{% extends 'private/layouts/base.html' %}
+{% load static %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold">📊 Analytics Dashboard</h1>
+            <p class="text-muted">Datos en tiempo real de tu portfolio</p>
+        </div>
+    </div>
+
+    <!-- Métricas principales -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Vistas Hoy</h6>
+                    <h2 class="fw-bold text-primary">{{ total_views_today }}</h2>
+                    <small class="text-muted">Últimas 24 horas</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Vistas (7d)</h6>
+                    <h2 class="fw-bold text-success">{{ total_views_7d }}</h2>
+                    <small class="text-muted">Últimos 7 días</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Sesiones Únicas (7d)</h6>
+                    <h2 class="fw-bold text-info">{{ unique_sessions_7d }}</h2>
+                    <small class="text-muted">Visitantes distintos</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Bounce Rate (7d)</h6>
+                    <h2 class="fw-bold text-warning">{{ bounce_rate_7d }}%</h2>
+                    <small class="text-muted">Sesiones de una página</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row mb-4">
+        <!-- Vistas en el tiempo -->
+        <div class="col-lg-8 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📈 Vistas Diarias (30 días)</h5>
+                    <canvas id="viewsChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispositivos -->
+        <div class="col-lg-4 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📱 Distribución por Dispositivo</h5>
+                    <canvas id="devicesChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Más gráficos -->
+    <div class="row">
+        <!-- Países -->
+        <div class="col-lg-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🌍 Top Países</h5>
+                    <canvas id="countriesChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Páginas populares -->
+        <div class="col-lg-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🔥 Top Páginas</h5>
+                    <div id="topPagesContainer">
+                        <small class="text-muted">Cargando...</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link a blog analytics -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <a href="{% url 'analytics:blog_dashboard' %}" class="btn btn-primary btn-lg">
+                📝 Ver Blog Analytics
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let chartsInstances = {};
+
+function destroyChart(chartId) {
+    if (chartsInstances[chartId]) {
+        chartsInstances[chartId].destroy();
+        delete chartsInstances[chartId];
+    }
+}
+
+// Gráfico de vistas diarias
+fetch('/private/analytics/api/views-by-day/')
+    .then(r => r.json())
+    .then(data => {
+        destroyChart('viewsChart');
+        const ctx = document.getElementById('viewsChart').getContext('2d');
+        chartsInstances['viewsChart'] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.data.map(d => d.date),
+                datasets: [{
+                    label: 'Vistas',
+                    data: data.data.map(d => d.views),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+
+// Gráfico de dispositivos
+fetch('/private/analytics/api/devices-distribution/')
+    .then(r => r.json())
+    .then(data => {
+        destroyChart('devicesChart');
+        const ctx = document.getElementById('devicesChart').getContext('2d');
+        chartsInstances['devicesChart'] = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: data.data.map(d => d.device),
+                datasets: [{
+                    data: data.data.map(d => d.count),
+                    backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    });
+
+// Gráfico de países
+fetch('/private/analytics/api/countries-distribution/')
+    .then(r => r.json())
+    .then(data => {
+        destroyChart('countriesChart');
+        const ctx = document.getElementById('countriesChart').getContext('2d');
+        chartsInstances['countriesChart'] = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.data.map(d => d.country),
+                datasets: [{
+                    label: 'Vistas',
+                    data: data.data.map(d => d.count),
+                    backgroundColor: '#007bff',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                indexAxis: 'y',
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+
+// Top páginas (seguro contra XSS)
+fetch('/private/analytics/api/top-pages/')
+    .then(r => r.json())
+    .then(data => {
+        const container = document.getElementById('topPagesContainer');
+        if (!data.data || data.data.length === 0) {
+            container.innerHTML = '<small class="text-muted">Sin datos</small>';
+            return;
+        }
+        container.innerHTML = '';
+        data.data.forEach(p => {
+            const row = document.createElement('div');
+            row.className = 'd-flex justify-content-between py-2 border-bottom';
+
+            const span = document.createElement('span');
+            const code = document.createElement('code');
+            code.textContent = p.path;
+            span.appendChild(code);
+
+            const strong = document.createElement('strong');
+            strong.textContent = p.views;
+
+            row.appendChild(span);
+            row.appendChild(strong);
+            container.appendChild(row);
+        });
+    });
+</script>
+{% endblock %}

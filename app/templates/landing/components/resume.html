@@ -1,3 +1,5 @@
+{% load template_filters %}
+
 <style>
     /* ── VIS-002: Animación del timeline de experiencia ─────────────────
        La línea vertical se "dibuja" desde arriba hacia abajo al entrar en
@@ -57,7 +59,7 @@
                </div>
                <div class="timeline-content">
                   <h4>{{ experience.company }}</h4>
-                  {{ experience.resumen|safe }}
+                  {{ experience.resumen|sanitize_html }}
                </div>
             </div>
             {% endfor %}
@@ -66,7 +68,7 @@
    </div>
 </section>
 
-<script>
+<script nonce="{{ csp_nonce }}">
     (function () {
         'use strict';
         const wrap = document.getElementById('js-timeline-wrap');
@@ -136,7 +138,7 @@
                <h4>{{ edu.institution }}</h4>
             </div>
             <div class="edu-card-content">
-               {{ edu.resumen|safe }}
+               {{ edu.resumen|sanitize_html }}
                {% if edu.link %}
                <a href="{{ edu.link }}" target="_blank" class="credential-btn">
                   Ver Credencial <i class="fa fa-external-link"></i>

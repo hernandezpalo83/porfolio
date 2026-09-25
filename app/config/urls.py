@@ -53,6 +53,7 @@ urlpatterns = [
     path('gym/', include('app.gym.urls', namespace='gym')),
     path('prompts/', include('app.prompts.urls')),
     path('wiki/', include('app.documentum.urls', namespace='wiki')),
+    path('private/analytics/', include('app.analytics.urls', namespace='analytics')),
 
     path('', include('app.landing.urls')),    
 ]

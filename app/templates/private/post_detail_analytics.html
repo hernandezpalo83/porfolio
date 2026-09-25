@@ -1,0 +1,168 @@
+{% extends 'private/layouts/base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - Analytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'analytics:blog_dashboard' %}" class="btn btn-sm btn-secondary mb-3">← Blog Analytics</a>
+            <h1 class="display-5 fw-bold">{{ post.title }}</h1>
+            <p class="text-muted">Publicado: {{ post.published_date|date:"d M Y" }}</p>
+        </div>
+    </div>
+
+    <!-- Métricas principales -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Vistas (7d)</h6>
+                    <h2 class="fw-bold text-primary">{{ analytics.views_7d }}</h2>
+                    <small class="text-muted">Últimos 7 días</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Bounce Rate</h6>
+                    <h2 class="fw-bold text-warning">{{ analytics.bounce_rate|floatformat:1 }}%</h2>
+                    <small class="text-muted">Sesiones de una página</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Scroll Depth Avg</h6>
+                    <h2 class="fw-bold text-info">{{ analytics.avg_scroll_depth|floatformat:0 }}%</h2>
+                    <small class="text-muted">Profundidad de lectura</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Tiempo Promedio</h6>
+                    <h2 class="fw-bold text-success">{{ analytics.avg_time_spent }}s</h2>
+                    <small class="text-muted">Segundos en la página</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico de vistas -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-gemini shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📈 Vistas Diarias (30 días)</h5>
+                    <canvas id="postViewsChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts relacionados -->
+    {% if related_posts %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="fw-bold mb-3">🔗 Posts Relacionados</h3>
+            <div class="row">
+                {% for related_post in related_posts %}
+                <div class="col-lg-4 mb-3">
+                    <div class="card card-gemini shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ related_post.title }}</h5>
+                            <p class="text-muted small">{{ related_post.get_excerpt }}</p>
+                            <a href="{% url 'analytics:post_detail' related_post.id %}"
+                               class="btn btn-sm btn-outline-primary mt-3">
+                                Ver analytics →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Vistas recientes -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="fw-bold mb-3">📊 Últimas Vistas</h3>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>País</th>
+                            <th>Dispositivo</th>
+                            <th>Referrer</th>
+                            <th>Scroll Depth</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for view in recent_views %}
+                        <tr>
+                            <td>{{ view.country }}</td>
+                            <td><span class="badge bg-light text-dark">{{ view.device }}</span></td>
+                            <td><small>{{ view.referrer|truncatechars:50 }}</small></td>
+                            <td><span class="badge bg-info">{{ view.scroll_depth }}%</span></td>
+                            <td><small class="text-muted">{{ view.timestamp|date:"d M, H:i" }}</small></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">Sin vistas registradas</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Gráfico de vistas del post
+fetch('/private/analytics/api/post/{{ post.id }}/views-by-day/')
+    .then(r => r.json())
+    .then(data => {
+        const ctx = document.getElementById('postViewsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.data.map(d => d.date),
+                datasets: [{
+                    label: 'Vistas',
+                    data: data.data.map(d => d.views),
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

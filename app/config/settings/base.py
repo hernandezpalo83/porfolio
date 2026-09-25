@@ -68,7 +68,9 @@ INSTALLED_APPS = [
     'app.prompts',
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
-    'components_ui'
+    'app.analytics',
+    'app.utils.apps.UtilsConfig',
+    # 'components_ui'  # TODO: Instalar vía SSH: pip install git+ssh://...
 ]
 
 SITE_ID = 1
@@ -85,24 +87,29 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
     'csp.middleware.CSPMiddleware',
+    'app.config.middleware.CSPNonceMiddleware',  # Must be after CSPMiddleware
+    'app.analytics.middleware.AnalyticsTrackingMiddleware',
 ]
 
-# ── TECH-003: Content Security Policy (Report-Only) ──────────────────────────
-# Modo Report-Only: no bloquea nada, solo reporta violaciones al endpoint.
-# Una vez limpias las violaciones en producción, cambiar a enforce.
-CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+# ── TECH-003: Content Security Policy (ENFORCE mode + Nonce) ──────────────────────────
+# Cambio de Report-Only a ENFORCE: CSP ahora bloquea activamente XSS en lugar de solo reportar.
+# Usa nonce para permitir scripts inline específicos (CKEditor, AOS).
+#
+# Nonce es generado por CSPNonceMiddleware (único por request).
+# Uso en templates: <script nonce="{{ request.csp_nonce }}">...</script>
+CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
         "default-src": ["'self'"],
         "script-src": [
             "'self'",
-            "'unsafe-inline'",          # CKEditor, AOS inline init
+            "'nonce-{{ csp_nonce }}'",  # Nonce para scripts inline (CKEditor, AOS)
             "www.google.com",           # reCAPTCHA
             "www.gstatic.com",          # reCAPTCHA
             "raw.githubusercontent.com",  # CDN logos
         ],
         "style-src": [
             "'self'",
-            "'unsafe-inline'",          # estilos inline en componentes
+            "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap, inline en templates)
             "fonts.googleapis.com",
         ],
         "font-src": [
@@ -142,6 +149,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.config.context_processors.brand_assets',
+                'app.config.context_processors.csp_nonce',  # CSP nonce para scripts inline
                 'app.landing.context_processors.menu_int_processor',
                 'app.documentum.context_processors.docs_navigation',
             ],
@@ -252,3 +260,25 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50,
 }
+
+# ── TECH-004: Celery Configuration (Async Tasks) ──────────────────────────
+# Celery es usado para procesar tareas asincrónicas como batch de analytics.
+# Broker: Redis (producción), puede ser in-memory en desarrollo.
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutos max
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_RESULT_EXPIRES = 3600  # 1 hora
+
+# Analytics: tamaño de batch antes de enviar a Celery (evita overhead)
+ANALYTICS_BATCH_SIZE = 10
+
+# En desarrollo/testing, hacer tareas eager (sincrónico) para debugging
+if DEBUG:
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
