@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'app.documentum.apps.DocumentumConfig',
     'app.blog',
     'app.analytics',
+    'app.utils.apps.UtilsConfig',
     # 'components_ui'  # TODO: Instalar vía SSH: pip install git+ssh://...
 ]
 

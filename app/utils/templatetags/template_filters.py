@@ -9,7 +9,7 @@ from django import template
 from django.utils.safestring import mark_safe
 from django.template.defaultfilters import stringfilter
 
-from .sanitizers import sanitize_html
+from app.utils.sanitizers import sanitize_html
 
 register = template.Library()
 
