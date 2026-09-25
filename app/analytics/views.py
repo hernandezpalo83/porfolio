@@ -1,11 +1,10 @@
-import json
 from datetime import timedelta
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.db.models import Count, Avg, Q, F
+from django.db.models import Count, Avg
 from .models import PageView, SessionTracker, PostAnalytics, RelatedPostsCache
 from app.blog.models import Post
 

@@ -6,7 +6,7 @@ allowing only whitelisted tags and attributes.
 """
 
 import logging
-from bleach import clean, ALLOWED_TAGS as BLEACH_ALLOWED_TAGS
+from bleach import clean
 
 logger = logging.getLogger(__name__)
 

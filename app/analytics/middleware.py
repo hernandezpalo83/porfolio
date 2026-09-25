@@ -1,6 +1,5 @@
 import logging
 import uuid
-import json
 from django.utils.deprecation import MiddlewareMixin
 from django.utils import timezone
 from django.http import HttpRequest
