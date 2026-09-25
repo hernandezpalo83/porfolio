@@ -28,7 +28,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script nonce="{{ csp_nonce }}">
+<script>
     // Smooth scroll for anchors
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
