@@ -108,10 +108,12 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
             "'self'",
             "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap)
             "fonts.googleapis.com",
+            "cdn.jsdelivr.net",         # Bootstrap Icons CSS
         ],
         "font-src": [
             "'self'",
             "fonts.gstatic.com",
+            "cdn.jsdelivr.net",         # Bootstrap Icons fonts
         ],
         "img-src": [
             "'self'",
