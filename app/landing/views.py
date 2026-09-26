@@ -20,9 +20,29 @@ def error_404_view(request: HttpRequest, exception: Exception) -> HttpResponse:
 
 @login_required
 def private_area(request: HttpRequest) -> HttpResponse:
-    # Aquí puedes añadir lógica para contar posts, ver fecha del último backup, etc.
+    # Mostrar diagnóstico si el usuario es superuser
+    diagnostics = None
+    if request.user.is_superuser:
+        try:
+            import json
+            from django.urls import reverse
+            # Crear request interno para obtener diagnóstico
+            from django.test import RequestFactory
+            factory = RequestFactory()
+            diag_request = factory.get(reverse('debug_diagnostics'))
+            diag_request.user = request.user
+
+            # Llamar a la función debug_diagnostics directamente
+            from app.config.urls import debug_diagnostics
+            response = debug_diagnostics(diag_request)
+            diagnostics = json.loads(response.content.decode())
+        except Exception as e:
+            logger.error(f"Error loading diagnostics: {e}")
+            diagnostics = None
+
     context: Dict[str, Any] = {
-        'segment': 'dashboard', # Útil para marcar el menú activo
+        'segment': 'dashboard',
+        'diagnostics': diagnostics,
     }
     return render(request, 'private/pages/dashboard.html', context)
 

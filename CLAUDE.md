@@ -205,6 +205,23 @@ La BD de Render (free tier) tiene persistencia limitada. El proyecto implementa:
   - `python manage.py setup_db`: Verifica tablas críticas, restaura de backup si vacía, normaliza slugs, renderiza HTML
   - Automáticamente loguea estado de tablas al final para debugging en producción
 
+### Diagnóstico en Producción (2026-09-26)
+
+**Endpoint único de diagnóstico (Superuser only):**
+- **URL**: `GET /api/debug/diagnostics/` (JSON)
+- **Alternativa visual**: Accede a `/private/` → Ve el diagnostics panel si eres superuser
+- **Qué valida**:
+  - Database connection
+  - Critical tables (analytics_pageview, analytics_sessiontracker, landing_menuitem, auth_user)
+  - Module imports (app.analytics, app.celery, etc.)
+  - Context processors (menu_int_processor)
+  - Template rendering (private/pages/dashboard.html)
+
+**Cuando hay error de template**, el diagnóstico mostrará:
+- `error_type`: ej. `ValueError`, `TemplateDoesNotExist`
+- `error_msg`: descripción del error
+- `traceback_logged`: true (ver Render logs para traceback completo)
+
 ### Pre-deploy checklist (ejecutar siempre antes de merge a `main`)
 
 ```bash

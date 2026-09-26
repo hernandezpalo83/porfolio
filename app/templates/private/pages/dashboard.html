@@ -9,6 +9,82 @@
     </div>
 </div>
 
+{% if diagnostics %}
+{# DIAGNOSTICS SECTION (Superuser only) #}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card {% if diagnostics.status == 'error' %}border-danger{% else %}border-success{% endif %} shadow-sm">
+            <div class="card-header {% if diagnostics.status == 'error' %}bg-danger{% else %}bg-success{% endif %} text-white">
+                <h5 class="mb-0">
+                    {% if diagnostics.status == 'error' %}
+                        ⚠️ System Diagnostics: ISSUES DETECTED
+                    {% else %}
+                        ✅ System Diagnostics: ALL OK
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">Last check: {{ diagnostics.timestamp }}</p>
+
+                {# DATABASE #}
+                <div class="mb-3">
+                    <h6 class="fw-bold">🗄️ Database</h6>
+                    <div class="ms-3">
+                        <p class="mb-1">
+                            Connection:
+                            <span class="badge {% if 'OK' in diagnostics.sections.database.connection.status %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ diagnostics.sections.database.connection.status }}
+                            </span>
+                        </p>
+                        <p class="mb-0">
+                            Tables:
+                            <span class="badge {% if 'EXIST' in diagnostics.sections.database.tables.status %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ diagnostics.sections.database.tables.status }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                {# IMPORTS #}
+                <div class="mb-3">
+                    <h6 class="fw-bold">📦 Imports</h6>
+                    <div class="ms-3">
+                        {% for module, status in diagnostics.sections.imports.items %}
+                            <p class="mb-1"><small>{{ module }}: <span class="badge {% if 'OK' in status %}bg-success{% else %}bg-danger{% endif %}">{{ status }}</span></small></p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# CONTEXT PROCESSORS #}
+                <div class="mb-3">
+                    <h6 class="fw-bold">⚙️ Context Processors</h6>
+                    <div class="ms-3">
+                        {% for proc, status in diagnostics.sections.context_processors.items %}
+                            <p class="mb-1"><small>{{ proc }}: <span class="badge {% if 'OK' in status %}bg-success{% else %}bg-danger{% endif %}">{{ status }}</span></small></p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# TEMPLATES #}
+                <div class="mb-0">
+                    <h6 class="fw-bold">📄 Templates</h6>
+                    <div class="ms-3">
+                        {% for template, details in diagnostics.sections.templates.items %}
+                            <div class="mb-2">
+                                <p class="mb-1"><small>{{ template }}: <span class="badge {% if details.status == '✓ OK' %}bg-success{% else %}bg-danger{% endif %}">{{ details.status }}</span></small></p>
+                                {% if details.error_type %}
+                                    <p class="mb-0 ms-3"><small class="text-danger"><strong>Error:</strong> {{ details.error_type }} - {{ details.error_msg }}</small></p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row g-4">
     <div class="col-12">
         <div class="card card-gemini shadow-sm h-100">
