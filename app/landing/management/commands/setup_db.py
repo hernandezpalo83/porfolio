@@ -297,6 +297,14 @@ class Command(BaseCommand):
             except Exception:
                 pass
 
+        # ANALYTICS step: Update trending data
+        try:
+            self.stdout.write('Actualizando datos de analítica...')
+            call_command('update_analytics')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Error actualizando analytics: {e}"))
+            # No abortamos, es no-crítico
+
         # Final check: verify critical tables exist (debugging for production issues)
         self._check_critical_tables()
 
