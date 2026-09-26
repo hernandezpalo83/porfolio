@@ -15,37 +15,41 @@ logger = logging.getLogger(__name__)
 @login_required
 def analytics_dashboard(request):
     """Dashboard general de analítica."""
-    today = timezone.now().date()
-    week_ago = today - timedelta(days=7)
-    month_ago = today - timedelta(days=30)
+    try:
+        today = timezone.now().date()
+        week_ago = today - timedelta(days=7)
+        month_ago = today - timedelta(days=30)
 
-    # Métricas generales
-    total_views_today = PageView.objects.filter(timestamp__date=today).count()
-    total_views_7d = PageView.objects.filter(timestamp__date__gte=week_ago).count()
-    total_views_30d = PageView.objects.filter(timestamp__date__gte=month_ago).count()
+        # Métricas generales
+        total_views_today = PageView.objects.filter(timestamp__date=today).count()
+        total_views_7d = PageView.objects.filter(timestamp__date__gte=week_ago).count()
+        total_views_30d = PageView.objects.filter(timestamp__date__gte=month_ago).count()
 
-    unique_sessions_7d = SessionTracker.objects.filter(
-        created_at__date__gte=week_ago
-    ).count()
+        unique_sessions_7d = SessionTracker.objects.filter(
+            created_at__date__gte=week_ago
+        ).count()
 
-    bounce_rate_7d = SessionTracker.objects.filter(
-        created_at__date__gte=week_ago
-    ).filter(is_bounce=True).count() / max(unique_sessions_7d, 1) * 100
+        bounce_rate_7d = SessionTracker.objects.filter(
+            created_at__date__gte=week_ago
+        ).filter(is_bounce=True).count() / max(unique_sessions_7d, 1) * 100
 
-    avg_duration_7d = SessionTracker.objects.filter(
-        created_at__date__gte=week_ago
-    ).aggregate(Avg('total_duration'))['total_duration__avg'] or 0
+        avg_duration_7d = SessionTracker.objects.filter(
+            created_at__date__gte=week_ago
+        ).aggregate(Avg('total_duration'))['total_duration__avg'] or 0
 
-    contexto = {
-        'total_views_today': total_views_today,
-        'total_views_7d': total_views_7d,
-        'total_views_30d': total_views_30d,
-        'unique_sessions_7d': unique_sessions_7d,
-        'bounce_rate_7d': round(bounce_rate_7d, 1),
-        'avg_duration_7d': int(avg_duration_7d),
-    }
+        contexto = {
+            'total_views_today': total_views_today,
+            'total_views_7d': total_views_7d,
+            'total_views_30d': total_views_30d,
+            'unique_sessions_7d': unique_sessions_7d,
+            'bounce_rate_7d': round(bounce_rate_7d, 1),
+            'avg_duration_7d': int(avg_duration_7d),
+        }
 
-    return render(request, 'private/analytics_dashboard.html', contexto)
+        return render(request, 'private/analytics_dashboard.html', contexto)
+    except Exception as e:
+        logger.error(f"Error in analytics_dashboard: {str(e)}", exc_info=True)
+        raise
 
 
 @login_required
