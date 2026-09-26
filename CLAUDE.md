@@ -198,10 +198,12 @@ La BD de Render (free tier) tiene persistencia limitada. El proyecto implementa:
 
 - CI/CD automático desde rama `main` en Render
 - Variables de entorno obligatorias: `SECRET_KEY`, `DATABASE_URL`, `DEBUG=False`, `ALLOWED_HOSTS`, `GITHUB_TOKEN_COMPONENTES`, `RECAPTCHA_PUBLIC_KEY`, `RECAPTCHA_PRIVATE_KEY`
-- Post-deploy (one-off en Render):
+- **Build Command** (Render):
   ```bash
-  pip install -r requirements.txt && python manage.py migrate && python manage.py setup_db --seed --seed-sql documentum_seed_postgres.sql --normalize --render && python create_admin.py && python manage.py collectstatic --noinput
+  pip install -r requirements.txt && python manage.py migrate && python manage.py setup_db && python create_admin.py && python manage.py collectstatic --noinput
   ```
+  - `python manage.py setup_db`: Verifica tablas críticas, restaura de backup si vacía, normaliza slugs, renderiza HTML
+  - Automáticamente loguea estado de tablas al final para debugging en producción
 
 ### Pre-deploy checklist (ejecutar siempre antes de merge a `main`)
 
