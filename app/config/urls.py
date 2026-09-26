@@ -120,6 +120,43 @@ def debug_status(request):
     logger.info(f"Debug status check: {status['status']}")
     return JsonResponse(status, status=200 if status['status'] == 'ok' else 500)
 
+
+def debug_private_render(request):
+    """
+    Test rendering private/pages/dashboard.html template.
+    Requiere superuser. Loguea cualquier error de template.
+    GET /api/debug/private-render/
+    """
+    from django.http import HttpResponseForbidden
+    import logging
+
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    logger = logging.getLogger(__name__)
+
+    try:
+        from django.template.loader import render_to_string
+
+        # Intenta renderizar la plantilla con contexto mínimo
+        html = render_to_string('private/pages/dashboard.html', {
+            'segment': 'dashboard',
+            'request': request
+        }, request=request)
+
+        return JsonResponse({
+            'status': 'ok',
+            'message': 'Template rendered successfully',
+            'html_length': len(html)
+        })
+    except Exception as e:
+        logger.error(f"Template render error: {str(e)}", exc_info=True)
+        return JsonResponse({
+            'status': 'error',
+            'error': 'Template rendering failed',
+            'check_logs': True
+        }, status=500)
+
 sitemaps = {
     'static': StaticViewSitemap,
     'blog': PostSitemap,
@@ -132,6 +169,7 @@ urlpatterns = [
     path("health/", health_check, name="health_check"),
     path("csp-report/", csp_report, name="csp_report"),
     path("api/debug/status/", debug_status, name="debug_status"),
+    path("api/debug/private-render/", debug_private_render, name="debug_private_render"),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
