@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -8,7 +9,7 @@ from django.db.models import Count, Avg
 from .models import PageView, SessionTracker, PostAnalytics, RelatedPostsCache
 from app.blog.models import Post
 
-logger = __import__('logging').getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @login_required
