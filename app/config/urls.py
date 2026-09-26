@@ -29,6 +29,93 @@ def csp_report(request):
             pass
     return JsonResponse({}, status=204)
 
+
+def debug_status(request):
+    """
+    Endpoint de diagnóstico para debuggear 500 errors en producción.
+    Retorna estado de: BD, tablas, context processors, imports.
+    GET /api/debug/status/
+    """
+    from django.db import connection
+    import logging
+
+    logger = logging.getLogger(__name__)
+
+    status = {
+        'status': 'ok',
+        'checks': {},
+        'errors': []
+    }
+
+    # 1. BD connection
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1;")
+        status['checks']['database_connection'] = '✓ OK'
+    except Exception as e:
+        status['checks']['database_connection'] = f'✗ FAIL: {str(e)}'
+        status['errors'].append(f"DB Connection: {str(e)}")
+        status['status'] = 'error'
+
+    # 2. Critical tables
+    try:
+        critical_tables = ['analytics_pageview', 'analytics_sessiontracker', 'landing_menuitem', 'auth_user']
+        with connection.cursor() as cursor:
+            if connection.vendor == 'sqlite':
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            elif connection.vendor == 'postgresql':
+                cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+            else:
+                existing_tables = set()
+            existing_tables = {row[0] for row in cursor.fetchall()}
+
+        missing = [t for t in critical_tables if t not in existing_tables]
+        if missing:
+            status['checks']['critical_tables'] = f'✗ MISSING: {missing}'
+            status['errors'].append(f"Missing tables: {missing}")
+            status['status'] = 'error'
+        else:
+            status['checks']['critical_tables'] = '✓ ALL EXIST'
+    except Exception as e:
+        status['checks']['critical_tables'] = f'✗ FAIL: {str(e)}'
+        status['errors'].append(f"Table check: {str(e)}")
+        status['status'] = 'error'
+
+    # 3. Critical imports
+    for module in ['app.analytics.models', 'app.analytics.middleware', 'app.landing.models', 'app.celery']:
+        try:
+            __import__(module)
+            status['checks'][f'import_{module}'] = '✓ OK'
+        except Exception as e:
+            status['checks'][f'import_{module}'] = f'✗ FAIL: {str(e)}'
+            status['errors'].append(f"Import {module}: {str(e)}")
+            status['status'] = 'error'
+
+    # 4. Context processor
+    try:
+        from app.landing.context_processors import menu_int_processor
+        from django.test import RequestFactory
+        from django.contrib.auth.models import AnonymousUser
+
+        factory = RequestFactory()
+        req = factory.get('/')
+        req.user = AnonymousUser()
+        result = menu_int_processor(req)
+
+        if 'menu_items_int' in result:
+            status['checks']['context_processor_menu'] = '✓ OK'
+        else:
+            status['checks']['context_processor_menu'] = '✗ missing menu_items_int'
+            status['errors'].append("Context processor returned invalid result")
+            status['status'] = 'error'
+    except Exception as e:
+        status['checks']['context_processor_menu'] = f'✗ FAIL: {str(e)}'
+        status['errors'].append(f"Context processor: {str(e)}")
+        status['status'] = 'error'
+
+    logger.info(f"Debug status: {status}")
+    return JsonResponse(status, status=200 if status['status'] == 'ok' else 500)
+
 sitemaps = {
     'static': StaticViewSitemap,
     'blog': PostSitemap,
@@ -40,6 +127,7 @@ sitemaps = {
 urlpatterns = [
     path("health/", health_check, name="health_check"),
     path("csp-report/", csp_report, name="csp_report"),
+    path("api/debug/status/", debug_status, name="debug_status"),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
