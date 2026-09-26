@@ -6,7 +6,9 @@ Used in production (Render, AWS, etc). Strict security, DEBUG=False.
 
 from .base import *
 
-# --- SENTRY (error monitoring - optional) ---
+# --- SENTRY (error monitoring) ---
+# NOTE: sentry-sdk[django]>=2.0 is in requirements.txt and MUST be installed
+# If missing, it indicates a deployment issue (pip install not running properly)
 try:
     import sentry_sdk
     _sentry_dsn = os.getenv('SENTRY_DSN', '')
@@ -17,8 +19,12 @@ try:
             environment='production',
             send_default_pii=False,
         )
-except ImportError:
-    pass  # Sentry SDK not installed - skip error monitoring
+except ImportError as e:
+    # Fallback: If sentry-sdk is missing, continue but log warning
+    # This should NOT happen in production if pip install is working
+    import sys
+    print(f"WARNING: sentry-sdk not installed. Check requirements.txt installation.", file=sys.stderr)
+    pass
 
 DEBUG = False
 

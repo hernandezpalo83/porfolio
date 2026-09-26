@@ -253,6 +253,7 @@ python manage.py verify_urls        # verificación de URLs (pre-commit)
 | Poner claves de API reales (aunque sean de test) en `ci.yml` como literales | GitGuardian las detecta y bloquea el PR. Usar claves ficticias (`ci-fake-*`) cuando `SILENCED_SYSTEM_CHECKS` ya desactiva la validación, o referenciar `${{ secrets.* }}` |
 | Añadir imports en ficheros sin verificar con ruff antes del commit | El lint de CI falla. Ejecutar siempre `ruff check app/ --select F401,F811,E711,E712` antes de mergear |
 | Ejecutar `python manage.py` en CI sin `PYTHONPATH=$GITHUB_WORKSPACE` y sin apuntar a `app/manage.py` | Django no encuentra el módulo `app.*` porque el proyecto no está instalado. El CI usa `PYTHONPATH: ${{ github.workspace }}` y `python app/manage.py` |
+| **[CRÍTICO]** Olvidar que requirements.txt DEBE estar actualizado y instalarse en producción | Produce ImportError y 500 errors en Render. Ejemplo: sentry-sdk en requirements.txt pero no instalado = /private/ inaccesible. Verificar: `pip install -r requirements.txt` en post-deploy Render |
 
 ---
 
