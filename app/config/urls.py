@@ -32,19 +32,23 @@ def csp_report(request):
 
 def debug_status(request):
     """
-    Endpoint de diagnóstico para debuggear 500 errors en producción.
-    Retorna estado de: BD, tablas, context processors, imports.
+    Endpoint de diagnóstico PRIVADO para debuggear 500 errors.
+    Requiere autenticación de superuser.
     GET /api/debug/status/
     """
     from django.db import connection
+    from django.http import HttpResponseForbidden
     import logging
+
+    # Require superuser authentication
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return HttpResponseForbidden()
 
     logger = logging.getLogger(__name__)
 
     status = {
         'status': 'ok',
-        'checks': {},
-        'errors': []
+        'checks': {}
     }
 
     # 1. BD connection
@@ -53,8 +57,8 @@ def debug_status(request):
             cursor.execute("SELECT 1;")
         status['checks']['database_connection'] = '✓ OK'
     except Exception as e:
-        status['checks']['database_connection'] = f'✗ FAIL: {str(e)}'
-        status['errors'].append(f"DB Connection: {str(e)}")
+        logger.error(f"Database connection failed: {str(e)}", exc_info=True)
+        status['checks']['database_connection'] = '✗ FAIL'
         status['status'] = 'error'
 
     # 2. Critical tables
@@ -71,14 +75,14 @@ def debug_status(request):
 
         missing = [t for t in critical_tables if t not in existing_tables]
         if missing:
-            status['checks']['critical_tables'] = f'✗ MISSING: {missing}'
-            status['errors'].append(f"Missing tables: {missing}")
+            logger.error(f"Missing critical tables: {missing}")
+            status['checks']['critical_tables'] = f'✗ MISSING ({len(missing)})'
             status['status'] = 'error'
         else:
             status['checks']['critical_tables'] = '✓ ALL EXIST'
     except Exception as e:
-        status['checks']['critical_tables'] = f'✗ FAIL: {str(e)}'
-        status['errors'].append(f"Table check: {str(e)}")
+        logger.error(f"Table check failed: {str(e)}", exc_info=True)
+        status['checks']['critical_tables'] = '✗ FAIL'
         status['status'] = 'error'
 
     # 3. Critical imports
@@ -87,8 +91,8 @@ def debug_status(request):
             __import__(module)
             status['checks'][f'import_{module}'] = '✓ OK'
         except Exception as e:
-            status['checks'][f'import_{module}'] = f'✗ FAIL: {str(e)}'
-            status['errors'].append(f"Import {module}: {str(e)}")
+            logger.error(f"Import {module} failed: {str(e)}", exc_info=True)
+            status['checks'][f'import_{module}'] = '✗ FAIL'
             status['status'] = 'error'
 
     # 4. Context processor
@@ -105,15 +109,15 @@ def debug_status(request):
         if 'menu_items_int' in result:
             status['checks']['context_processor_menu'] = '✓ OK'
         else:
-            status['checks']['context_processor_menu'] = '✗ missing menu_items_int'
-            status['errors'].append("Context processor returned invalid result")
+            logger.error("Context processor returned invalid result")
+            status['checks']['context_processor_menu'] = '✗ FAIL'
             status['status'] = 'error'
     except Exception as e:
-        status['checks']['context_processor_menu'] = f'✗ FAIL: {str(e)}'
-        status['errors'].append(f"Context processor: {str(e)}")
+        logger.error(f"Context processor failed: {str(e)}", exc_info=True)
+        status['checks']['context_processor_menu'] = '✗ FAIL'
         status['status'] = 'error'
 
-    logger.info(f"Debug status: {status}")
+    logger.info(f"Debug status check: {status['status']}")
     return JsonResponse(status, status=200 if status['status'] == 'ok' else 500)
 
 sitemaps = {
