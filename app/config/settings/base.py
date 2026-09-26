@@ -103,12 +103,16 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
             "www.google.com",           # reCAPTCHA
             "www.gstatic.com",          # reCAPTCHA
             "raw.githubusercontent.com",  # CDN logos
+            "cdn.tailwindcss.com",      # Tailwind CSS (private area)
+            "cdn.jsdelivr.net",         # Luxon, Bootstrap
+            "unpkg.com",                # Tabulator JS
         ],
         "style-src": [
             "'self'",
             "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap)
             "fonts.googleapis.com",
             "cdn.jsdelivr.net",         # Bootstrap Icons CSS
+            "unpkg.com",                # Tabulator CSS
         ],
         "font-src": [
             "'self'",
