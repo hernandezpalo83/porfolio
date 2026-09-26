@@ -86,28 +86,27 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
-    'csp.middleware.CSPMiddleware',
-    'app.config.middleware.CSPNonceMiddleware',  # Must be after CSPMiddleware
+    'csp.middleware.CSPMiddleware',  # django-csp maneja nonce automáticamente
     'app.analytics.middleware.AnalyticsTrackingMiddleware',
 ]
 
-# ── TECH-003: Content Security Policy (Report-Only mode) ──────────────────────────
-# REVERTIDO a Report-Only: Detectados problemas con nonce rendering en producción.
-# TODO: Implementar nonce correctamente en FIX #3 (próxima iteración).
-# Por ahora, solo reportamos violaciones sin bloquear (más seguro que romper el sitio).
+# ── TECH-003: Content Security Policy (Report-Only for now) ──────────────────────────
+# FIX #3 v2 intento: Django-csp nonce rendering falló ('nonce-{%s}' no se substituyó)
+# TODO: Revisar django-csp version y documentación para implementar nonce correctamente
+# Por ahora: REPORT_ONLY mode (seguro, sin bloqueos, permitiendo la funcionalidad)
 CONTENT_SECURITY_POLICY_REPORT_ONLY = {
     "DIRECTIVES": {
         "default-src": ["'self'"],
         "script-src": [
             "'self'",
-            "'unsafe-inline'",          # CKEditor, AOS inline init (temporal)
+            "'unsafe-inline'",          # Temporal: CKEditor, AOS inline init
             "www.google.com",           # reCAPTCHA
             "www.gstatic.com",          # reCAPTCHA
             "raw.githubusercontent.com",  # CDN logos
         ],
         "style-src": [
             "'self'",
-            "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap, inline en templates)
+            "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap)
             "fonts.googleapis.com",
         ],
         "font-src": [

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
+    <script >document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}Technical Product Manager | Javier Hernández Martin | Madrid{% endblock %}</title>
@@ -145,7 +145,7 @@
     {# 🚀 TYPING EFFECT & AOS ANIMATIONS — vendor local (sin CDN externo) #}
     <script src="{% static 'landing/js/vendor/typed.min.js' %}"></script>
     <script src="{% static 'landing/js/vendor/aos.min.js' %}"></script>
-    <script>
+    <script >
         AOS.init({ duration: 800, easing: 'ease-in-out', once: true, mirror: false });
         document.addEventListener('DOMContentLoaded', function () {
             if (document.getElementById('typed-roles')) {
