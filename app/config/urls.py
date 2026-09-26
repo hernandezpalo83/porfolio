@@ -30,15 +30,23 @@ def csp_report(request):
     return JsonResponse({}, status=204)
 
 
-def debug_status(request):
+def debug_diagnostics(request):
     """
-    Endpoint de diagnóstico PRIVADO para debuggear 500 errors.
+    ENDPOINT ÚNICO DE DIAGNÓSTICO COMPLETO.
     Requiere autenticación de superuser.
-    GET /api/debug/status/
+    GET /api/debug/diagnostics/
+
+    Retorna reporte detallado de:
+    - Database connection y tablas críticas
+    - Module imports
+    - Context processors
+    - Template rendering
     """
     from django.db import connection
     from django.http import HttpResponseForbidden
+    from django.template.loader import render_to_string
     import logging
+    import traceback
 
     # Require superuser authentication
     if not request.user.is_authenticated or not request.user.is_superuser:
@@ -46,22 +54,28 @@ def debug_status(request):
 
     logger = logging.getLogger(__name__)
 
-    status = {
+    report = {
         'status': 'ok',
-        'checks': {}
+        'timestamp': str(__import__('datetime').datetime.now()),
+        'sections': {
+            'database': {},
+            'imports': {},
+            'context_processors': {},
+            'templates': {}
+        }
     }
 
-    # 1. BD connection
+    # ===== SECTION 1: DATABASE =====
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1;")
-        status['checks']['database_connection'] = '✓ OK'
+        report['sections']['database']['connection'] = {'status': '✓ OK'}
     except Exception as e:
-        logger.error(f"Database connection failed: {str(e)}", exc_info=True)
-        status['checks']['database_connection'] = '✗ FAIL'
-        status['status'] = 'error'
+        logger.error(f"DB Connection: {str(e)}", exc_info=True)
+        report['sections']['database']['connection'] = {'status': '✗ FAIL', 'error': str(type(e).__name__)}
+        report['status'] = 'error'
 
-    # 2. Critical tables
+    # Check critical tables
     try:
         critical_tables = ['analytics_pageview', 'analytics_sessiontracker', 'landing_menuitem', 'auth_user']
         with connection.cursor() as cursor:
@@ -75,27 +89,27 @@ def debug_status(request):
 
         missing = [t for t in critical_tables if t not in existing_tables]
         if missing:
-            logger.error(f"Missing critical tables: {missing}")
-            status['checks']['critical_tables'] = f'✗ MISSING ({len(missing)})'
-            status['status'] = 'error'
+            logger.error(f"Missing tables: {missing}")
+            report['sections']['database']['tables'] = {'status': '✗ MISSING', 'missing_count': len(missing)}
+            report['status'] = 'error'
         else:
-            status['checks']['critical_tables'] = '✓ ALL EXIST'
+            report['sections']['database']['tables'] = {'status': '✓ ALL EXIST', 'count': len(critical_tables)}
     except Exception as e:
-        logger.error(f"Table check failed: {str(e)}", exc_info=True)
-        status['checks']['critical_tables'] = '✗ FAIL'
-        status['status'] = 'error'
+        logger.error(f"Table check: {str(e)}", exc_info=True)
+        report['sections']['database']['tables'] = {'status': '✗ FAIL', 'error': str(type(e).__name__)}
+        report['status'] = 'error'
 
-    # 3. Critical imports
+    # ===== SECTION 2: IMPORTS =====
     for module in ['app.analytics.models', 'app.analytics.middleware', 'app.landing.models', 'app.celery']:
         try:
             __import__(module)
-            status['checks'][f'import_{module}'] = '✓ OK'
+            report['sections']['imports'][module] = '✓ OK'
         except Exception as e:
-            logger.error(f"Import {module} failed: {str(e)}", exc_info=True)
-            status['checks'][f'import_{module}'] = '✗ FAIL'
-            status['status'] = 'error'
+            logger.error(f"Import {module}: {str(e)}", exc_info=True)
+            report['sections']['imports'][module] = f'✗ {type(e).__name__}'
+            report['status'] = 'error'
 
-    # 4. Context processor
+    # ===== SECTION 3: CONTEXT PROCESSORS =====
     try:
         from app.landing.context_processors import menu_int_processor
         from django.test import RequestFactory
@@ -107,55 +121,41 @@ def debug_status(request):
         result = menu_int_processor(req)
 
         if 'menu_items_int' in result:
-            status['checks']['context_processor_menu'] = '✓ OK'
+            report['sections']['context_processors']['menu_int_processor'] = '✓ OK'
         else:
-            logger.error("Context processor returned invalid result")
-            status['checks']['context_processor_menu'] = '✗ FAIL'
-            status['status'] = 'error'
+            logger.error("Context processor returned invalid keys")
+            report['sections']['context_processors']['menu_int_processor'] = '✗ Invalid result'
+            report['status'] = 'error'
     except Exception as e:
-        logger.error(f"Context processor failed: {str(e)}", exc_info=True)
-        status['checks']['context_processor_menu'] = '✗ FAIL'
-        status['status'] = 'error'
+        logger.error(f"Context processor: {str(e)}", exc_info=True)
+        report['sections']['context_processors']['menu_int_processor'] = f'✗ {type(e).__name__}'
+        report['status'] = 'error'
 
-    logger.info(f"Debug status check: {status['status']}")
-    return JsonResponse(status, status=200 if status['status'] == 'ok' else 500)
-
-
-def debug_private_render(request):
-    """
-    Test rendering private/pages/dashboard.html template.
-    Requiere superuser. Loguea cualquier error de template.
-    GET /api/debug/private-render/
-    """
-    from django.http import HttpResponseForbidden
-    import logging
-
-    if not request.user.is_authenticated or not request.user.is_superuser:
-        return HttpResponseForbidden()
-
-    logger = logging.getLogger(__name__)
-
+    # ===== SECTION 4: TEMPLATE RENDERING =====
     try:
-        from django.template.loader import render_to_string
-
-        # Intenta renderizar la plantilla con contexto mínimo
         html = render_to_string('private/pages/dashboard.html', {
             'segment': 'dashboard',
             'request': request
         }, request=request)
 
-        return JsonResponse({
-            'status': 'ok',
-            'message': 'Template rendered successfully',
+        report['sections']['templates']['private_dashboard'] = {
+            'status': '✓ OK',
             'html_length': len(html)
-        })
+        }
     except Exception as e:
-        logger.error(f"Template render error: {str(e)}", exc_info=True)
-        return JsonResponse({
-            'status': 'error',
-            'error': 'Template rendering failed',
-            'check_logs': True
-        }, status=500)
+        error_trace = traceback.format_exc()
+        logger.error(f"Template render ERROR:\n{error_trace}", exc_info=True)
+        report['sections']['templates']['private_dashboard'] = {
+            'status': '✗ FAIL',
+            'error_type': type(e).__name__,
+            'error_msg': str(e)[:300],
+            'traceback_logged': True
+        }
+        report['status'] = 'error'
+
+    logger.info(f"Full diagnostics: {report['status']}")
+    return JsonResponse(report, status=200 if report['status'] == 'ok' else 500)
+
 
 sitemaps = {
     'static': StaticViewSitemap,
@@ -168,8 +168,7 @@ sitemaps = {
 urlpatterns = [
     path("health/", health_check, name="health_check"),
     path("csp-report/", csp_report, name="csp_report"),
-    path("api/debug/status/", debug_status, name="debug_status"),
-    path("api/debug/private-render/", debug_private_render, name="debug_private_render"),
+    path("api/debug/diagnostics/", debug_diagnostics, name="debug_diagnostics"),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
@@ -177,7 +176,7 @@ urlpatterns = [
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='landing/pages/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-        
+
     path('blog/', include('app.blog.urls', namespace='blog')),
 
     path('gym/', include('app.gym.urls', namespace='gym')),
@@ -185,7 +184,7 @@ urlpatterns = [
     path('wiki/', include('app.documentum.urls', namespace='wiki')),
     path('private/analytics/', include('app.analytics.urls', namespace='analytics')),
 
-    path('', include('app.landing.urls')),    
+    path('', include('app.landing.urls')),
 ]
 
 if settings.DEBUG:
