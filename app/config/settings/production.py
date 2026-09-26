@@ -69,6 +69,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'level': 'ERROR',  # Only log errors and above to console (visible in Render)
+        },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'logs', 'django_production.log'),
@@ -79,7 +84,7 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['file'],
+        'handlers': ['console', 'file'],
         'level': 'INFO',
     },
 }
