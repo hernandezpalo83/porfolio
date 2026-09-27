@@ -252,6 +252,10 @@ python manage.py verify_urls        # verificación de URLs (pre-commit)
 | **[RECURRENTE]** Dejar comentarios `//# sourceMappingURL=*.map` en archivos JS de vendor sin incluir el `.map` | `CompressedManifestStaticFilesStorage` de WhiteNoise falla en `collectstatic` y rompe el deploy en Render. Al añadir/actualizar un vendor JS, eliminar siempre la línea `sourceMappingURL` si el `.map` no está presente |
 | Poner claves de API reales (aunque sean de test) en `ci.yml` como literales | GitGuardian las detecta y bloquea el PR. Usar claves ficticias (`ci-fake-*`) cuando `SILENCED_SYSTEM_CHECKS` ya desactiva la validación, o referenciar `${{ secrets.* }}` |
 | Añadir imports en ficheros sin verificar con ruff antes del commit | El lint de CI falla. Ejecutar siempre `ruff check app/ --select F401,F811,E711,E712` antes de mergear |
+| Poner estáticos en `app/static/` | Django no lo sirve (`STATICFILES_DIRS = []`): da 404. Los estáticos del landing van en `app/landing/static/landing/` |
+| Envolver contenido CKEditor en `<p>` (`<p>{{ x\|sanitize_html }}</p>`) | El HTML trae sus propios `<p>`; el navegador los expulsa fuera del contenedor y rompe CSS y alturas. Usar `<div>` |
+| Usar `rem` pensando en 16px en el landing | `html { font-size: 62.5% }` → `1rem = 10px` |
+| Usar `#CC0052` como color de texto sobre fondo oscuro (o `#FF0077` sobre claro) | Falla WCAG AA (~3.4:1 / 3.8:1). `#CC0052` en claro, `#FF1493` en oscuro (`var(--accent-primary)` ya lo resuelve) |
 | Ejecutar `python manage.py` en CI sin `PYTHONPATH=$GITHUB_WORKSPACE` y sin apuntar a `app/manage.py` | Django no encuentra el módulo `app.*` porque el proyecto no está instalado. El CI usa `PYTHONPATH: ${{ github.workspace }}` y `python app/manage.py` |
 
 ---
