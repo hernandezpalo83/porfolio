@@ -99,35 +99,36 @@
             margin-left: 0;
         }
 
-        /* ── FLIP CARD 3D ──────────────────────────────────────────────────── */
+        /* ── CARD LAYOUT – Cross-browser compatible (no 3D dependency) ────── */
         .timeline-content {
             flex-basis: calc(50% - 60px);
             flex-shrink: 0;
-            perspective: 1000px;
-            height: 380px;
             cursor: pointer;
-            transition: box-shadow 0.4s ease;
+            transition: all 0.4s ease;
         }
 
         .flip-card {
             position: relative;
             width: 100%;
-            height: 100%;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
         }
 
-        .timeline-content:hover .flip-card {
-            transform: rotateY(180deg);
+        .flip-card-front {
+            border: 1px solid var(--border-color, #e0e0e0);
+            border-radius: 16px;
+            padding: 28px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--card-bg, #ffffff);
+            box-shadow: 0 10px 28px var(--card-shadow, rgba(0, 0, 0, 0.12));
+            min-height: 280px;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 1;
+            visibility: visible;
         }
 
-        .flip-card-front,
         .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
             border: 1px solid var(--border-color, #e0e0e0);
             border-radius: 16px;
             padding: 28px;
@@ -136,24 +137,36 @@
             flex-direction: column;
             background: var(--card-bg, #ffffff);
             box-shadow: 0 10px 28px var(--card-shadow, rgba(0, 0, 0, 0.12));
+            min-height: 280px;
+            margin-top: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
         }
 
-        .flip-card-front {
-            justify-content: space-between;
+        /* On hover: show back, hide front */
+        .timeline-content:hover .flip-card-front {
+            opacity: 0;
+            visibility: hidden;
         }
 
-        .flip-card-back {
-            transform: rotateY(180deg);
-            overflow: hidden;
+        .timeline-content:hover .flip-card-back {
+            opacity: 1;
+            visibility: visible;
         }
 
         .flip-card-back-content {
             overflow-y: auto;
-            padding-right: 12px;
+            padding-right: 8px;
             flex: 1;
+            max-height: 320px;
         }
 
-        /* Scrollbar styling for dark/light mode */
+        /* Scrollbar styling for dark/light mode – WebKit browsers */
         .flip-card-back-content::-webkit-scrollbar {
             width: 7px;
         }
