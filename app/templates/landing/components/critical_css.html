@@ -1,5 +1,43 @@
 {% load static %}
 <style>
+    /* --- 0. CSS CUSTOM PROPERTIES FOR DARK/LIGHT MODE --- */
+    :root {
+        /* Light Mode (default) */
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F8F8F8;
+        --bg-tertiary: #F0F0F0;
+        --text-primary: #1A1A1A;
+        --text-secondary: #4A4A4A;
+        --text-tertiary: #7A7A7A;
+        --accent-primary: #CC0052;
+        --accent-light: #FF1493;
+        --accent-muted: rgba(204, 0, 82, 0.15);
+        --border-color: #E0E0E0;
+        --card-bg: #FFFFFF;
+        --card-shadow: rgba(0, 0, 0, 0.08);
+        --section-bg-light: #F8F8F8;
+        --section-bg-dark: #FFFFFF;
+    }
+
+    /* Dark Mode */
+    :root[data-theme="dark"],
+    :root[data-theme="dark"] {
+        --bg-primary: #0C0C0C;
+        --bg-secondary: #1A1A1A;
+        --bg-tertiary: #2A2A2A;
+        --text-primary: #FFFFFF;
+        --text-secondary: #D0D0D0;
+        --text-tertiary: #A0A0A0;
+        --accent-primary: #FF1493;
+        --accent-light: #FF69B4;
+        --accent-muted: rgba(255, 20, 147, 0.15);
+        --border-color: #3A3A3A;
+        --card-bg: #1A1A1A;
+        --card-shadow: rgba(0, 0, 0, 0.3);
+        --section-bg-light: #1A1A1A;
+        --section-bg-dark: #0C0C0C;
+    }
+
     /* --- 1. RESET & BASIC TYPOGRAPHY --- */
     html {
         font-family: sans-serif;
