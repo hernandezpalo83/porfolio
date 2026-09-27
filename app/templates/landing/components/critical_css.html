@@ -38,6 +38,91 @@
         --section-bg-dark: #0C0C0C;
     }
 
+    /* --- 0b. THEME SWITCH (navbar) --- */
+    .theme-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 5px;
+        padding: 0 15px 0 20px;
+        height: 32px;
+        background: none;
+        border: 0;
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+        color: #FFFFFF;
+        cursor: pointer;
+        font: inherit;
+    }
+
+    .theme-switch-icon {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.45);
+        transition: color 0.25s ease;
+    }
+
+    .theme-switch[aria-checked="false"] .theme-switch-sun,
+    .theme-switch[aria-checked="true"] .theme-switch-moon {
+        color: #FFFFFF;
+    }
+
+    .theme-switch-track {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        transition: background-color 0.25s ease;
+    }
+
+    .theme-switch[aria-checked="true"] .theme-switch-track {
+        background: #CC0052;
+    }
+
+    .theme-switch-knob {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #FFFFFF;
+        transition: transform 0.25s ease;
+    }
+
+    .theme-switch[aria-checked="true"] .theme-switch-knob {
+        transform: translateX(16px);
+    }
+
+    .theme-switch:focus-visible {
+        outline: 2px solid #CC0052;
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .theme-switch-knob, .theme-switch-track, .theme-switch-icon { transition: none; }
+    }
+
+    /* --- 0c. DARK THEME OVERRIDES for sections the bundle hardcodes as light --- */
+    :root[data-theme="dark"] body,
+    :root[data-theme="dark"] #about,
+    :root[data-theme="dark"] #resume,
+    :root[data-theme="dark"] .grey-section,
+    :root[data-theme="dark"] #portfolio {
+        background: var(--bg-primary) !important;
+        color: var(--text-secondary);
+    }
+
+    :root[data-theme="dark"] #about h1, :root[data-theme="dark"] #about h2, :root[data-theme="dark"] #about h3,
+    :root[data-theme="dark"] #about h4, :root[data-theme="dark"] #resume h1, :root[data-theme="dark"] #portfolio h1,
+    :root[data-theme="dark"] #portfolio h2, :root[data-theme="dark"] #portfolio h3 {
+        color: var(--text-primary);
+    }
+
+    :root[data-theme="dark"] #about p, :root[data-theme="dark"] #about li,
+    :root[data-theme="dark"] #portfolio p {
+        color: var(--text-secondary);
+    }
+
     /* --- 1. RESET & BASIC TYPOGRAPHY --- */
     html {
         font-family: sans-serif;

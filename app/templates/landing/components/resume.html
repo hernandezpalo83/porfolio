@@ -1,411 +1,296 @@
 {% load template_filters %}
 
 <style>
-    /* ── Timeline Container – Central Line Layout ─────────────────────── */
-    .timeline-container {
+    /* ── Experience timeline ─────────────────────────────────────────────
+       html font-size is 62.5% → 1rem = 10px.
+       Grid-based alternating layout; faces stacked in the same grid cell
+       so the flip never changes the card's position (Safari-safe). */
+    #resume .resume-timeline {
+        max-width: 1280px;
+    }
+
+    .xp-timeline {
+        margin: 0;
+        list-style: none;
         position: relative;
-        padding: 60px 0;
+        padding: 2rem 0 1rem;
     }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .xp-timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        margin-left: -1px;
+        background: linear-gradient(to bottom, var(--accent-primary) 0%, var(--accent-primary) 70%, transparent 100%);
+        opacity: .35;
     }
 
-    /* ── Desktop Layout: Centered line with simple cards ────────────────── */
-    @media screen and (min-width: 768px) {
-        .timeline-container {
-            position: relative;
-            padding: 60px 40px;
-            width: 100%;
+    .xp-item {
+        margin-left: 0;
+        padding-left: 0;
+        list-style: none;
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 7.2rem minmax(0, 1fr);
+        align-items: center;
+        margin-bottom: 5.6rem;
+    }
+
+    .xp-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .xp-card   { grid-column: 1; grid-row: 1; }
+    .xp-marker { grid-column: 2; grid-row: 1; }
+    .xp-when   { grid-column: 3; grid-row: 1; text-align: left; padding-left: 1.6rem; }
+
+    .xp-item:nth-child(even) .xp-card { grid-column: 3; }
+    .xp-item:nth-child(even) .xp-when { grid-column: 1; text-align: right; padding-left: 0; padding-right: 1.6rem; }
+
+    .xp-marker {
+        justify-self: center;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 50%;
+        background: var(--accent-primary);
+        border: .4rem solid var(--bg-primary);
+        box-shadow: 0 0 0 .2rem var(--accent-primary);
+        position: relative;
+        z-index: 2;
+    }
+
+    .xp-when-years {
+        display: block;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: 2.6rem;
+        line-height: 1.1;
+        color: var(--accent-primary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .xp-when-length {
+        display: block;
+        margin-top: .6rem;
+        font-size: 1.4rem;
+        color: var(--text-tertiary);
+    }
+
+    /* Card + flip */
+    .xp-card {
+        position: relative;
+        -webkit-perspective: 1600px;
+        perspective: 1600px;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .xp-inner {
+        position: relative;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        -webkit-transition: -webkit-transform .7s cubic-bezier(.4, 0, .2, 1);
+        transition: transform .7s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .xp-face {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.6rem;
+        box-shadow: 0 1.2rem 3.2rem var(--card-shadow);
+        padding: 2.8rem 3.2rem;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    .xp-front {
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+        border-top: .4rem solid var(--accent-primary);
+    }
+
+    /* Back overlays the front; it may grow taller than the compact front */
+    .xp-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        min-height: 100%;
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+        border-top: .4rem solid var(--accent-primary);
+    }
+
+    @media (hover: hover) and (min-width: 768px) {
+        .xp-card:hover .xp-inner {
+            -webkit-transform: rotateY(180deg);
+            transform: rotateY(180deg);
         }
-
-        /* Central vertical line */
-        .timeline-container::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--accent-primary);
-            margin-left: -1px;
-        }
-
-        .timeline-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 80px;
-            opacity: 0;
-            animation: fadeInUp 0.6s ease-out forwards;
-            position: relative;
-            width: 100%;
-        }
-
-        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
-        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
-        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
-        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
-
-        /* ODD items (1, 3): Left side */
-        .timeline-item:nth-child(odd) {
-            padding-right: 52%;
-            justify-content: flex-end;
-        }
-
-        /* EVEN items (2, 4): Right side */
-        .timeline-item:nth-child(even) {
-            padding-left: 52%;
-            justify-content: flex-start;
-        }
-
-        /* ── CARD LAYOUT – Cross-browser compatible ────────────────────────── */
-        .timeline-content {
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .flip-card {
-            position: relative;
-            width: 100%;
-        }
-
-        .flip-card-front {
-            border: 1px solid var(--border-color, #e0e0e0);
-            border-radius: 12px;
-            padding: 24px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background: var(--card-bg, #ffffff);
-            box-shadow: 0 4px 16px var(--card-shadow, rgba(0, 0, 0, 0.08));
-            min-height: 260px;
-            transition: opacity 0.3s ease;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .flip-card-back {
-            border: 1px solid var(--border-color, #e0e0e0);
-            border-radius: 12px;
-            padding: 24px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            background: var(--card-bg, #ffffff);
-            box-shadow: 0 4px 16px var(--card-shadow, rgba(0, 0, 0, 0.08));
-            min-height: 260px;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* On hover: show back, hide front */
-        .timeline-content:hover .flip-card-front {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .timeline-content:hover .flip-card-back {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .flip-card-back-content {
-            overflow-y: auto;
-            padding-right: 8px;
-            flex: 1;
-            max-height: 320px;
-        }
-
-        /* Scrollbar styling for dark/light mode – WebKit browsers */
-        .flip-card-back-content::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        .flip-card-back-content::-webkit-scrollbar-track {
-            background: var(--bg-secondary, #f8f8f8);
-            border-radius: 4px;
-        }
-
-        .flip-card-back-content::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-            border-radius: 4px;
-            transition: background 0.3s ease;
-        }
-
-        .flip-card-back-content::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
-
-        .timeline-content:hover {
-            box-shadow: 0 16px 40px var(--card-shadow, rgba(0, 0, 0, 0.18));
-        }
-
-        /* Timeline Dot */
-        .timeline-dot {
-            position: absolute;
-            left: 50%;
-            top: 12px;
-            width: 44px;
-            height: 44px;
-            background: var(--accent-primary);
-            border: 3px solid var(--bg-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 0 5px rgba(204, 0, 82, 0.15);
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--bg-primary);
-            margin-left: -22px;
-            flex-shrink: 0;
-        }
-
-        /* Enhanced date badge styling */
-        .timeline-date {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            margin-bottom: 16px;
-            padding: 6px 12px;
-            background: var(--accent-muted);
-            border: 1px solid var(--accent-primary);
-            border-radius: 8px;
-            width: fit-content;
-        }
-
-        .timeline-title {
-            margin: 0 0 8px 0;
-            font-size: 1.45rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.25;
-        }
-
-        .timeline-subtitle {
-            margin: 0 0 12px 0;
-            font-size: 1rem;
-            color: var(--accent-primary);
-            font-weight: 600;
-            font-style: normal;
-        }
-
-        .timeline-description {
-            margin: 0 0 16px 0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            flex: 1;
-        }
-
-
-        .timeline-skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .timeline-skill-tag {
-            display: inline-block;
-            padding: 6px 12px;
-            background: var(--section-bg-light, #f8f8f8);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            transition: all 0.3s ease;
-            cursor: default;
-        }
-
-        .timeline-skill-tag:hover {
-            background: var(--accent-muted);
-            color: var(--accent-primary);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
+        .xp-item:hover {
+            z-index: 5;
         }
     }
 
-    /* ── Mobile Responsiveness ─────────────────────────────────────────── */
-    @media screen and (max-width: 767px) {
-        .timeline-container {
-            padding: 40px 20px;
-        }
-
-        .timeline-item {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 50px;
-            opacity: 0;
-            animation: fadeInUp 0.6s ease-out forwards;
-            position: relative;
-            padding-left: 32px;
-        }
-
-        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
-        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
-        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
-        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
-
-        /* Mobile: Line on the left */
-        .timeline-container::before {
-            content: '';
-            position: absolute;
-            left: 12px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(
-                to bottom,
-                var(--accent-primary),
-                var(--accent-muted) 50%,
-                transparent 100%
-            );
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -2px;
-            top: 6px;
-            width: 28px;
-            height: 28px;
-            background: var(--accent-primary);
-            border: 3px solid var(--bg-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 0 5px var(--accent-muted);
-            flex-shrink: 0;
-            z-index: 10;
-            font-size: 0.65rem;
-        }
-
-        .timeline-content {
-            perspective: 1000px;
-            height: auto;
-            cursor: pointer;
-        }
-
-        .flip-card {
-            position: relative;
-            width: 100%;
-            height: auto;
-            transition: none;
-            transform-style: preserve-3d;
-        }
-
-        .flip-card-front,
-        .flip-card-back {
-            position: static !important;
-            width: 100%;
-            height: auto;
-            backface-visibility: visible;
-            -webkit-backface-visibility: visible;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 18px;
-            box-sizing: border-box;
-            display: block;
-            background: var(--card-bg);
-            box-shadow: 0 6px 16px var(--card-shadow);
-            transform: none !important;
-        }
-
-        .flip-card-back {
-            margin-top: 12px;
-        }
-
-        .flip-card-back-content {
-            overflow-y: auto;
-            max-height: 300px;
-            padding-right: 8px;
-        }
-
-        .timeline-date {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            padding: 4px 8px;
-            background: var(--accent-muted);
-            border: 1px solid var(--accent-primary);
-            border-radius: 6px;
-        }
-
-        .timeline-title {
-            margin: 0 0 4px 0;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.25;
-        }
-
-        .timeline-subtitle {
-            margin: 0 0 8px 0;
-            font-size: 0.9rem;
-            color: var(--accent-primary);
-            font-weight: 600;
-            font-style: normal;
-        }
-
-        .timeline-description {
-            margin: 0 0 12px 0;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: var(--text-secondary);
-        }
-
-        .timeline-skills {
-            gap: 6px;
-        }
-
-        .timeline-skill-tag {
-            font-size: 0.7rem;
-            padding: 4px 8px;
-        }
+    .xp-card.is-flipped .xp-inner {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
     }
 
-    .modal-subtitle {
-        font-size: 1rem;
-        color: var(--text-secondary);
-        font-style: italic;
+    .xp-item:focus-within,
+    .xp-item.is-open {
+        z-index: 5;
+    }
+
+    .xp-card:focus-visible .xp-face {
+        box-shadow: 0 0 0 .3rem var(--accent-primary), 0 1.2rem 3.2rem var(--card-shadow);
+    }
+
+    .xp-role {
+        margin: 0 0 .6rem;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: 2.2rem;
+        line-height: 1.3;
+        color: var(--text-primary);
+    }
+
+    .xp-company {
+        margin: 0;
+        font-size: 1.6rem;
+        line-height: 1.4;
         font-weight: 600;
+        color: var(--accent-primary);
     }
 
-    .modal-description {
-        margin: 24px 0;
-        font-size: 0.95rem;
-        line-height: 1.7;
+    .xp-hint {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        margin-top: 2rem;
+        padding-top: 1.4rem;
+        border-top: 1px solid var(--border-color);
+        font-size: 1.3rem;
+        color: var(--text-tertiary);
+    }
+
+    .xp-hint i {
+        color: var(--accent-primary);
+    }
+
+    .xp-back-role {
+        margin: 0 0 1.4rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+    }
+
+    .xp-body {
+        max-height: 30rem;
+        overflow-y: auto;
+        padding-right: .8rem;
+        font-size: 1.5rem;
+        line-height: 1.65;
         color: var(--text-secondary);
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-primary) transparent;
     }
 
-    .modal-description p {
-        margin-bottom: 12px;
+    .xp-body p,
+    .xp-body li {
+        margin: 0 0 .8em;
+        padding: 0;
+        font-size: inherit;
+        line-height: inherit;
+        color: inherit;
+    }
+
+    .xp-body ul,
+    .xp-body ol {
+        margin: 0 0 .8em 1.8rem;
+        list-style: disc;
+    }
+
+    .xp-body li {
+        display: list-item;
+    }
+
+    .xp-body strong {
+        color: var(--text-primary);
+    }
+
+    .xp-body::-webkit-scrollbar { width: 6px; }
+    .xp-body::-webkit-scrollbar-track { background: transparent; }
+    .xp-body::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 3px; }
+
+    /* Mobile: single column, tap to expand (no 3D) */
+    @media screen and (max-width: 767px) {
+        .xp-timeline::before {
+            left: 1.1rem;
+        }
+
+        .xp-item,
+        .xp-item:nth-child(even) {
+            grid-template-columns: 2.4rem minmax(0, 1fr);
+            align-items: start;
+            column-gap: 1.4rem;
+            margin-bottom: 3.6rem;
+        }
+
+        .xp-marker,
+        .xp-item:nth-child(even) .xp-marker {
+            grid-column: 1;
+            grid-row: 1;
+            margin-top: .4rem;
+        }
+
+        .xp-when,
+        .xp-item:nth-child(even) .xp-when {
+            grid-column: 2;
+            grid-row: 1;
+            text-align: left;
+            padding: 0 0 1rem;
+        }
+
+        .xp-card,
+        .xp-item:nth-child(even) .xp-card {
+            grid-column: 2;
+            grid-row: 2;
+            -webkit-perspective: none;
+            perspective: none;
+        }
+
+        .xp-when-years { font-size: 2rem; }
+        .xp-when-length { display: inline; margin: 0 0 0 .8rem; font-size: 1.3rem; }
+
+        .xp-inner,
+        .xp-card.is-flipped .xp-inner {
+            -webkit-transform: none;
+            transform: none;
+        }
+
+        .xp-face { padding: 2rem; }
+
+        .xp-back {
+            position: static;
+            display: none;
+            -webkit-transform: none;
+            transform: none;
+            margin-top: 1.2rem;
+        }
+
+        .xp-card.is-flipped .xp-back { display: block; }
+        .xp-body { max-height: none; }
+        .xp-role { font-size: 1.9rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .xp-inner {
+            -webkit-transition: none;
+            transition: none;
+        }
     }
 
     /* ── Education Section ─────────────────────────────────────────────── */
@@ -548,14 +433,6 @@
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
-    /* ── Hide description in all card fronts ──────────────────────────── */
-    .flip-card-front .timeline-description {
-        display: none !important;
-    }
-
-    .flip-card-back .timeline-description {
-        display: block !important;
-    }
 </style>
 
 {# ── EXPERIENCE SECTION ────────────────────────────────────────────────────── #}
@@ -569,55 +446,64 @@
         </div>
 
         <div class="col-twelve">
-            <div class="timeline-container">
+            <ol class="xp-timeline">
                 {% for experience in experiences %}
-                <div class="timeline-item" data-aos="fade-up">
-                    <div class="timeline-dot" title="{{ experience.start_date|date:'Y' }} – {% if experience.end_date %}{{ experience.end_date|date:'Y' }}{% else %}Actualidad{% endif %}">
-                        {{ experience.start_date|date:"Y" }}
+                <li class="xp-item">
+                    <div class="xp-when">
+                        <span class="xp-when-years">{{ experience.start_date|date:"Y" }} – {% if experience.end_date %}{{ experience.end_date|date:"Y" }}{% else %}Hoy{% endif %}</span>
+                        <span class="xp-when-length">{{ experience.start_date|date:"M Y"|capfirst }} · {% if experience.end_date %}{{ experience.end_date|date:"M Y"|capfirst }}{% else %}actualidad{% endif %}</span>
                     </div>
-                    <div class="timeline-content">
-                        <div class="flip-card">
-                            <!-- FRONT -->
-                            <div class="flip-card-front">
-                                <div>
-                                    <div class="timeline-date">{{ experience.start_date|date:"Y" }} – {% if experience.end_date %}{{ experience.end_date|date:"Y" }}{% else %}Actualidad{% endif %}</div>
-                                    <h3 class="timeline-title">{{ experience.position }}</h3>
-                                    <p class="timeline-subtitle">{{ experience.company }}</p>
-                                    <p class="timeline-description">{{ experience.resumen|truncatewords:20|sanitize_html }}</p>
-                                </div>
-                                <div style="text-align: center; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: var(--accent-primary); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <svg style="width: 16px; height: 16px; opacity: 0.7;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 11h12m-12 4h12M5 7v10a2 2 0 002 2h10a2 2 0 002-2V7M5 7a2 2 0 012-2h10a2 2 0 012 2"/>
-                                    </svg>
-                                    Pasa el ratón para detalles
+
+                    <span class="xp-marker" aria-hidden="true"></span>
+
+                    <div class="xp-card" tabindex="0" role="button" aria-expanded="false"
+                         aria-label="{{ experience.position }} en {{ experience.company }}: ver detalles">
+                        <div class="xp-inner">
+                            <div class="xp-face xp-front">
+                                <h3 class="xp-role">{{ experience.position }}</h3>
+                                <p class="xp-company">{{ experience.company }}</p>
+                                <div class="xp-hint">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    <span>Ver funciones y logros</span>
                                 </div>
                             </div>
 
-                            <!-- BACK -->
-                            <div class="flip-card-back">
-                                <div class="flip-card-back-content">
-                                    <h3 class="timeline-title" style="margin-top: 0; margin-bottom: 4px;">{{ experience.position }}</h3>
-                                    <p class="timeline-subtitle" style="margin-bottom: 16px;">{{ experience.company }}</p>
-                                    <div class="timeline-description" style="margin-bottom: 16px;">
-                                        {{ experience.resumen|sanitize_html }}
-                                    </div>
-                                    {% if experience.skills %}
-                                    <div class="timeline-skills">
-                                        {% for skill in experience.skills.all %}
-                                        <span class="timeline-skill-tag">{{ skill.name }}</span>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
+                            <div class="xp-face xp-back">
+                                <p class="xp-back-role">{{ experience.position }} · {{ experience.company }}</p>
+                                <div class="xp-body">{{ experience.resumen|sanitize_html }}</div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </li>
                 {% endfor %}
-            </div>
+            </ol>
         </div>
     </div>
 </section>
+
+<script nonce="{{ csp_nonce }}">
+    (function () {
+        var cards = document.querySelectorAll('.xp-card');
+        function toggle(card) {
+            var open = card.classList.toggle('is-flipped');
+            card.setAttribute('aria-expanded', open ? 'true' : 'false');
+            card.closest('.xp-item').classList.toggle('is-open', open);
+        }
+        Array.prototype.forEach.call(cards, function (card) {
+            card.addEventListener('click', function (e) {
+                if (e.target.closest('a')) return;
+                if (window.matchMedia('(hover: hover) and (min-width: 768px)').matches) return;
+                toggle(card);
+            });
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle(card);
+                }
+            });
+        });
+    })();
+</script>
 
 
 {# ── EDUCATION & CERTIFICATES SECTION ──────────────────────────────────────── #}
