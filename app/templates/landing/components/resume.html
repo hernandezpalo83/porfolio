@@ -218,6 +218,7 @@
             flex: 1;
         }
 
+
         .timeline-skills {
             display: flex;
             flex-wrap: wrap;
@@ -545,6 +546,15 @@
     /* ── Dark Mode Transition ──────────────────────────────────────────── */
     * {
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* ── Hide description in all card fronts ──────────────────────────── */
+    .flip-card-front .timeline-description {
+        display: none !important;
+    }
+
+    .flip-card-back .timeline-description {
+        display: block !important;
     }
 </style>
 
