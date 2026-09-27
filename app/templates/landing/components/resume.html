@@ -1,152 +1,679 @@
 {% load template_filters %}
 
 <style>
-    /* ── VIS-002: Animación del timeline de experiencia ─────────────────
-       La línea vertical se "dibuja" desde arriba hacia abajo al entrar en
-       viewport. Los iconos de cada hito hacen pop-in con stagger.
-       ──────────────────────────────────────────────────────────────────── */
-
-    /* Estado inicial: línea invisible (scaleY 0 desde arriba) */
-    #resume .timeline-wrap::before {
-        transform: scaleY(0);
-        transform-origin: top center;
-        transition: transform var(--timeline-duration, 2s) cubic-bezier(0.22, 1, 0.36, 1);
+    /* ── Timeline Container – Central Line Layout ─────────────────────── */
+    .timeline-container {
+        position: relative;
+        padding: 60px 0;
     }
 
-    /* Cuando el wrapper recibe la clase: línea se dibuja */
-    #resume .timeline-wrap.tl-visible::before {
-        transform: scaleY(1);
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    /* Iconos de hito — estado inicial oculto */
-    #resume .timeline-ico {
-        transform: scale(0);
-        opacity: 0;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.5),
-                    opacity 0.3s ease;
+    /* ── Desktop Layout: Alternating Left-Right ────────────────────────── */
+    @media screen and (min-width: 768px) {
+        .timeline-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Central vertical line */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(
+                to bottom,
+                var(--accent-primary),
+                var(--accent-muted) 50%,
+                transparent 100%
+            );
+            transform: translateX(-1px);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            width: 100%;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+
+        /* ODD items (1, 3): Left side */
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 40px;
+            padding-right: 0;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        /* EVEN items (2, 4): Right side */
+        .timeline-item:nth-child(even) {
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 40px;
+            padding-left: 0;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        /* Content box sizing */
+        .timeline-content {
+            flex-basis: calc(50% - 50px);
+            flex-shrink: 0;
+            background: var(--card-bg, #ffffff);
+            border: 1px solid var(--border-color, #e0e0e0);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .timeline-content:hover {
+            box-shadow: 0 12px 32px var(--card-shadow, rgba(0, 0, 0, 0.15));
+            border-color: var(--accent-primary);
+            transform: translateY(-8px);
+        }
+
+        .timeline-content::after {
+            content: '→ Ver detalles';
+            display: block;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .timeline-content:hover::after {
+            opacity: 1;
+        }
+
+        .timeline-dot {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-primary);
+            border: 4px solid var(--bg-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--accent-muted);
+            position: relative;
+            z-index: 10;
+            margin-top: 8px;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .timeline-title {
+            margin: 0 0 8px 0;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .timeline-subtitle {
+            margin: 0 0 12px 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .timeline-description {
+            margin: 0 0 16px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .timeline-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .timeline-skill-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--accent-muted);
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .timeline-skill-tag:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-muted);
+        }
     }
 
-    /* Cuando el bloque es visible: pop-in del icono */
-    #resume .timeline-block.tl-ico-visible .timeline-ico {
-        transform: scale(1);
-        opacity: 1;
+    /* ── Mobile Responsiveness ─────────────────────────────────────────── */
+    @media screen and (max-width: 767px) {
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Mobile: Line on the left */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(
+                to bottom,
+                var(--accent-primary),
+                var(--accent-muted) 50%,
+                transparent 100%
+            );
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-primary);
+            border: 3px solid var(--bg-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--accent-muted);
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--card-bg, #ffffff);
+            border: 1px solid var(--border-color, #e0e0e0);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .timeline-title {
+            margin: 0 0 6px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .timeline-subtitle {
+            margin: 0 0 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .timeline-description {
+            margin: 0 0 12px 0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .timeline-skill-tag {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+        }
     }
 
-    /* Línea del conector: añadir contraste cuando está activa */
-    #resume .timeline-wrap.tl-visible::before {
-        background: linear-gradient(
-            to bottom,
-            rgba(204, 0, 82, 0.8) 0%,
-            rgba(204, 0, 82, 0.15) 100%
-        );
+    /* ── Modal Styles ──────────────────────────────────────────────────── */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease;
+    }
+
+    .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-content {
+        background-color: var(--bg-primary);
+        padding: 40px;
+        border-radius: 16px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        animation: slideIn 0.3s ease;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 20px 60px var(--card-shadow, rgba(0, 0, 0, 0.3));
+    }
+
+    .modal-close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.3s ease;
+        border: none;
+        background: none;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-close:hover {
+        color: var(--accent-primary);
+    }
+
+    .modal-header {
+        margin-bottom: 24px;
+    }
+
+    .modal-date {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .modal-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+    }
+
+    .modal-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        font-weight: 600;
+    }
+
+    .modal-description {
+        margin: 24px 0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--text-secondary);
+    }
+
+    .modal-description p {
+        margin-bottom: 12px;
+    }
+
+    /* ── Education Section ─────────────────────────────────────────────── */
+    #education {
+        padding: 80px 0;
+        background: var(--section-bg-dark);
+    }
+
+    .section-intro {
+        margin-bottom: 60px;
+        text-align: center;
+    }
+
+    .section-intro h5 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--accent-primary);
+        margin-bottom: 12px;
+    }
+
+    .section-intro h1 {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.3;
+        margin: 0;
+    }
+
+    .education-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+    }
+
+    .edu-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edu-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px var(--card-shadow);
+        border-color: var(--accent-primary);
+    }
+
+    .edu-card-icon {
+        font-size: 2.4rem;
+        color: var(--accent-primary);
+        margin-bottom: 16px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+    .edu-card-header {
+        margin-bottom: 16px;
+    }
+
+    .edu-date {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .edu-card-header h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 8px 0;
+        line-height: 1.3;
+    }
+
+    .edu-card-header h4 {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        margin: 4px 0 0 0;
+    }
+
+    .edu-card-content {
+        flex: 1;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+    }
+
+    .credential-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--accent-muted);
+        color: var(--accent-primary);
+        border: 1px solid var(--accent-primary);
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .credential-btn:hover {
+        background: var(--accent-primary);
+        color: var(--bg-primary);
+    }
+
+    @media screen and (max-width: 768px) {
+        #education {
+            padding: 60px 0;
+        }
+
+        .section-intro h1 {
+            font-size: 2rem;
+        }
+
+        .education-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .edu-card {
+            padding: 20px;
+        }
+    }
+
+    /* ── Dark Mode Transition ──────────────────────────────────────────── */
+    * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 </style>
 
+{# ── EXPERIENCE SECTION ────────────────────────────────────────────────────── #}
 <section id="resume" class="grey-section">
-   <div class="row resume-timeline">
-      <div class="col-twelve resume-header">
-         <h2 data-aos="fade-right">Experiencia Laboral</h2>
-      </div>
-      <div class="col-twelve">
-         <div class="timeline-wrap" id="js-timeline-wrap">
-            {% for experience in experiences %}
-            <div class="timeline-block" data-aos="fade-up">
-               <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
-               <div class="timeline-header">
-                  <h3>{{ experience.position }}</h3>
-                  <p>{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}
-                  </p>
-               </div>
-               <div class="timeline-content">
-                  <h4>{{ experience.company }}</h4>
-                  {{ experience.resumen|sanitize_html }}
-               </div>
+    <div class="row resume-timeline">
+        <div class="col-twelve resume-header">
+            <div class="section-intro">
+                <h5 data-aos="fade-up">Trayectoria</h5>
+                <h1 data-aos="fade-up" data-aos-delay="200">Experiencia y Hitos Profesionales</h1>
             </div>
-            {% endfor %}
-         </div>
-      </div>
-   </div>
+        </div>
+
+        <div class="col-twelve">
+            <div class="timeline-container">
+                {% for experience in experiences %}
+                <div class="timeline-item" data-aos="fade-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content" onclick="openModal('modal-{{ experience.id }}')">
+                        <div class="timeline-date">{{ experience.start_date|date:"Y" }} – {% if experience.end_date %}{{ experience.end_date|date:"Y" }}{% else %}Actualidad{% endif %}</div>
+                        <h3 class="timeline-title">{{ experience.position }}</h3>
+                        <p class="timeline-subtitle">{{ experience.company }}</p>
+                        <p class="timeline-description">{{ experience.resumen|truncatewords:25|sanitize_html }}</p>
+                        {% if experience.skills %}
+                        <div class="timeline-skills">
+                            {% for skill in experience.skills.all %}
+                            <span class="timeline-skill-tag">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Modal for this experience #}
+                <div id="modal-{{ experience.id }}" class="modal" onclick="closeModal('modal-{{ experience.id }}', event)">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <button class="modal-close" onclick="closeModal('modal-{{ experience.id }}')">&times;</button>
+                        <div class="modal-header">
+                            <span class="modal-date">{{ experience.start_date|date:"Y" }} – {% if experience.end_date %}{{ experience.end_date|date:"Y" }}{% else %}Actualidad{% endif %}</span>
+                            <h2 class="modal-title">{{ experience.position }}</h2>
+                            <p class="modal-subtitle">{{ experience.company }}</p>
+                        </div>
+                        <div class="modal-description">
+                            {{ experience.resumen|sanitize_html }}
+                        </div>
+                        {% if experience.skills %}
+                        <div class="timeline-skills">
+                            {% for skill in experience.skills.all %}
+                            <span class="timeline-skill-tag">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </section>
 
 <script>
-    (function () {
-        'use strict';
-        const wrap = document.getElementById('js-timeline-wrap');
-        if (!wrap) return;
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
 
-        const blocks = wrap.querySelectorAll('.timeline-block');
+function closeModal(modalId, event) {
+    if (event && event.target.id !== modalId) return;
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
 
-        // Duración de la línea proporcional al nº de hitos (0.5s por hito, [1s, 4s])
-        const lineDuration = Math.min(Math.max(blocks.length * 0.5, 1), 4).toFixed(1) + 's';
-        wrap.style.setProperty('--timeline-duration', lineDuration);
-
-        if (!('IntersectionObserver' in window)) {
-            // Fallback: activar todo inmediatamente
-            wrap.classList.add('tl-visible');
-            blocks.forEach(function (b) { b.classList.add('tl-ico-visible'); });
-            return;
-        }
-
-        // Observador para el wrapper completo → activa la línea
-        const lineObserver = new IntersectionObserver(function (entries) {
-            if (entries[0].isIntersecting) {
-                wrap.classList.add('tl-visible');
-                lineObserver.disconnect();
-
-                // Activar iconos con stagger: cada icono aparece cuando su bloque
-                // entra en viewport (con un pequeño retraso adicional)
-                const icoObserver = new IntersectionObserver(function (icoEntries) {
-                    icoEntries.forEach(function (entry) {
-                        if (entry.isIntersecting) {
-                            // Pequeño retraso proporcional al índice del bloque
-                            const block = entry.target;
-                            const idx = Array.prototype.indexOf.call(blocks, block);
-                            setTimeout(function () {
-                                block.classList.add('tl-ico-visible');
-                            }, idx * 80);
-                            icoObserver.unobserve(block);
-                        }
-                    });
-                }, { threshold: 0.3 });
-
-                blocks.forEach(function (block) { icoObserver.observe(block); });
-            }
-        }, { threshold: 0.1 });
-
-        lineObserver.observe(wrap);
-    })();
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const modals = document.querySelectorAll('.modal.active');
+        modals.forEach(modal => {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    }
+});
 </script>
 
+{# ── EDUCATION & CERTIFICATES SECTION ──────────────────────────────────────── #}
 <section id="education" class="edu-section-dark">
-   <div class="row section-intro">
-      <div class="col-twelve">
-         <h5 class="section-subtitle" data-aos="fade-up">Formación</h5>
-         <h1 class="section-title" data-aos="fade-up" data-aos-delay="200">Educación y Certificaciones</h1>
-      </div>
-   </div>
+    <div class="row">
+        <div class="col-twelve">
+            <div class="section-intro">
+                <h5 data-aos="fade-up">Formación</h5>
+                <h1 data-aos="fade-up" data-aos-delay="200">Educación y Certificaciones</h1>
+            </div>
+        </div>
 
-   <div class="education-grid">
-      {% for edu in education %}
-      <div>
-         <div class="edu-card" data-aos="fade-up" data-aos-delay="100">
-            <div class="edu-card-icon"><i class="fa fa-graduation-cap"></i></div>
-            <div class="edu-card-header">
-               <span class="edu-date">
-                  {{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{ edu.end_date|date:"Y" }}
-                  {%else %}Actualidad{% endif %}</span>
-               <h3>{{ edu.degree }}</h3>
-               <h4>{{ edu.institution }}</h4>
+        <div class="col-twelve">
+            <div class="education-grid">
+                {% for edu in education %}
+                <div class="edu-card" data-aos="fade-up">
+                    <div class="edu-card-icon"><i class="fa fa-graduation-cap"></i></div>
+                    <div class="edu-card-header">
+                        <span class="edu-date">
+                            {{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{ edu.end_date|date:"Y" }}{% else %}Actualidad{% endif %}
+                        </span>
+                        <h3>{{ edu.degree }}</h3>
+                        <h4>{{ edu.institution }}</h4>
+                    </div>
+                    <div class="edu-card-content">
+                        {{ edu.resumen|sanitize_html }}
+                    </div>
+                    {% if edu.link %}
+                    <a href="{{ edu.link }}" target="_blank" class="credential-btn">
+                        Ver Credencial <i class="fa fa-external-link"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
-            <div class="edu-card-content">
-               {{ edu.resumen|sanitize_html }}
-               {% if edu.link %}
-               <a href="{{ edu.link }}" target="_blank" class="credential-btn">
-                  Ver Credencial <i class="fa fa-external-link"></i>
-               </a>
-               {% endif %}
-            </div>
-         </div>
-      </div>
-      {% endfor %}
-   </div>
+        </div>
+    </div>
 </section>
