@@ -1,152 +1,574 @@
 {% load template_filters %}
 
 <style>
-    /* ── VIS-002: Animación del timeline de experiencia ─────────────────
-       La línea vertical se "dibuja" desde arriba hacia abajo al entrar en
-       viewport. Los iconos de cada hito hacen pop-in con stagger.
-       ──────────────────────────────────────────────────────────────────── */
-
-    /* Estado inicial: línea invisible (scaleY 0 desde arriba) */
-    #resume .timeline-wrap::before {
-        transform: scaleY(0);
-        transform-origin: top center;
-        transition: transform var(--timeline-duration, 2s) cubic-bezier(0.22, 1, 0.36, 1);
+    /* ── Experience timeline ─────────────────────────────────────────────
+       html font-size is 62.5% → 1rem = 10px.
+       Grid-based alternating layout; faces stacked in the same grid cell
+       so the flip never changes the card's position (Safari-safe). */
+    .xp-timeline {
+        margin: 0;
+        list-style: none;
+        position: relative;
+        padding: 2rem 0 1rem;
     }
 
-    /* Cuando el wrapper recibe la clase: línea se dibuja */
-    #resume .timeline-wrap.tl-visible::before {
-        transform: scaleY(1);
+    .xp-timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        margin-left: -1px;
+        background: linear-gradient(to bottom, var(--accent-primary) 0%, var(--accent-primary) 70%, transparent 100%);
+        opacity: .35;
     }
 
-    /* Iconos de hito — estado inicial oculto */
-    #resume .timeline-ico {
-        transform: scale(0);
-        opacity: 0;
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.5),
-                    opacity 0.3s ease;
+    .xp-item {
+        margin-left: 0;
+        padding-left: 0;
+        list-style: none;
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 7.2rem minmax(0, 1fr);
+        align-items: center;
+        margin-bottom: 5.6rem;
     }
 
-    /* Cuando el bloque es visible: pop-in del icono */
-    #resume .timeline-block.tl-ico-visible .timeline-ico {
-        transform: scale(1);
-        opacity: 1;
+    .xp-item:last-child {
+        margin-bottom: 0;
     }
 
-    /* Línea del conector: añadir contraste cuando está activa */
-    #resume .timeline-wrap.tl-visible::before {
-        background: linear-gradient(
-            to bottom,
-            rgba(204, 0, 82, 0.8) 0%,
-            rgba(204, 0, 82, 0.15) 100%
-        );
+    .xp-card   { grid-column: 1; grid-row: 1; }
+    .xp-marker { grid-column: 2; grid-row: 1; }
+    .xp-when   { grid-column: 3; grid-row: 1; text-align: left; padding-left: 1.6rem; }
+
+    .xp-item:nth-child(even) .xp-card { grid-column: 3; }
+    .xp-item:nth-child(even) .xp-when { grid-column: 1; text-align: right; padding-left: 0; padding-right: 1.6rem; }
+
+    .xp-marker {
+        justify-self: center;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 50%;
+        background: var(--accent-primary);
+        border: .4rem solid var(--bg-primary);
+        box-shadow: 0 0 0 .2rem var(--accent-primary);
+        position: relative;
+        z-index: 2;
     }
-</style>
 
-<section id="resume" class="grey-section">
-   <div class="row resume-timeline">
-      <div class="col-twelve resume-header">
-         <h2 data-aos="fade-right">Experiencia Laboral</h2>
-      </div>
-      <div class="col-twelve">
-         <div class="timeline-wrap" id="js-timeline-wrap">
-            {% for experience in experiences %}
-            <div class="timeline-block" data-aos="fade-up">
-               <div class="timeline-ico"><i class="fa fa-briefcase"></i></div>
-               <div class="timeline-header">
-                  <h3>{{ experience.position }}</h3>
-                  <p>{{ experience.start_date|date:"M Y" }} - {{ experience.end_date|date:"M Y"|default:"Actualidad" }}
-                  </p>
-               </div>
-               <div class="timeline-content">
-                  <h4>{{ experience.company }}</h4>
-                  {{ experience.resumen|sanitize_html }}
-               </div>
-            </div>
-            {% endfor %}
-         </div>
-      </div>
-   </div>
-</section>
+    .xp-when-years {
+        display: block;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: 2.6rem;
+        line-height: 1.1;
+        color: var(--accent-primary);
+        font-variant-numeric: tabular-nums;
+    }
 
-<script >
-    (function () {
-        'use strict';
-        const wrap = document.getElementById('js-timeline-wrap');
-        if (!wrap) return;
+    .xp-when-length {
+        display: block;
+        margin-top: .6rem;
+        font-size: 1.4rem;
+        color: var(--text-tertiary);
+    }
 
-        const blocks = wrap.querySelectorAll('.timeline-block');
+    /* Card + flip */
+    .xp-card {
+        position: relative;
+        -webkit-perspective: 1600px;
+        perspective: 1600px;
+        cursor: pointer;
+        outline: none;
+    }
 
-        // Duración de la línea proporcional al nº de hitos (0.5s por hito, [1s, 4s])
-        const lineDuration = Math.min(Math.max(blocks.length * 0.5, 1), 4).toFixed(1) + 's';
-        wrap.style.setProperty('--timeline-duration', lineDuration);
+    .xp-inner {
+        position: relative;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        -webkit-transition: -webkit-transform .7s cubic-bezier(.4, 0, .2, 1);
+        transition: transform .7s cubic-bezier(.4, 0, .2, 1);
+    }
 
-        if (!('IntersectionObserver' in window)) {
-            // Fallback: activar todo inmediatamente
-            wrap.classList.add('tl-visible');
-            blocks.forEach(function (b) { b.classList.add('tl-ico-visible'); });
-            return;
+    .xp-face {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 1.6rem;
+        box-shadow: 0 1.2rem 3.2rem var(--card-shadow);
+        padding: 2.8rem 3.2rem;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    .xp-front {
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+        border-top: .4rem solid var(--accent-primary);
+    }
+
+    /* Back overlays the front; it may grow taller than the compact front */
+    .xp-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        min-height: 100%;
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+        border-top: .4rem solid var(--accent-primary);
+    }
+
+    @media (hover: hover) and (min-width: 768px) {
+        .xp-card:hover .xp-inner {
+            -webkit-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+        .xp-item:hover {
+            z-index: 5;
+        }
+    }
+
+    .xp-card.is-flipped .xp-inner {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+
+    .xp-item:focus-within,
+    .xp-item.is-open {
+        z-index: 5;
+    }
+
+    .xp-card:focus-visible .xp-face {
+        box-shadow: 0 0 0 .3rem var(--accent-primary), 0 1.2rem 3.2rem var(--card-shadow);
+    }
+
+    .xp-role {
+        margin: 0 0 .6rem;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: 2.2rem;
+        line-height: 1.3;
+        color: var(--text-primary);
+    }
+
+    .xp-company {
+        margin: 0;
+        font-size: 1.6rem;
+        line-height: 1.4;
+        font-weight: 600;
+        color: var(--accent-primary);
+    }
+
+    .xp-hint {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        margin-top: 2rem;
+        padding-top: 1.4rem;
+        border-top: 1px solid var(--border-color);
+        font-size: 1.3rem;
+        color: var(--text-tertiary);
+    }
+
+    .xp-hint i {
+        color: var(--accent-primary);
+    }
+
+    .xp-back-role {
+        margin: 0 0 1.4rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+    }
+
+    .xp-body {
+        max-height: 30rem;
+        overflow-y: auto;
+        padding-right: .8rem;
+        font-size: 1.5rem;
+        line-height: 1.65;
+        color: var(--text-secondary);
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-primary) transparent;
+    }
+
+    .xp-body p,
+    .xp-body li {
+        margin: 0 0 .8em;
+        padding: 0;
+        font-size: inherit;
+        line-height: inherit;
+        color: inherit;
+    }
+
+    .xp-body ul,
+    .xp-body ol {
+        margin: 0 0 .8em 1.8rem;
+        list-style: disc;
+    }
+
+    .xp-body li {
+        display: list-item;
+    }
+
+    .xp-body strong {
+        color: var(--text-primary);
+    }
+
+    .xp-body::-webkit-scrollbar { width: 6px; }
+    .xp-body::-webkit-scrollbar-track { background: transparent; }
+    .xp-body::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 3px; }
+
+    /* Mobile: single column, tap to expand (no 3D) */
+    @media screen and (max-width: 767px) {
+        .xp-timeline::before {
+            left: 1.1rem;
         }
 
-        // Observador para el wrapper completo → activa la línea
-        const lineObserver = new IntersectionObserver(function (entries) {
-            if (entries[0].isIntersecting) {
-                wrap.classList.add('tl-visible');
-                lineObserver.disconnect();
+        .xp-item,
+        .xp-item:nth-child(even) {
+            grid-template-columns: 2.4rem minmax(0, 1fr);
+            align-items: start;
+            column-gap: 1.4rem;
+            margin-bottom: 3.6rem;
+        }
 
-                // Activar iconos con stagger: cada icono aparece cuando su bloque
-                // entra en viewport (con un pequeño retraso adicional)
-                const icoObserver = new IntersectionObserver(function (icoEntries) {
-                    icoEntries.forEach(function (entry) {
-                        if (entry.isIntersecting) {
-                            // Pequeño retraso proporcional al índice del bloque
-                            const block = entry.target;
-                            const idx = Array.prototype.indexOf.call(blocks, block);
-                            setTimeout(function () {
-                                block.classList.add('tl-ico-visible');
-                            }, idx * 80);
-                            icoObserver.unobserve(block);
-                        }
-                    });
-                }, { threshold: 0.3 });
+        .xp-marker,
+        .xp-item:nth-child(even) .xp-marker {
+            grid-column: 1;
+            grid-row: 1;
+            margin-top: .4rem;
+        }
 
-                blocks.forEach(function (block) { icoObserver.observe(block); });
-            }
-        }, { threshold: 0.1 });
+        .xp-when,
+        .xp-item:nth-child(even) .xp-when {
+            grid-column: 2;
+            grid-row: 1;
+            text-align: left;
+            padding: 0 0 1rem;
+        }
 
-        lineObserver.observe(wrap);
+        .xp-card,
+        .xp-item:nth-child(even) .xp-card {
+            grid-column: 2;
+            grid-row: 2;
+            -webkit-perspective: none;
+            perspective: none;
+        }
+
+        .xp-when-years { font-size: 2rem; }
+        .xp-when-length { display: inline; margin: 0 0 0 .8rem; font-size: 1.3rem; }
+
+        .xp-inner,
+        .xp-card.is-flipped .xp-inner {
+            -webkit-transform: none;
+            transform: none;
+        }
+
+        .xp-face { padding: 2rem; }
+
+        .xp-back {
+            position: static;
+            display: none;
+            -webkit-transform: none;
+            transform: none;
+            margin-top: 1.2rem;
+        }
+
+        .xp-card.is-flipped .xp-back { display: block; }
+        .xp-body { max-height: none; }
+        .xp-role { font-size: 1.9rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .xp-inner {
+            -webkit-transition: none;
+            transition: none;
+        }
+    }
+
+    /* ── Education: same flip cards, grid instead of timeline.
+       The section is a fixed dark band in both themes, so colours are
+       set for a dark surface (all pairs ≥ 4.5:1). */
+    #education .section-intro h1 {
+        color: #FFFFFF;
+    }
+
+    #education .section-intro h5 {
+        color: #FF1493 !important;
+    }
+
+    .edu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 34rem), 1fr));
+        gap: 2.8rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .edu-item {
+        position: relative;
+        display: flex;
+        margin: 0;
+        padding: 0;
+    }
+
+    .edu-item .xp-card,
+    .edu-item .xp-inner,
+    .edu-item .xp-front {
+        width: 100%;
+        height: 100%;
+    }
+
+    .edu-item .xp-face {
+        background: #161616;
+        border-color: #2A2A2A;
+        border-top-color: #FF1493;
+        box-shadow: 0 1.2rem 3.2rem rgba(0, 0, 0, 0.45);
+    }
+
+    .edu-item .xp-front {
+        display: flex;
+        flex-direction: column;
+        min-height: 24rem;
+    }
+
+    .edu-icon {
+        font-size: 2.4rem;
+        color: #FF1493;
+        margin-bottom: 1.6rem;
+    }
+
+    .edu-dates {
+        margin: 0 0 .8rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #FF1493;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .edu-item .xp-role {
+        color: #FFFFFF;
+        font-size: 2rem;
+    }
+
+    .edu-item .xp-company {
+        color: #B8B8B8;
+        font-weight: 400;
+    }
+
+    .edu-item .xp-hint {
+        margin-top: auto;
+        border-top-color: #2A2A2A;
+        color: #9A9A9A;
+    }
+
+    .edu-item .xp-hint i,
+    .edu-item .xp-back-role {
+        color: #FF1493;
+    }
+
+    .edu-item .xp-back {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edu-item .xp-body {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+        color: #B8B8B8;
+        scrollbar-color: #FF1493 transparent;
+    }
+
+    .edu-item .xp-body strong {
+        color: #FFFFFF;
+    }
+
+    .edu-item .xp-body::-webkit-scrollbar-thumb {
+        background: #FF1493;
+    }
+
+    .edu-credential {
+        display: inline-flex;
+        align-items: center;
+        gap: .8rem;
+        margin-top: 1.6rem;
+        padding: 1rem 1.8rem;
+        border: 1px solid #FF1493;
+        border-radius: .8rem;
+        color: #FF1493;
+        font-size: 1.3rem;
+        font-weight: 600;
+        transition: background-color .2s ease, color .2s ease;
+    }
+
+    .edu-credential:hover,
+    .edu-credential:focus-visible {
+        background: #FF1493;
+        color: #0C0C0C;
+    }
+
+    @media (hover: hover) and (min-width: 768px) {
+        .edu-item:hover {
+            z-index: 5;
+        }
+    }
+
+    .edu-item.is-open,
+    .edu-item:focus-within {
+        z-index: 5;
+    }
+
+    @media screen and (max-width: 767px) {
+        .edu-item .xp-card,
+        .edu-item .xp-inner,
+        .edu-item .xp-front {
+            height: auto;
+        }
+
+        .edu-item .xp-front {
+            min-height: 0;
+        }
+
+        .edu-item .xp-back {
+            display: none;
+            height: auto;
+        }
+
+        .edu-item .xp-card.is-flipped .xp-back {
+            display: flex;
+        }
+
+        .edu-item .xp-body {
+            max-height: none;
+        }
+    }
+
+    /* Smooth theme switch without transitioning every element on the page */
+    section,
+    .xp-face {
+        transition: background-color .3s ease, color .3s ease, border-color .3s ease;
+    }
+
+</style>
+
+{# ── EXPERIENCE SECTION ────────────────────────────────────────────────────── #}
+<section id="resume" class="grey-section">
+    <div class="row resume-timeline">
+        <div class="col-twelve resume-header">
+            <div class="section-intro">
+                <h5 data-aos="fade-up">Trayectoria</h5>
+                <h1 data-aos="fade-up" data-aos-delay="200">Experiencia y Hitos Profesionales</h1>
+            </div>
+        </div>
+
+        <div class="col-twelve">
+            <ol class="xp-timeline">
+                {% for experience in experiences %}
+                <li class="xp-item">
+                    <div class="xp-when">
+                        <span class="xp-when-years">{{ experience.start_date|date:"Y" }} – {% if experience.end_date %}{{ experience.end_date|date:"Y" }}{% else %}Hoy{% endif %}</span>
+                        <span class="xp-when-length">{{ experience.start_date|date:"M Y"|capfirst }} · {% if experience.end_date %}{{ experience.end_date|date:"M Y"|capfirst }}{% else %}actualidad{% endif %}</span>
+                    </div>
+
+                    <span class="xp-marker" aria-hidden="true"></span>
+
+                    <div class="xp-card" tabindex="0" role="button" aria-expanded="false"
+                         aria-label="{{ experience.position }} en {{ experience.company }}: ver detalles">
+                        <div class="xp-inner">
+                            <div class="xp-face xp-front">
+                                <h3 class="xp-role">{{ experience.position }}</h3>
+                                <p class="xp-company">{{ experience.company }}</p>
+                                <div class="xp-hint">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    <span>Ver funciones y logros</span>
+                                </div>
+                            </div>
+
+                            <div class="xp-face xp-back">
+                                <p class="xp-back-role">{{ experience.position }} · {{ experience.company }}</p>
+                                <div class="xp-body">{{ experience.resumen|sanitize_html }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+</section>
+
+{# ── EDUCATION & CERTIFICATES SECTION ──────────────────────────────────────── #}
+<section id="education" class="edu-section-dark">
+    <div class="row">
+        <div class="col-twelve">
+            <div class="section-intro">
+                <h5 data-aos="fade-up">Formación</h5>
+                <h1 data-aos="fade-up" data-aos-delay="200">Educación y Certificaciones</h1>
+            </div>
+        </div>
+
+        <div class="col-twelve">
+            <ul class="edu-grid">
+                {% for edu in education %}
+                <li class="edu-item">
+                    <div class="xp-card" tabindex="0" role="button" aria-expanded="false"
+                         aria-label="{{ edu.degree }} en {{ edu.institution }}: ver detalles">
+                        <div class="xp-inner">
+                            <div class="xp-face xp-front">
+                                <i class="fa fa-graduation-cap edu-icon" aria-hidden="true"></i>
+                                <p class="edu-dates">{{ edu.start_date|date:"Y" }} – {% if edu.end_date %}{{ edu.end_date|date:"Y" }}{% else %}Actualidad{% endif %}</p>
+                                <h3 class="xp-role">{{ edu.degree }}</h3>
+                                <p class="xp-company">{{ edu.institution }}</p>
+                                <div class="xp-hint">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    <span>Ver contenido del programa</span>
+                                </div>
+                            </div>
+
+                            <div class="xp-face xp-back">
+                                <p class="xp-back-role">{{ edu.degree }} · {{ edu.institution }}</p>
+                                <div class="xp-body">{{ edu.resumen|sanitize_html }}</div>
+                                {% if edu.link %}
+                                <a href="{{ edu.link }}" target="_blank" rel="noopener noreferrer" class="edu-credential">
+                                    Ver credencial <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+        var cards = document.querySelectorAll('.xp-card');
+        function toggle(card) {
+            var open = card.classList.toggle('is-flipped');
+            card.setAttribute('aria-expanded', open ? 'true' : 'false');
+            card.closest('.xp-item, .edu-item').classList.toggle('is-open', open);
+        }
+        Array.prototype.forEach.call(cards, function (card) {
+            card.addEventListener('click', function (e) {
+                if (e.target.closest('a')) return;
+                if (window.matchMedia('(hover: hover) and (min-width: 768px)').matches) return;
+                toggle(card);
+            });
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle(card);
+                }
+            });
+        });
     })();
 </script>
-
-<section id="education" class="edu-section-dark">
-   <div class="row section-intro">
-      <div class="col-twelve">
-         <h5 class="section-subtitle" data-aos="fade-up">Formación</h5>
-         <h1 class="section-title" data-aos="fade-up" data-aos-delay="200">Educación y Certificaciones</h1>
-      </div>
-   </div>
-
-   <div class="education-grid">
-      {% for edu in education %}
-      <div>
-         <div class="edu-card" data-aos="fade-up" data-aos-delay="100">
-            <div class="edu-card-icon"><i class="fa fa-graduation-cap"></i></div>
-            <div class="edu-card-header">
-               <span class="edu-date">
-                  {{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{ edu.end_date|date:"Y" }}
-                  {%else %}Actualidad{% endif %}</span>
-               <h3>{{ edu.degree }}</h3>
-               <h4>{{ edu.institution }}</h4>
-            </div>
-            <div class="edu-card-content">
-               {{ edu.resumen|sanitize_html }}
-               {% if edu.link %}
-               <a href="{{ edu.link }}" target="_blank" class="credential-btn">
-                  Ver Credencial <i class="fa fa-external-link"></i>
-               </a>
-               {% endif %}
-            </div>
-         </div>
-      </div>
-      {% endfor %}
-   </div>
-</section>

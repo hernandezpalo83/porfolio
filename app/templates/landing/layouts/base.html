@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <script >document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');</script>
+    <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');
+        try { var t = localStorage.getItem('hernandezpalo-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}Technical Product Manager | Javier Hernández Martin | Madrid{% endblock %}</title>
@@ -79,10 +80,10 @@
     <noscript><link rel="stylesheet" href="{% static 'landing/css/vendor/aos.min.css' %}"></noscript>
 
     {# 🚀 CSS CONSOLIDADO (Defered) #}
-    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.2.5" as="style"
+    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.3.0" as="style"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.2.5">
+        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.3.0">
     </noscript>
 
     {% block extra_schema %}
@@ -156,6 +157,7 @@
             }
         });
     </script>
+    <script src="{% static 'landing/js/dark-mode.js' %}"></script>
     <script src="{% static 'landing/js/metrics.js' %}" defer></script>
 
     {% block extra_js %}{% endblock %}

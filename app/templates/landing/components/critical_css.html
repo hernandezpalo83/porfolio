@@ -1,5 +1,164 @@
 {% load static %}
 <style>
+    /* --- 0. CSS CUSTOM PROPERTIES FOR DARK/LIGHT MODE --- */
+    :root {
+        /* Light Mode (default) */
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F8F8F8;
+        --bg-tertiary: #F0F0F0;
+        --text-primary: #1A1A1A;
+        --text-secondary: #4A4A4A;
+        --text-tertiary: #6B6B6B;
+        --accent-primary: #CC0052;
+        --accent-light: #FF1493;
+        --accent-muted: rgba(204, 0, 82, 0.15);
+        --border-color: #E0E0E0;
+        --card-bg: #FFFFFF;
+        --card-shadow: rgba(0, 0, 0, 0.08);
+        --section-bg-light: #F8F8F8;
+        --section-bg-dark: #FFFFFF;
+    }
+
+    /* Dark Mode */
+    :root[data-theme="dark"],
+    :root[data-theme="dark"] {
+        --bg-primary: #0C0C0C;
+        --bg-secondary: #1A1A1A;
+        --bg-tertiary: #2A2A2A;
+        --text-primary: #FFFFFF;
+        --text-secondary: #D0D0D0;
+        --text-tertiary: #A0A0A0;
+        --accent-primary: #FF1493;
+        --accent-light: #FF69B4;
+        --accent-muted: rgba(255, 20, 147, 0.15);
+        --border-color: #3A3A3A;
+        --card-bg: #1A1A1A;
+        --card-shadow: rgba(0, 0, 0, 0.3);
+        --section-bg-light: #1A1A1A;
+        --section-bg-dark: #0C0C0C;
+    }
+
+    /* --- 0b. THEME SWITCH (navbar) --- */
+    .theme-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 5px;
+        padding: 0 15px 0 20px;
+        height: 32px;
+        background: none;
+        border: 0;
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+        color: #FFFFFF;
+        cursor: pointer;
+        font: inherit;
+    }
+
+    .theme-switch-icon {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.45);
+        transition: color 0.25s ease;
+    }
+
+    .theme-switch[aria-checked="false"] .theme-switch-sun,
+    .theme-switch[aria-checked="true"] .theme-switch-moon {
+        color: #FFFFFF;
+    }
+
+    .theme-switch-track {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        transition: background-color 0.25s ease;
+    }
+
+    .theme-switch[aria-checked="true"] .theme-switch-track {
+        background: #CC0052;
+    }
+
+    .theme-switch-knob {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #FFFFFF;
+        transition: transform 0.25s ease;
+    }
+
+    .theme-switch[aria-checked="true"] .theme-switch-knob {
+        transform: translateX(16px);
+    }
+
+    .theme-switch:focus-visible {
+        outline: 2px solid #CC0052;
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .theme-switch-knob, .theme-switch-track, .theme-switch-icon { transition: none; }
+    }
+
+    /* --- 0c. DARK THEME OVERRIDES for sections the bundle hardcodes as light --- */
+    :root[data-theme="dark"] body,
+    :root[data-theme="dark"] #about,
+    :root[data-theme="dark"] #resume,
+    :root[data-theme="dark"] .grey-section,
+    :root[data-theme="dark"] #portfolio,
+    :root[data-theme="dark"] #blog-preview {
+        background: var(--bg-primary) !important;
+        color: var(--text-secondary);
+    }
+
+    :root[data-theme="dark"] #about h1, :root[data-theme="dark"] #about h2, :root[data-theme="dark"] #about h3,
+    :root[data-theme="dark"] #about h4, :root[data-theme="dark"] #resume h1, :root[data-theme="dark"] #portfolio h1,
+    :root[data-theme="dark"] #portfolio h2, :root[data-theme="dark"] #portfolio h3,
+    :root[data-theme="dark"] #blog-preview .section-title, :root[data-theme="dark"] #about p.lead {
+        color: var(--text-primary);
+    }
+
+    :root[data-theme="dark"] #about p, :root[data-theme="dark"] #about li,
+    :root[data-theme="dark"] #portfolio p {
+        color: var(--text-secondary);
+    }
+
+    /* #CC0052 text drops to ~3.4:1 on dark surfaces; use the dark accent (#FF1493) */
+    :root[data-theme="dark"] .section-intro h5,
+    :root[data-theme="dark"] .card-meta,
+    :root[data-theme="dark"] .project-card:hover .project-title,
+    :root[data-theme="dark"] #blog-preview .section-subtitle,
+    :root[data-theme="dark"] .blog-card .read-more,
+    :root[data-theme="dark"] dt,
+    :root[data-theme="dark"] .stats-tabs li a:hover {
+        color: var(--accent-primary) !important;
+    }
+
+    :root[data-theme="dark"] .project-card,
+    :root[data-theme="dark"] .blog-card {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+    }
+
+    :root[data-theme="dark"] .project-status--live {
+        color: #34D399;
+    }
+
+    :root[data-theme="dark"] .project-status--dev {
+        color: #A5B4FC;
+    }
+
+    :root[data-theme="dark"] .empty-msg {
+        color: var(--text-secondary) !important;
+    }
+
+    :root[data-theme="dark"] .blog-btn {
+        color: var(--accent-primary) !important;
+        border-color: var(--accent-primary) !important;
+    }
+
     /* --- 1. RESET & BASIC TYPOGRAPHY --- */
     html {
         font-family: sans-serif;
@@ -383,7 +542,7 @@
     }
 
     .intro-content h5 {
-        color: #cc005f;
+        color: #FF4D94;
         font-family: "poppins-bold", sans-serif;
         font-size: 2.3rem;
         line-height: 1.565;

@@ -1,3 +1,26 @@
+<style>
+    .contact-message {
+        margin: 0 0 1.6rem;
+        padding: 1.4rem 1.8rem;
+        border-left: .4rem solid #CC0052;
+        background: rgba(255, 255, 255, 0.06);
+        color: #FFFFFF;
+        font-size: 1.5rem;
+        line-height: 1.5;
+    }
+
+    .contact-message-error {
+        border-left-color: #FF6B6B;
+    }
+
+    .contact-field-error {
+        display: block;
+        margin-top: .4rem;
+        color: #FF8FA3;
+        font-size: 1.3rem;
+    }
+</style>
+
 <section id="contact">
     <div class="row section-intro">
         <div class="col-twelve">
@@ -7,13 +30,21 @@
     </div>
     <div class="row contact-form">
         <div class="col-twelve" data-aos="fade-up" data-aos-delay="300">
+            {% if messages %}
+            <div class="contact-messages" role="status">
+                {% for message in messages %}
+                <p class="contact-message contact-message-{{ message.tags }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
             <form name="contactForm" id="contactForm" method="post" action="{% url 'landing:index' %}#contact">
                 {% csrf_token %}
+                {{ form.website }}
                 <fieldset>
-                    <div class="form-field">{{ form.nombre }}</div>
-                    <div class="form-field">{{ form.email }}</div>
-                    <div class="form-field">{{ form.asunto }}</div>
-                    <div class="form-field">{{ form.mensaje }}</div>
+                    <div class="form-field">{{ form.nombre }}{% for e in form.nombre.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
+                    <div class="form-field">{{ form.email }}{% for e in form.email.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
+                    <div class="form-field">{{ form.asunto }}{% for e in form.asunto.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
+                    <div class="form-field">{{ form.mensaje }}{% for e in form.mensaje.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
                     <div style="margin: 20px 0;">{{ form.captcha }}</div>
                     <button class="submitform" type="submit"
                         style="background: #CC0052; color: white; width: 100%; height: 60px; font-weight: bold; border: none; cursor: pointer;">ENVIAR</button>

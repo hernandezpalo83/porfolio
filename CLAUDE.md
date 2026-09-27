@@ -76,6 +76,10 @@ DEBUG=False SECRET_KEY=test PYTHONPATH=. python app/manage.py collectstatic --no
 - ❌ **NO Uncommitted Requirements**: Always verify dependencies exist in `requirements.txt`.
 - ❌ **NO Realistic API Keys in CI**: Use fake keys (`ci-fake-*`) in `ci.yml` to prevent GitGuardian PR block.
 - ❌ **NO CI Failures**: Check imports with `ruff check app/ --select F401,F811,E711,E712` before merging. Always set `PYTHONPATH` in CI.
+- ❌ **NO `app/static/`**: Django does not serve it (`STATICFILES_DIRS = []`) → 404. Landing statics live in `app/landing/static/landing/`.
+- ❌ **NO CKEditor HTML inside `<p>`**: The content brings its own `<p>`; browsers eject them from the wrapper. Use a `<div>`.
+- ❌ **NO 16px `rem` assumptions in landing**: `html { font-size: 62.5% }` → `1rem = 10px`.
+- ❌ **NO `#CC0052` text on dark / `#FF0077` on light**: Fails WCAG AA. Use `#CC0052` on light, `#FF1493` on dark (`var(--accent-primary)` handles it).
 
 ---
 

@@ -6,25 +6,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
-    // --- 1. Preloader ---
-    const loader = document.getElementById('loader');
-    const preloader = document.getElementById('preloader');
-
-    window.addEventListener('load', () => {
-        if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-                if (preloader) {
-                    preloader.style.opacity = '0';
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                    }, 300); // delay
-                }
-            }, 500); // fadeOut slow equivalent
-        }
-    });
-
     // --- 2. Navigation Menu ---
     const toggleButton = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.main-navigation');
@@ -114,57 +95,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.scrollY < pxShow) goTopBtn.style.display = 'none';
             }, 400);
         }
-    });
-
-    // --- 6. Contact Form (Fetch API) ---
-    const contactForm = document.getElementById('contactForm');
-    const messageWarning = document.getElementById('message-warning');
-    const messageSuccess = document.getElementById('message-success');
-    const submitLoader = document.getElementById('submit-loader');
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // Reset States
-            if (submitLoader) submitLoader.style.display = 'block';
-            if (messageWarning) messageWarning.style.display = 'none';
-            if (messageSuccess) messageSuccess.style.display = 'none';
-
-            const formData = new FormData(contactForm);
-
-            try {
-                const response = await fetch(contactForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                if (submitLoader) submitLoader.style.display = 'none';
-
-                if (response.ok) {
-                    if (messageSuccess) {
-                        messageSuccess.style.display = 'block';
-                        contactForm.reset();
-                        contactForm.style.display = 'none';
-                    }
-                } else {
-                    const text = await response.text();
-                    if (messageWarning) {
-                        messageWarning.innerHTML = text || "Ocurrió un error. Inténtalo de nuevo.";
-                        messageWarning.style.display = 'block';
-                    }
-                }
-            } catch (error) {
-                if (submitLoader) submitLoader.style.display = 'none';
-                if (messageWarning) {
-                    messageWarning.innerHTML = "Error de conexión. Verifica tu internet.";
-                    messageWarning.style.display = 'block';
-                }
-            }
-        });
-    }
-
+    }, { passive: true });
 });
