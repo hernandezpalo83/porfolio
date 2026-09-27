@@ -8,7 +8,7 @@
         --bg-tertiary: #F0F0F0;
         --text-primary: #1A1A1A;
         --text-secondary: #4A4A4A;
-        --text-tertiary: #7A7A7A;
+        --text-tertiary: #6B6B6B;
         --accent-primary: #CC0052;
         --accent-light: #FF1493;
         --accent-muted: rgba(204, 0, 82, 0.15);
@@ -107,20 +107,56 @@
     :root[data-theme="dark"] #about,
     :root[data-theme="dark"] #resume,
     :root[data-theme="dark"] .grey-section,
-    :root[data-theme="dark"] #portfolio {
+    :root[data-theme="dark"] #portfolio,
+    :root[data-theme="dark"] #blog-preview {
         background: var(--bg-primary) !important;
         color: var(--text-secondary);
     }
 
     :root[data-theme="dark"] #about h1, :root[data-theme="dark"] #about h2, :root[data-theme="dark"] #about h3,
     :root[data-theme="dark"] #about h4, :root[data-theme="dark"] #resume h1, :root[data-theme="dark"] #portfolio h1,
-    :root[data-theme="dark"] #portfolio h2, :root[data-theme="dark"] #portfolio h3 {
+    :root[data-theme="dark"] #portfolio h2, :root[data-theme="dark"] #portfolio h3,
+    :root[data-theme="dark"] #blog-preview .section-title, :root[data-theme="dark"] #about p.lead {
         color: var(--text-primary);
     }
 
     :root[data-theme="dark"] #about p, :root[data-theme="dark"] #about li,
     :root[data-theme="dark"] #portfolio p {
         color: var(--text-secondary);
+    }
+
+    /* #CC0052 text drops to ~3.4:1 on dark surfaces; use the dark accent (#FF1493) */
+    :root[data-theme="dark"] .section-intro h5,
+    :root[data-theme="dark"] .card-meta,
+    :root[data-theme="dark"] .project-card:hover .project-title,
+    :root[data-theme="dark"] #blog-preview .section-subtitle,
+    :root[data-theme="dark"] .blog-card .read-more,
+    :root[data-theme="dark"] dt,
+    :root[data-theme="dark"] .stats-tabs li a:hover {
+        color: var(--accent-primary) !important;
+    }
+
+    :root[data-theme="dark"] .project-card,
+    :root[data-theme="dark"] .blog-card {
+        background: var(--card-bg) !important;
+        border-color: var(--border-color) !important;
+    }
+
+    :root[data-theme="dark"] .project-status--live {
+        color: #34D399;
+    }
+
+    :root[data-theme="dark"] .project-status--dev {
+        color: #A5B4FC;
+    }
+
+    :root[data-theme="dark"] .empty-msg {
+        color: var(--text-secondary) !important;
+    }
+
+    :root[data-theme="dark"] .blog-btn {
+        color: var(--accent-primary) !important;
+        border-color: var(--accent-primary) !important;
     }
 
     /* --- 1. RESET & BASIC TYPOGRAPHY --- */
@@ -506,7 +542,7 @@
     }
 
     .intro-content h5 {
-        color: #cc005f;
+        color: #FF4D94;
         font-family: "poppins-bold", sans-serif;
         font-size: 2.3rem;
         line-height: 1.565;

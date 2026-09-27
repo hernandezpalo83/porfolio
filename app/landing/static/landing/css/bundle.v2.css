@@ -1017,7 +1017,7 @@ p.lead {
 	font-family: "Lora", serif;
 	font-size: 2rem;
 	line-height: 1.8;
-	color: #888888;
+	color: #5E5E5E;
 }
 
 @media only screen and (max-width:768px) {
@@ -1214,7 +1214,7 @@ ul.disc li::before {
 
 dt {
 	margin: 0;
-	color: #FF0077;
+	color: #CC0052;
 }
 
 dd {
@@ -1790,7 +1790,7 @@ input::-moz-focus-inner {
 }
 
 .stats-tabs li a:hover {
-	color: #FF0077;
+	color: #CC0052;
 }
 
 .stats-tabs li a em {
@@ -1895,7 +1895,7 @@ input::-moz-focus-inner {
 }
 
 .section-intro h5 {
-	color: #FF0077;
+	color: #CC0052;
 	font-size: 1.6rem;
 	line-height: 1.875;
 	margin-bottom: 0.3rem;
@@ -2250,7 +2250,7 @@ header .logo a {
 }
 
 .intro-content h5 {
-	color: #cc005f;
+	color: #FF4D94;
 	font-family: "poppins-bold", sans-serif;
 	font-size: 2.3rem;
 	line-height: 1.565;
@@ -2331,7 +2331,7 @@ header .logo a {
 
 .intro-social li a:hover,
 .intro-social li a:focus {
-	color: #cc005f;
+	color: #FF4D94;
 }
 
 /**
@@ -3116,6 +3116,7 @@ footer .footer-social li a {
 
 footer .copyright span {
 	display: inline-block;
+	color: #A0A0A0;
 }
 
 footer .copyright span::after {
@@ -3358,139 +3359,6 @@ footer .copyright span:last-child::after {
 	pointer-events: none;
 }
 
-.education-grid {
-	display: grid !important;
-	grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-	gap: 30px;
-	width: 100% !important;
-	max-width: 1140px !important;
-	margin: 4rem auto 0 !important;
-	float: none !important;
-}
-
-.education-grid>div {
-	display: flex;
-	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-
-@media (max-width: 1024px) {
-	.education-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-	}
-}
-
-@media (max-width: 768px) {
-	.education-grid {
-		grid-template-columns: 1fr !important;
-		gap: 20px !important;
-	}
-}
-
-.edu-card {
-	background: linear-gradient(145deg, #1e1e1e, #252525);
-	border-left: 4px solid #CC0052;
-	padding: 4rem;
-	-webkit-flex: 1;
-	flex: 1;
-	width: 100%;
-	/* Force equal height for cards in the same row */
-	position: relative;
-	border-radius: 8px;
-	transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-	display: -webkit-flex;
-	display: flex;
-	-webkit-flex-direction: column;
-	flex-direction: column;
-}
-
-.edu-card:hover {
-	background: #1f1f1f;
-	transform: translateY(-8px) scale(1.02);
-	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-	border-left-width: 6px;
-}
-
-.edu-card-icon {
-	position: absolute;
-	top: 4rem;
-	right: 4rem;
-	font-size: 3.5rem;
-	color: rgba(204, 0, 82, 0.1);
-	transition: all 0.3s ease;
-}
-
-.edu-card:hover .edu-card-icon {
-	color: #CC0052;
-	transform: rotate(15deg) scale(1.2);
-}
-
-.edu-date {
-	display: inline-block;
-	color: #FF4081;
-	font-family: 'JetBrains Mono', monospace;
-	font-weight: 700;
-	font-size: 1.3rem;
-	margin-bottom: 1.2rem;
-	letter-spacing: 1.5px;
-	text-transform: uppercase;
-}
-
-.edu-card-header h3 {
-	color: #ffffff;
-	font-family: 'Raleway', sans-serif;
-	font-size: 2.4rem;
-	line-height: 1.2;
-	margin: 0 0 0.8rem 0;
-	font-weight: 700;
-	border: none;
-}
-
-.edu-card-header h4 {
-	color: #e0e0e0;
-	font-family: 'JetBrains Mono', monospace;
-	font-size: 1.6rem;
-	font-weight: 500;
-	margin-bottom: 2.5rem;
-	border: none;
-}
-
-.edu-card-content {
-	color: #e0e0e0;
-	font-family: 'Lora', serif;
-	font-size: 1.6rem;
-	line-height: 1.8;
-}
-
-.credential-btn {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 12px;
-	margin-top: 3rem;
-	color: #fff !important;
-	text-decoration: none;
-	font-family: 'JetBrains Mono', monospace;
-	font-weight: 700;
-	font-size: 1.2rem;
-	text-transform: uppercase;
-	letter-spacing: 2px;
-	padding: 1.2rem 2.5rem;
-	border: 2px solid #CC0052;
-	transition: all 0.3s ease;
-	border-radius: 4px;
-}
-
-.credential-btn:hover {
-	background: #CC0052;
-	color: #fff !important;
-	transform: translateY(-2px);
-	box-shadow: 0 5px 15px rgba(204, 0, 82, 0.3);
-}
-
-/* --- PORTFOLIO REDESIGN --- */
 #portfolio {
 	padding-top: 12rem;
 	padding-bottom: 12rem;
@@ -3748,6 +3616,7 @@ nav {
 }
 
 .blog-btn {
+	background: transparent !important;
 	border-color: #CC0052 !important;
 	color: #CC0052 !important;
 	font-size: 1.2rem !important;
@@ -3757,7 +3626,7 @@ nav {
 
 /* --- EDUCATION SECTION ENHANCEMENTS --- */
 .edu-section-dark .section-subtitle {
-	color: #CC0052;
+	color: #FF1493;
 	letter-spacing: 2px;
 }
 
@@ -3875,15 +3744,11 @@ nav {
 
 /* Card Lift Effect (Portfolio, Resume, etc) */
 .project-card,
-.timeline-block,
-.edu-card,
 .metric-item {
 	transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.project-card:hover,
-.timeline-block:hover,
-.edu-card:hover {
+.project-card:hover {
 	transform: translateY(-5px);
 	z-index: 10;
 }
