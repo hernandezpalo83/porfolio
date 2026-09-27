@@ -1,17 +1,60 @@
 {% extends "landing/layouts/base.html" %}
 
+{% block title %}Página no encontrada | HernandezPalo{% endblock %}
+{% block meta_description %}La página que buscas no existe o ha cambiado de dirección.{% endblock %}
+
+{% block extra_css %}
+<meta name="robots" content="noindex">
+<style>
+    .page-404 {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        padding: 12rem 2.4rem 6rem;
+        text-align: center;
+        background: var(--bg-primary);
+        color: var(--text-secondary);
+    }
+
+    .page-404 h1 {
+        margin: 0;
+        font-size: 12rem;
+        line-height: 1;
+        color: var(--accent-primary);
+    }
+
+    .page-404 h2 {
+        margin: 0;
+        font-size: 2.4rem;
+        color: var(--text-primary);
+    }
+
+    .page-404 p {
+        max-width: 48rem;
+        margin: 0;
+        font-size: 1.6rem;
+        line-height: 1.6;
+    }
+
+    .page-404 a {
+        padding: 1.4rem 3rem;
+        border-radius: 5rem;
+        background: var(--accent-primary);
+        color: #FFFFFF;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div
-    style="height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-    <h1 style="font-size: 10rem; font-weight: bold; color: #111; margin: 0;">404</h1>
-    <h2 style="margin-top: -20px; text-transform: uppercase; letter-spacing: 5px;">Página no encontrada</h2>
-    <p style="color: #777; max-width: 500px; margin: 20px auto;">
-        Lo sentimos, el recurso que buscas no existe o ha sido movido.
-        Tal vez este "prompt" no estaba bien estructurado.
-    </p>
-    <a href="{% url 'home' %}" class="btn btn-primary"
-        style="padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; background: #111; color: #fff;">
-        VOLVER AL INICIO
-    </a>
-</div>
+<section class="page-404">
+    <h1>404</h1>
+    <h2>Página no encontrada</h2>
+    <p>La página que buscas no existe o ha cambiado de dirección.</p>
+    <a href="{% url 'landing:index' %}">Volver al inicio</a>
+</section>
 {% endblock %}

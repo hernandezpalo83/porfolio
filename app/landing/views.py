@@ -9,7 +9,7 @@ from app.blog.models import Post
 from .forms import FormularioContacto
 from django.contrib import messages
 import logging
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 import io
 
@@ -20,7 +20,6 @@ def error_404_view(request: HttpRequest, exception: Exception) -> HttpResponse:
 
 @login_required
 def private_area(request: HttpRequest) -> HttpResponse:
-    # Aquí puedes añadir lógica para contar posts, ver fecha del último backup, etc.
     context: Dict[str, Any] = {
         'segment': 'dashboard', # Útil para marcar el menú activo
     }
@@ -32,7 +31,7 @@ def profile(request: HttpRequest) -> HttpResponse:
     Perfil de usuario en zona privada.
     Redirigimos a private_area que es la dashboard principal.
     """
-    return redirect('private_area')
+    return redirect('landing:private_area')
 
 @ratelimit(key='ip', rate='5/h', method='POST', block=False)
 def home(request: HttpRequest) -> HttpResponse:
@@ -78,30 +77,7 @@ def home(request: HttpRequest) -> HttpResponse:
             'companies': list(CompanyCollaboration.objects.filter(is_active=True).order_by('order')),
         }
         cache.set(_CACHE_KEY, home_data, _CACHE_TTL)
-    info = home_data['info']
-    skills = home_data['skills']
-    experiences = home_data['experiences']
-    education = home_data['education']
-    projects = home_data['projects']
-    latest_posts = home_data['latest_posts']
-    metrics = home_data['metrics']
-    companies = home_data['companies']
-    
-    # 3. CONSTRUCCIÓN DEL CONTEXTO
-    context: Dict[str, Any] = {
-        'info': info,
-        'skills': skills,
-        'experiences': experiences,
-        'education': education,
-        'projects': projects,
-        'latest_posts': latest_posts,
-        'metrics': metrics,
-        'companies': companies,
-        'form': form,  # Pasamos el objeto form (con o sin errores) al HTML
-    }
-
-    # 4. RENDERIZADO
-    # 4. RENDERIZADO
+    context: Dict[str, Any] = {**home_data, 'form': form}
     return render(request, 'landing/pages/home.html', context)
 
 def is_superuser(user) -> bool:
@@ -140,24 +116,8 @@ def export_data_view(request: HttpRequest) -> HttpResponse:
 @user_passes_test(lambda u: u.is_superuser) # Seguridad: solo superusuarios
 def db_backup(request: HttpRequest) -> HttpResponseRedirect | HttpResponse:
     if request.method == 'POST':
-        action: Optional[str] = request.POST.get('action')
-        
-        if action == 'export':
-            # Exportar datos a JSON descargable
+        if request.POST.get('action') == 'export':
             return export_data_view(request)
-        elif action == 'view':
-            # Redirigir al método que muestra el contenido del JSON
-            # (aquí simplemente mostramos el JSON en la pantalla)
-            logger.info(f"Backup view requested by {request.user}")
-            messages.success(request, "Visualizando copia de seguridad.")
-            return redirect('landing:private_area')
-        elif action == 'restore':
-            # TODO: Implementar lógica de restauración desde JSON subido
-            logger.warning(f"Restore action not yet implemented (requested by {request.user})")
-            messages.info(request, "La funcionalidad de restauración aún está en desarrollo.")
-            return redirect('landing:private_area')
-            
-        return redirect('landing:private_area')
-    
+
     # Si alguien intenta entrar por GET, lo mandamos de vuelta
     return redirect('landing:private_area')

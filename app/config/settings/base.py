@@ -148,7 +148,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'app.config.context_processors.brand_assets',
                 'app.config.context_processors.csp_nonce',  # CSP nonce para scripts inline
-                'app.landing.context_processors.menu_int_processor',
                 'app.documentum.context_processors.docs_navigation',
             ],
         },
