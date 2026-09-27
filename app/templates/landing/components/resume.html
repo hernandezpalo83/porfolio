@@ -18,33 +18,24 @@
         }
     }
 
-    /* ── Desktop Layout: Alternating Left-Right ────────────────────────── */
+    /* ── Desktop Layout: Centered line with simple cards ────────────────── */
     @media screen and (min-width: 768px) {
         .timeline-container {
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
             padding: 60px 40px;
             width: 100%;
         }
 
-        /* Central vertical line – Gradient with subtle glow */
+        /* Central vertical line */
         .timeline-container::before {
             content: '';
             position: absolute;
             left: 50%;
             top: 0;
             bottom: 0;
-            width: 3px;
-            background: linear-gradient(
-                to bottom,
-                var(--accent-primary),
-                var(--accent-muted) 50%,
-                transparent 100%
-            );
-            transform: translateX(-1.5px);
-            box-shadow: 0 0 12px var(--accent-muted);
+            width: 2px;
+            background: var(--accent-primary);
+            margin-left: -1px;
         }
 
         .timeline-item {
@@ -54,7 +45,6 @@
             opacity: 0;
             animation: fadeInUp 0.6s ease-out forwards;
             position: relative;
-            gap: 0;
             width: 100%;
         }
 
@@ -65,46 +55,20 @@
 
         /* ODD items (1, 3): Left side */
         .timeline-item:nth-child(odd) {
-            flex-direction: row;
+            padding-right: 52%;
             justify-content: flex-end;
-            margin-right: 50%;
-        }
-
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-right: 50px;
-            margin-left: 0;
-            flex-basis: auto;
-        }
-
-        .timeline-item:nth-child(odd) .timeline-dot {
-            margin-left: 0;
-            margin-right: 0;
         }
 
         /* EVEN items (2, 4): Right side */
         .timeline-item:nth-child(even) {
-            flex-direction: row;
+            padding-left: 52%;
             justify-content: flex-start;
-            margin-left: 50%;
         }
 
-        .timeline-item:nth-child(even) .timeline-content {
-            margin-left: 50px;
-            margin-right: 0;
-            flex-basis: auto;
-        }
-
-        .timeline-item:nth-child(even) .timeline-dot {
-            margin-right: 0;
-            margin-left: 0;
-        }
-
-        /* ── CARD LAYOUT – Cross-browser compatible (no 3D dependency) ────── */
+        /* ── CARD LAYOUT – Cross-browser compatible ────────────────────────── */
         .timeline-content {
-            flex-basis: calc(50% - 60px);
-            flex-shrink: 0;
+            width: 100%;
             cursor: pointer;
-            transition: all 0.4s ease;
         }
 
         .flip-card {
@@ -114,49 +78,51 @@
 
         .flip-card-front {
             border: 1px solid var(--border-color, #e0e0e0);
-            border-radius: 16px;
-            padding: 28px;
+            border-radius: 12px;
+            padding: 24px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             background: var(--card-bg, #ffffff);
-            box-shadow: 0 10px 28px var(--card-shadow, rgba(0, 0, 0, 0.12));
-            min-height: 280px;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 4px 16px var(--card-shadow, rgba(0, 0, 0, 0.08));
+            min-height: 260px;
+            transition: opacity 0.3s ease;
             opacity: 1;
             visibility: visible;
         }
 
         .flip-card-back {
             border: 1px solid var(--border-color, #e0e0e0);
-            border-radius: 16px;
-            padding: 28px;
+            border-radius: 12px;
+            padding: 24px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             background: var(--card-bg, #ffffff);
-            box-shadow: 0 10px 28px var(--card-shadow, rgba(0, 0, 0, 0.12));
-            min-height: 280px;
-            margin-top: 0;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            box-shadow: 0 4px 16px var(--card-shadow, rgba(0, 0, 0, 0.08));
+            min-height: 260px;
+            transition: opacity 0.3s ease;
             opacity: 0;
             visibility: hidden;
             position: absolute;
             left: 0;
             top: 0;
             width: 100%;
+            height: 100%;
         }
 
         /* On hover: show back, hide front */
         .timeline-content:hover .flip-card-front {
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
         }
 
         .timeline-content:hover .flip-card-back {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
         }
 
         .flip-card-back-content {
@@ -190,24 +156,26 @@
             box-shadow: 0 16px 40px var(--card-shadow, rgba(0, 0, 0, 0.18));
         }
 
-        /* Timeline Dot – Large and centered */
+        /* Timeline Dot */
         .timeline-dot {
-            flex-shrink: 0;
-            width: 56px;
-            height: 56px;
+            position: absolute;
+            left: 50%;
+            top: 12px;
+            width: 44px;
+            height: 44px;
             background: var(--accent-primary);
-            border: 4px solid var(--bg-primary);
+            border: 3px solid var(--bg-primary);
             border-radius: 50%;
-            box-shadow: 0 0 0 6px var(--accent-muted), 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
+            box-shadow: 0 0 0 5px rgba(204, 0, 82, 0.15);
             z-index: 10;
-            margin-top: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             color: var(--bg-primary);
+            margin-left: -22px;
+            flex-shrink: 0;
         }
 
         /* Enhanced date badge styling */
@@ -595,9 +563,7 @@
                 {% for experience in experiences %}
                 <div class="timeline-item" data-aos="fade-up">
                     <div class="timeline-dot" title="{{ experience.start_date|date:'Y' }} – {% if experience.end_date %}{{ experience.end_date|date:'Y' }}{% else %}Actualidad{% endif %}">
-                        <span style="font-size: 0.7rem; font-weight: 700; color: var(--bg-primary); display: flex; align-items: center; justify-content: center; height: 100%;">
-                            {{ experience.start_date|date:"y" }}
-                        </span>
+                        {{ experience.start_date|date:"Y" }}
                     </div>
                     <div class="timeline-content">
                         <div class="flip-card">
