@@ -1,0 +1,31 @@
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Dependencies & Build
+node_modules/
+*.egg-info/
+build/
+dist/
+
+# Static & Media generated files
+staticfiles/
+media/
+
+# Logs & DB files
+app/logs/
+*.log
+*.sqlite3
+*.sqlite3.backup
+app/db_backup.json
+documentum_seed.sql
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# System & Git
+.git/
+.DS_Store

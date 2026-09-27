@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <script nonce="{{ csp_nonce }}">document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');
+    <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');
         try { var t = localStorage.getItem('hernandezpalo-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -146,7 +146,7 @@
     {# 🚀 TYPING EFFECT & AOS ANIMATIONS — vendor local (sin CDN externo) #}
     <script src="{% static 'landing/js/vendor/typed.min.js' %}"></script>
     <script src="{% static 'landing/js/vendor/aos.min.js' %}"></script>
-    <script>
+    <script >
         AOS.init({ duration: 800, easing: 'ease-in-out', once: true, mirror: false });
         document.addEventListener('DOMContentLoaded', function () {
             if (document.getElementById('typed-roles')) {

@@ -297,4 +297,55 @@ class Command(BaseCommand):
             except Exception:
                 pass
 
+        # ANALYTICS step: Update trending data
+        try:
+            self.stdout.write('Actualizando datos de analítica...')
+            call_command('update_analytics')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Error actualizando analytics: {e}"))
+            # No abortamos, es no-crítico
+
+        # Final check: verify critical tables exist (debugging for production issues)
+        self._check_critical_tables()
+
         self.stdout.write(self.style.SUCCESS('setup_db finalizado.'))
+
+    def _check_critical_tables(self):
+        """Verify that critical database tables exist."""
+        critical_tables = [
+            'analytics_pageview',
+            'analytics_sessiontracker',
+            'landing_menuitem',
+            'auth_user',
+        ]
+
+        with connection.cursor() as cursor:
+            try:
+                # Query depends on DB backend
+                if connection.vendor == 'sqlite':
+                    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+                elif connection.vendor == 'postgresql':
+                    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+                else:
+                    # For other DBs, skip the check
+                    return
+
+                existing_tables = {row[0] for row in cursor.fetchall()}
+            except Exception as e:
+                self.stdout.write(self.style.WARNING(f"Could not verify tables: {e}"))
+                return
+
+        self.stdout.write('\n📊 Database Tables Status:')
+        missing = []
+        for table in critical_tables:
+            if table in existing_tables:
+                self.stdout.write(self.style.SUCCESS(f'  ✓ {table}'))
+            else:
+                self.stdout.write(self.style.ERROR(f'  ✗ {table}'))
+                missing.append(table)
+
+        if missing:
+            self.stdout.write(self.style.ERROR(f'\n⚠️  CRITICAL: Missing tables: {missing}'))
+            self.stdout.write(self.style.WARNING('This indicates migrations were not applied. Run: python manage.py migrate'))
+        else:
+            self.stdout.write(self.style.SUCCESS('\n✅ All critical tables exist.'))

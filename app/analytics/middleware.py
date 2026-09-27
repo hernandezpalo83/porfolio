@@ -119,8 +119,10 @@ class AnalyticsTrackingMiddleware(MiddlewareMixin):
                 session.is_bounce = (session.page_count == 1)
                 session.save(update_fields=['last_page', 'page_count', 'is_bounce', 'updated_at'])
 
-            # Enviar batch a Celery si alcanzamos el threshold
-            if len(request._pageviews_batch) >= BATCH_SIZE_THRESHOLD:
+            # Enviar batch a Celery (siempre al final del request, no esperar al threshold)
+            # El batching es una optimización cuando hay muchos requests simultáneos,
+            # pero no podemos perder datos esperando a que se llene el buffer
+            if request._pageviews_batch:
                 self._flush_batch(request._pageviews_batch)
                 request._pageviews_batch = []
 

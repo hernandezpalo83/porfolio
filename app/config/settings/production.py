@@ -5,17 +5,26 @@ Used in production (Render, AWS, etc). Strict security, DEBUG=False.
 """
 
 from .base import *
-import sentry_sdk
 
 # --- SENTRY (error monitoring) ---
-_sentry_dsn = os.getenv('SENTRY_DSN', '')
-if _sentry_dsn:
-    sentry_sdk.init(
-        dsn=_sentry_dsn,
-        traces_sample_rate=0.1,
-        environment='production',
-        send_default_pii=False,
-    )
+# NOTE: sentry-sdk[django]>=2.0 is in requirements.txt and MUST be installed
+# If missing, it indicates a deployment issue (pip install not running properly)
+try:
+    import sentry_sdk
+    _sentry_dsn = os.getenv('SENTRY_DSN', '')
+    if _sentry_dsn:
+        sentry_sdk.init(
+            dsn=_sentry_dsn,
+            traces_sample_rate=0.1,
+            environment='production',
+            send_default_pii=False,
+        )
+except ImportError as e:
+    # Fallback: If sentry-sdk is missing, continue but log warning
+    # This should NOT happen in production if pip install is working
+    import sys
+    print(f"WARNING: sentry-sdk not installed. Check requirements.txt installation.", file=sys.stderr)
+    pass
 
 DEBUG = False
 
@@ -60,6 +69,11 @@ LOGGING = {
         },
     },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+            'level': 'ERROR',  # Only log errors and above to console (visible in Render)
+        },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'logs', 'django_production.log'),
@@ -70,7 +84,7 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['file'],
+        'handlers': ['console', 'file'],
         'level': 'INFO',
     },
 }
