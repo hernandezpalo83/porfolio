@@ -7,7 +7,7 @@ class StaticViewSitemap(Sitemap):
 
     def items(self):
         # Solo páginas públicas con contenido real. Login excluido.
-        return ['landing:index', 'blog:post_list']
+        return ['landing:index', 'blog:post_list', 'wiki:category_list']
 
     def location(self, item):
         return reverse(item)
@@ -16,6 +16,7 @@ class StaticViewSitemap(Sitemap):
         priorities = {
             'landing:index': 0.9,
             'blog:post_list': 0.7,
+            'wiki:category_list': 0.7,
         }
         return priorities.get(item, 0.5)
 
@@ -23,5 +24,6 @@ class StaticViewSitemap(Sitemap):
         freqs = {
             'landing:index': 'weekly',
             'blog:post_list': 'daily',
+            'wiki:category_list': 'weekly',
         }
         return freqs.get(item, 'monthly')
