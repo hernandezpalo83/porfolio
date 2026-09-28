@@ -32,6 +32,7 @@ def render_markdown(text):
             ),
             TableExtension(),
             TocExtension(
+                baselevel=2,
                 permalink=True,
                 permalink_class='headerlink',
                 permalink_title='Link to this section'

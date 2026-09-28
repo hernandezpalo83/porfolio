@@ -1,5 +1,23 @@
 {% load static %}
 <style>
+    /* --- FONTS: self-hosted woff2 only. Legacy family names used across the
+       CSS (poppins-bold, lora-regular…) are aliases of the same files, so each
+       file downloads once. --- */
+    @font-face { font-family: 'Poppins'; src: url('{% static "landing/fonts/poppins/poppins-regular-webfont.woff2" %}') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'Poppins'; src: url('{% static "landing/fonts/poppins/poppins-medium-webfont.woff2" %}') format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'Poppins'; src: url('{% static "landing/fonts/poppins/poppins-semibold-webfont.woff2" %}') format('woff2'); font-weight: 600; font-display: swap; }
+    @font-face { font-family: 'Poppins'; src: url('{% static "landing/fonts/poppins/poppins-bold-webfont.woff2" %}') format('woff2'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'Lora'; src: url('{% static "landing/fonts/lora/lora-regular-webfont.woff2" %}') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Lora'; src: url('{% static "landing/fonts/lora/lora-italic-webfont.woff2" %}') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Lora'; src: url('{% static "landing/fonts/lora/lora-bold-webfont.woff2" %}') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'poppins-regular'; src: url('{% static "landing/fonts/poppins/poppins-regular-webfont.woff2" %}') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'poppins-medium'; src: url('{% static "landing/fonts/poppins/poppins-medium-webfont.woff2" %}') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'poppins-semibold'; src: url('{% static "landing/fonts/poppins/poppins-semibold-webfont.woff2" %}') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'poppins-bold'; src: url('{% static "landing/fonts/poppins/poppins-bold-webfont.woff2" %}') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'lora-regular'; src: url('{% static "landing/fonts/lora/lora-regular-webfont.woff2" %}') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'lora-italic'; src: url('{% static "landing/fonts/lora/lora-italic-webfont.woff2" %}') format('woff2'); font-display: swap; }
+    @font-face { font-family: 'lora-bold'; src: url('{% static "landing/fonts/lora/lora-bold-webfont.woff2" %}') format('woff2'); font-display: swap; }
+
     /* --- 0. CSS CUSTOM PROPERTIES FOR DARK/LIGHT MODE --- */
     :root {
         /* Light Mode (default) */
@@ -42,16 +60,25 @@
     .theme-switch {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        margin-left: 5px;
-        padding: 0 15px 0 20px;
-        height: 32px;
+        gap: 6px;
+        height: 44px;
+        padding: 0 .6rem;
         background: none;
         border: 0;
-        border-left: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: .8rem;
         color: #FFFFFF;
         cursor: pointer;
         font: inherit;
+    }
+
+    @media (min-width: 600px) {
+        .theme-switch {
+            margin: 0 .4rem;
+            padding: 0 1.2rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0;
+        }
     }
 
     .theme-switch-icon {
@@ -114,7 +141,7 @@
     }
 
     :root[data-theme="dark"] #about h1, :root[data-theme="dark"] #about h2, :root[data-theme="dark"] #about h3,
-    :root[data-theme="dark"] #about h4, :root[data-theme="dark"] #resume h1, :root[data-theme="dark"] #portfolio h1,
+    :root[data-theme="dark"] #about h4, :root[data-theme="dark"] #resume h2, :root[data-theme="dark"] #portfolio .section-heading,
     :root[data-theme="dark"] #portfolio h2, :root[data-theme="dark"] #portfolio h3,
     :root[data-theme="dark"] #blog-preview .section-title, :root[data-theme="dark"] #about p.lead {
         color: var(--text-primary);
@@ -126,7 +153,7 @@
     }
 
     /* #CC0052 text drops to ~3.4:1 on dark surfaces; use the dark accent (#FF1493) */
-    :root[data-theme="dark"] .section-intro h5,
+    :root[data-theme="dark"] .section-eyebrow,
     :root[data-theme="dark"] .card-meta,
     :root[data-theme="dark"] .project-card:hover .project-title,
     :root[data-theme="dark"] #blog-preview .section-subtitle,
@@ -134,6 +161,15 @@
     :root[data-theme="dark"] dt,
     :root[data-theme="dark"] .stats-tabs li a:hover {
         color: var(--accent-primary) !important;
+    }
+
+    /* #companies keeps its white background in both themes */
+    :root[data-theme="dark"] #companies .section-eyebrow {
+        color: #CC0052 !important;
+    }
+
+    #about .info-list a {
+        color: var(--accent-primary);
     }
 
     :root[data-theme="dark"] .project-card,
@@ -348,123 +384,277 @@
         }
     }
 
-    /* --- 3. HEADER STYLES --- */
-    header {
+    /* --- 3. HEADER (mobile-first) --- */
+    html,
+    body {
+        overflow-x: hidden;
+        overflow-x: clip;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 64px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .skip-link {
+        position: absolute;
+        left: 1rem;
+        top: -10rem;
+        z-index: 2000;
+        padding: 1.2rem 1.6rem;
+        background: #CC0052;
+        color: #FFFFFF;
+        font-size: 1.5rem;
+        border-radius: .6rem;
+    }
+
+    .skip-link:focus {
+        top: 1rem;
+    }
+
+    .icon {
+        width: 1em;
+        height: 1em;
+        flex-shrink: 0;
+        vertical-align: -0.125em;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    body {
+        padding-top: 64px;
+    }
+
+    .site-header {
         position: fixed;
-        width: 100%;
-        min-height: 66px;
-        z-index: 600;
-    }
-
-    header .row {
-        position: relative;
-        min-height: 66px;
-    }
-
-    header .top-bar {
-        display: block;
-        background: #000000;
-        min-width: 220px;
-        min-height: 66px;
-        position: relative;
-        left: 0;
         top: 0;
-        width: 100vw;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: #0C0C0C;
     }
 
-    header .logo {
-        float: left;
-        margin-left: 20px;
-        margin-right: 50px;
-        margin-top: 25px;
-        position: relative;
+    .site-header-bar {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        height: 64px;
+        padding: 0 1.2rem;
     }
 
-    header .logo a {
-        display: block;
-        margin: 0;
-        padding: 0;
-        border: none;
-        font: 0/0 a;
-        text-shadow: none;
-        color: transparent;
-        width: 92px;
-        height: 15px;
-        background-size: 92px 15px;
+    .site-logo {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        margin-right: auto;
+        padding: 0 .4rem;
+        font-family: 'poppins-bold', sans-serif;
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        color: #FF1493;
+        white-space: nowrap;
+    }
+
+    .site-header-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        color: #FFFFFF;
+        font-size: 2rem;
+        border-radius: .8rem;
+        transition: color .2s ease;
+    }
+
+    .header-icon:hover,
+    .header-icon:focus-visible {
+        color: #FF1493;
+    }
+
+    .header-social {
+        display: none;
     }
 
     .menu-toggle {
-        float: left;
-        width: 40px;
-        height: 40px;
-        margin-left: 20px;
-        margin-top: 13px;
-        display: block;
         position: relative;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .menu-toggle span,
+    .menu-toggle span::before,
+    .menu-toggle span::after {
+        position: absolute;
+        left: 10px;
+        width: 24px;
+        height: 3px;
+        border-radius: 2px;
+        background: #FF1493;
+        transition: transform .2s ease, top .2s ease, background-color .2s ease;
     }
 
     .menu-toggle span {
-        display: block;
-        background-color: #ff0077;
-        height: 2px;
-        width: 24px;
-        margin-top: -1px;
-        position: absolute;
-        left: 8px;
         top: 50%;
-        right: auto;
-        bottom: auto;
-        transition: all 0.5s;
+        margin-top: -1.5px;
     }
 
     .menu-toggle span::before,
     .menu-toggle span::after {
-        width: 100%;
-        height: 100%;
-        background-color: inherit;
-        content: " ";
-        position: absolute;
+        content: "";
         left: 0;
-        transition: all 0.5s;
     }
 
-    .menu-toggle span::before {
-        top: -9px;
+    .menu-toggle span::before { top: -8px; }
+    .menu-toggle span::after { top: 8px; }
+
+    .menu-toggle[aria-expanded="true"] span { background: transparent; }
+    .menu-toggle[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+    .menu-toggle[aria-expanded="true"] span::after { top: 0; transform: rotate(-45deg); }
+
+    .main-nav {
+        display: none;
+        background: #0C0C0C;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
     }
 
-    .menu-toggle span::after {
-        bottom: -9px;
+    .main-nav.is-open {
+        display: block;
     }
 
-    .topbar-right {
-        justify-content: flex-end;
+    .main-navigation {
+        margin: 0;
+        padding: .8rem 1.6rem 2.4rem;
+        list-style: none;
+    }
+
+    .main-navigation li {
+        display: block;
+    }
+
+    .main-navigation a {
         display: flex;
         align-items: center;
-        margin-left: auto;
-        position: absolute;
-        right: 20px;
-        top: 0;
-        height: 66px;
+        gap: 1.2rem;
+        min-height: 48px;
+        padding: 0 .8rem;
+        color: #FFFFFF;
+        font-family: 'poppins-medium', sans-serif;
+        font-size: 1.6rem;
+        border-radius: .8rem;
     }
 
-    .topbar-right .social-icons {
-        display: flex;
-        list-style: none;
-        margin: 0;
+    .main-navigation a:hover,
+    .main-navigation a:focus-visible,
+    .main-navigation li.current > a {
+        color: #FF1493;
+    }
+
+    .main-navigation .icon {
+        font-size: 1.8rem;
+    }
+
+    .nav-social-mobile {
+        display: flex !important;
+        gap: .4rem;
+        margin-top: 1.2rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-social-mobile a {
+        justify-content: center;
+        width: 48px;
         padding: 0;
     }
 
-    .topbar-right .social-icons li {
-        margin-left: 10px;
+    @media (min-width: 600px) {
+        .header-social {
+            display: inline-flex;
+        }
+
+        .nav-social-mobile {
+            display: none !important;
+        }
     }
 
-    .topbar-right .social-icons li a {
-        color: #fff !important;
-        font-size: 1.3em;
-        margin-right: 5px;
+    @media (min-width: 1024px) {
+        .site-header-bar {
+            height: 80px;
+            padding: 0 3.2rem;
+        }
+
+        html {
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            padding-top: 80px;
+        }
+
+        .site-logo {
+            font-size: 2.4rem;
+        }
+
+        .main-nav {
+            max-height: calc(100vh - 80px);
+        }
+
+        .main-navigation {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    }
+
+    /* Content reveal (replaces AOS). Content stays visible without JS. */
+    /* Hidden only once main.js has taken over (html.reveal-ready), so a stale or
+       failed script never leaves sections blank. */
+    .reveal-ready [data-reveal] {
+        transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .reveal-ready [data-reveal]:not(.is-revealed) {
+        opacity: 0;
+        transform: translateY(1.6rem);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal-ready [data-reveal]:not(.is-revealed) {
+            opacity: 1;
+            transform: none;
+            transition: none;
+        }
     }
 
     /* --- 4. INTRO SECTON STYLES --- */
@@ -541,7 +731,7 @@
         text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     }
 
-    .intro-content h5 {
+    .intro-content .intro-eyebrow {
         color: #FF4D94;
         font-family: "poppins-bold", sans-serif;
         font-size: 2.3rem;
@@ -624,7 +814,7 @@
             font-size: 5.2rem;
         }
 
-        .intro-content h5 {
+        .intro-content .intro-eyebrow {
             font-size: 1.8rem;
         }
     }
@@ -638,7 +828,7 @@
             font-size: 4.6rem;
         }
 
-        .intro-content h5 {
+        .intro-content .intro-eyebrow {
             font-size: 1.5rem;
         }
 

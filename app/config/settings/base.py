@@ -112,17 +112,20 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
             "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap)
             "fonts.googleapis.com",
             "cdn.jsdelivr.net",         # Bootstrap Icons CSS
+            "cdnjs.cloudflare.com",     # Font Awesome 6 (wiki category icons)
             "unpkg.com",                # Tabulator CSS
         ],
         "font-src": [
             "'self'",
             "fonts.gstatic.com",
             "cdn.jsdelivr.net",         # Bootstrap Icons fonts
+            "cdnjs.cloudflare.com",     # Font Awesome 6 webfonts
         ],
         "img-src": [
             "'self'",
             "data:",
             "raw.githubusercontent.com",  # CDN imágenes
+            "cdn.jsdelivr.net",         # CDN imágenes (BRAND_ASSETS_URL)
             "*.supabase.co",            # por si hay media en Supabase
         ],
         "connect-src": ["'self'"],
@@ -224,7 +227,11 @@ CKEDITOR_5_CONFIGS = {
 }
 
 # Assets y Captcha
-BRAND_ASSETS_URL = "https://raw.githubusercontent.com/hernandezpalo83/cdn/main"
+# jsDelivr mirrors the GitHub repo with proper CDN caching (raw.githubusercontent caches 5 min)
+BRAND_ASSETS_URL = "https://cdn.jsdelivr.net/gh/hernandezpalo83/cdn@main"
+
+# Absolute public origin for canonical/OG URLs (request.scheme is "http" behind Render's proxy)
+SITE_URL = os.getenv('SITE_URL', 'https://hernandezpalo.es').rstrip('/')
 PERSONAL_BRAND = {
     "PROFILE_PICTURE": f"{BRAND_ASSETS_URL}/profile/Foto_perfil2.webp",
     "AVATAR": f"{BRAND_ASSETS_URL}/profile/avatar.png",

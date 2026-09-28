@@ -1,33 +1,69 @@
-{% load static %}
+{% load static ui %}
+<style>
+    .intro-content h1 .intro-role {
+        display: block;
+        min-height: 1.3em;
+        margin-top: .8rem;
+        font-size: .45em;
+        line-height: 1.3;
+        opacity: .9;
+    }
+
+    .intro-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.2rem;
+        max-width: 32rem;
+        margin: 3rem auto 0;
+    }
+
+    .intro-buttons .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin: 0;
+    }
+
+    .intro-content .intro-buttons .button-primary {
+        background-color: #CC0052;
+        border-color: #CC0052;
+        color: #FFFFFF;
+    }
+
+    .intro-content .intro-buttons .button-primary:hover,
+    .intro-content .intro-buttons .button-primary:focus-visible {
+        background-color: #A30042;
+        border-color: #A30042;
+    }
+
+    @media (min-width: 600px) {
+        .intro-buttons {
+            flex-direction: row;
+            justify-content: center;
+            max-width: none;
+        }
+    }
+</style>
 <section id="intro">
     <div class="intro-overlay"></div>
     <div class="intro-content">
         <div class="row">
             <div class="col-twelve">
-                <h5 data-aos="fade-down" data-aos-delay="100">Hello, World.</h5>
-                <h1 data-aos="fade-up" data-aos-delay="300">I'm {{ info.name }} <br>
-                    <small style="font-size: 0.5em; vertical-align: middle; opacity: 0.9;">
-                        <span id="typed-roles"></span>
-                    </small>
+                <p class="intro-eyebrow">Hello, World.</p>
+                <h1>I'm {{ info.name }}
+                    <span class="intro-role"><span id="typed-roles">Technical Product Manager</span></span>
                 </h1>
-                <h2 class="intro-position" style="min-height: 2em;" data-aos="fade-up" data-aos-delay="500">
-                    <span>{{info.resumen}}</span>
-                </h2>
+                {% if info.resumen %}
+                <p class="intro-position"><span>{{ info.resumen }}</span></p>
+                {% endif %}
 
-                <div class="intro-buttons" data-aos="fade-up" data-aos-delay="700"
-                    style="margin-top: 3rem; display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-                    <a class="button stroke smoothscroll" href="#about" title="Saber más">Más sobre mí</a>
-
+                <div class="intro-buttons">
+                    <a class="button stroke" href="#about">Más sobre mí</a>
                     <a href="{% static 'cv/CV_Javier_Hernandez.pdf' %}" class="button button-primary"
-                        style="background-color: #CC0052; border-color: #CC0052; color: #fff; display: inline-flex; align-items: center; gap: 10px;"
                         download="CV_Javier_Hernandez_Martin.pdf">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        Descargar CV
+                        {% icon "download" %} Descargar CV <span class="sr-only">(PDF)</span>
                     </a>
                 </div>
             </div>

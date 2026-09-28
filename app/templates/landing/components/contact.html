@@ -13,23 +13,71 @@
         border-left-color: #FF6B6B;
     }
 
+    #contact .form-field {
+        margin-bottom: 1.6rem;
+    }
+
+    #contact .contact-label {
+        display: block;
+        margin-bottom: .6rem;
+        font-family: 'poppins-medium', sans-serif;
+        font-size: 1.3rem;
+        letter-spacing: .05rem;
+        color: #D0D0D0;
+    }
+
     .contact-field-error {
         display: block;
         margin-top: .4rem;
         color: #FF8FA3;
         font-size: 1.3rem;
     }
+
+    #contact .contact-submit {
+        width: 100%;
+        min-height: 5.6rem;
+        margin-top: 1.2rem;
+        background: #CC0052;
+        color: #FFFFFF;
+        border: 0;
+        font-family: 'poppins-bold', sans-serif;
+        font-size: 1.5rem;
+        letter-spacing: .1rem;
+        cursor: pointer;
+    }
+
+    #contact .contact-submit:hover,
+    #contact .contact-submit:focus-visible {
+        background: #A30042;
+    }
+
+    #contact .contact-submit:disabled {
+        opacity: .7;
+        cursor: progress;
+    }
+
+    #contact .contact-legal {
+        margin: 1.2rem 0 0;
+        font-size: 1.2rem;
+        line-height: 1.5;
+        color: #A0A0A0;
+    }
+
+    #contact .contact-legal a {
+        color: #D0D0D0;
+        text-decoration: underline;
+    }
 </style>
 
 <section id="contact">
-    <div class="row section-intro">
+    <div class="row section-intro" data-reveal>
         <div class="col-twelve">
-            <h5 data-aos="fade-up">Contacto</h5>
-            <h1 data-aos="fade-up" data-aos-delay="200">¿Hablamos?</h1>
+            <p class="section-eyebrow">Contacto</p>
+            <h2 class="section-heading">¿Hablamos?</h2>
         </div>
     </div>
     <div class="row contact-form">
-        <div class="col-twelve" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-twelve">
             {% if messages %}
             <div class="contact-messages" role="status">
                 {% for message in messages %}
@@ -37,17 +85,24 @@
                 {% endfor %}
             </div>
             {% endif %}
-            <form name="contactForm" id="contactForm" method="post" action="{% url 'landing:index' %}#contact">
+            <form name="contactForm" id="contactForm" method="post" action="{% url 'landing:index' %}#contact" novalidate>
                 {% csrf_token %}
                 {{ form.website }}
                 <fieldset>
-                    <div class="form-field">{{ form.nombre }}{% for e in form.nombre.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
-                    <div class="form-field">{{ form.email }}{% for e in form.email.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
-                    <div class="form-field">{{ form.asunto }}{% for e in form.asunto.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
-                    <div class="form-field">{{ form.mensaje }}{% for e in form.mensaje.errors %}<small class="contact-field-error">{{ e }}</small>{% endfor %}</div>
-                    <div style="margin: 20px 0;">{{ form.captcha }}</div>
-                    <button class="submitform" type="submit"
-                        style="background: #CC0052; color: white; width: 100%; height: 60px; font-weight: bold; border: none; cursor: pointer;">ENVIAR</button>
+                    <legend class="sr-only">Formulario de contacto</legend>
+                    {% for field in form %}{% if field.name != 'website' and field.name != 'captcha' %}
+                    <div class="form-field">
+                        <label class="contact-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for e in field.errors %}<small class="contact-field-error" id="{{ field.id_for_label }}-error">{{ e }}</small>{% endfor %}
+                    </div>
+                    {% endif %}{% endfor %}
+                    {{ form.captcha }}
+                    <button class="contact-submit" type="submit">Enviar mensaje</button>
+                    <p class="contact-legal">Protegido por reCAPTCHA de Google:
+                        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacidad</a> y
+                        <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Condiciones</a>.
+                    </p>
                 </fieldset>
             </form>
         </div>

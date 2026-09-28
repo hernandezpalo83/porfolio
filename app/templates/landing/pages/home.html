@@ -1,20 +1,44 @@
 {% extends "landing/layouts/base.html" %}
 {% load static %}
 
+{% block preload %}
+<link rel="preload" as="image" href="{% static 'landing/img/intro-bg.webp' %}" fetchpriority="high">
+{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">{{ structured_data|safe }}</script>
+{% endblock %}
+
 {% block content %}
     {% include "landing/components/intro.html" %}
-    
+
     {% include "landing/components/about.html" %}
-    
+
     {% include "landing/components/resume.html" %}
-    
+
     {% include "landing/components/company_carousel.html" %}
 
     {% include "landing/components/portfolio.html" %}
 
     {% include "landing/components/metrics.html" %}
-    
+
     {% include "landing/components/post.html" %}
 
     {% include "landing/components/contact.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'landing/js/vendor/typed.min.js' %}" defer></script>
+<script src="{% static 'landing/js/metrics.js' %}" defer></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('typed-roles');
+        if (!el || !window.Typed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        el.textContent = '';
+        new Typed(el, {
+            strings: ['Technical Product Manager', 'Senior Software Engineer', 'Agile & Data-Driven Leader'],
+            typeSpeed: 50, backSpeed: 30, backDelay: 2000, loop: true
+        });
+    });
+</script>
 {% endblock %}

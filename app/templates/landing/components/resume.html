@@ -1,3 +1,4 @@
+{% load ui %}
 {% load template_filters %}
 
 <style>
@@ -292,11 +293,11 @@
     /* ── Education: same flip cards, grid instead of timeline.
        The section is a fixed dark band in both themes, so colours are
        set for a dark surface (all pairs ≥ 4.5:1). */
-    #education .section-intro h1 {
+    #education .section-intro .section-heading {
         color: #FFFFFF;
     }
 
-    #education .section-intro h5 {
+    #education .section-intro .section-eyebrow {
         color: #FF1493 !important;
     }
 
@@ -462,8 +463,8 @@
     <div class="row resume-timeline">
         <div class="col-twelve resume-header">
             <div class="section-intro">
-                <h5 data-aos="fade-up">Trayectoria</h5>
-                <h1 data-aos="fade-up" data-aos-delay="200">Experiencia y Hitos Profesionales</h1>
+                <p class="section-eyebrow">Trayectoria</p>
+                <h2 class="section-heading">Experiencia y Hitos Profesionales</h2>
             </div>
         </div>
 
@@ -485,7 +486,7 @@
                                 <h3 class="xp-role">{{ experience.position }}</h3>
                                 <p class="xp-company">{{ experience.company }}</p>
                                 <div class="xp-hint">
-                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    {% icon "flip" %}
                                     <span>Ver funciones y logros</span>
                                 </div>
                             </div>
@@ -508,8 +509,8 @@
     <div class="row">
         <div class="col-twelve">
             <div class="section-intro">
-                <h5 data-aos="fade-up">Formación</h5>
-                <h1 data-aos="fade-up" data-aos-delay="200">Educación y Certificaciones</h1>
+                <p class="section-eyebrow">Formación</p>
+                <h2 class="section-heading">Educación y Certificaciones</h2>
             </div>
         </div>
 
@@ -521,12 +522,12 @@
                          aria-label="{{ edu.degree }} en {{ edu.institution }}: ver detalles">
                         <div class="xp-inner">
                             <div class="xp-face xp-front">
-                                <i class="fa fa-graduation-cap edu-icon" aria-hidden="true"></i>
+                                {% icon "award" "edu-icon" %}
                                 <p class="edu-dates">{{ edu.start_date|date:"Y" }} – {% if edu.end_date %}{{ edu.end_date|date:"Y" }}{% else %}Actualidad{% endif %}</p>
                                 <h3 class="xp-role">{{ edu.degree }}</h3>
                                 <p class="xp-company">{{ edu.institution }}</p>
                                 <div class="xp-hint">
-                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    {% icon "flip" %}
                                     <span>Ver contenido del programa</span>
                                 </div>
                             </div>
@@ -536,7 +537,7 @@
                                 <div class="xp-body">{{ edu.resumen|sanitize_html }}</div>
                                 {% if edu.link %}
                                 <a href="{{ edu.link }}" target="_blank" rel="noopener noreferrer" class="edu-credential">
-                                    Ver credencial <i class="fa fa-external-link" aria-hidden="true"></i>
+                                    Ver credencial {% icon "external" %}
                                 </a>
                                 {% endif %}
                             </div>

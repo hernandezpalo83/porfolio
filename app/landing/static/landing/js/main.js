@@ -1,99 +1,77 @@
 /**
- * main.js - HernandezPalo Portfolio
- * Refactored to Vanilla JS (No jQuery) - Performance Optimized
+ * main.js - public area (landing, blog, wiki). Vanilla JS, loaded with defer.
  */
-
-document.addEventListener('DOMContentLoaded', () => {
+(function () {
     'use strict';
 
-    // --- 2. Navigation Menu ---
-    const toggleButton = document.querySelector('.menu-toggle');
-    const nav = document.querySelector('.main-navigation');
-    const navLinks = document.querySelectorAll('.main-navigation li a');
+    // --- Navigation menu ---
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.getElementById('main-nav-wrap');
 
-    if (toggleButton && nav) {
-        toggleButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleButton.classList.toggle('is-clicked');
+    function setMenu(open) {
+        if (!toggle || !nav) return;
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+        nav.classList.toggle('is-open', open);
+    }
 
-            if (nav.style.display === 'block') {
-                nav.style.display = 'none';
-            } else {
-                nav.style.display = 'block';
-            }
+    if (toggle && nav) {
+        toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
+        nav.addEventListener('click', (e) => {
+            if (e.target.closest('a')) setMenu(false);
         });
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.getComputedStyle(toggleButton).display !== 'none') {
-                    toggleButton.classList.remove('is-clicked');
-                    nav.style.display = 'none';
-                }
-            });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+                setMenu(false);
+                toggle.focus();
+            }
         });
     }
 
-    // --- 3. Highlight Current Section (ScrollSpy) ---
-    const sections = document.querySelectorAll('section');
-    const navItems = document.querySelectorAll('#main-nav-wrap li a');
+    const hasIO = 'IntersectionObserver' in window;
 
-    const observerOptions = {
-        root: null,
-        rootMargin: '-25% 0px -25% 0px', // Offset match
-        threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                const activeLink = document.querySelector(`#main-nav-wrap a[href="#${id}"]`);
-
-                navItems.forEach(item => item.parentElement.classList.remove('current'));
-                if (activeLink) {
-                    activeLink.parentElement.classList.add('current');
-                }
-            }
-        });
-    }, observerOptions);
-
-    sections.forEach(section => observer.observe(section));
-
-    // --- 4. Smooth Scrolling ---
-    const smoothScrollLinks = document.querySelectorAll('.smoothscroll');
-
-    smoothScrollLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+    // --- ScrollSpy (only in-page anchors) ---
+    const spyLinks = nav ? nav.querySelectorAll('a[href^="#"]') : [];
+    if (hasIO && spyLinks.length) {
+        const spy = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                spyLinks.forEach((a) => {
+                    a.parentElement.classList.toggle('current', a.getAttribute('href') === '#' + entry.target.id);
                 });
-                history.pushState(null, null, targetId);
-            }
-        });
-    });
+            });
+        }, { rootMargin: '-25% 0px -60% 0px' });
+        document.querySelectorAll('main section[id]').forEach((s) => spy.observe(s));
+    }
 
-    // --- 5. Back to Top ---
-    const goTopBtn = document.getElementById('go-top');
-    const pxShow = 300;
+    // --- Content reveal (replaces AOS) ---
+    const reveal = document.querySelectorAll('[data-reveal]');
+    if (hasIO && reveal.length) {
+        document.documentElement.classList.add('reveal-ready');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -8% 0px' });
+        reveal.forEach((el) => io.observe(el));
+    } else {
+        reveal.forEach((el) => el.classList.add('is-revealed'));
+    }
 
-    window.addEventListener('scroll', () => {
-        if (!goTopBtn) return;
-
-        if (window.scrollY >= pxShow) {
-            goTopBtn.style.display = 'block';
-            // Simple fade in effect via CSS transition is recommended, but basic display works
-            goTopBtn.style.opacity = '1';
-        } else {
-            goTopBtn.style.opacity = '0';
-            setTimeout(() => {
-                if (window.scrollY < pxShow) goTopBtn.style.display = 'none';
-            }, 400);
-        }
-    }, { passive: true });
-});
+    // --- Back to top ---
+    const goTop = document.getElementById('go-top');
+    if (goTop) {
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                goTop.classList.toggle('is-visible', window.scrollY > 300);
+                ticking = false;
+            });
+        }, { passive: true });
+    }
+})();

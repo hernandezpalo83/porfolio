@@ -1,40 +1,60 @@
 {% extends "documentum/base_docs.html" %}
+{% load ui %}
+
+{% block title %}{{ category.name }} · Documentum | Javier Hernández Martin{% endblock %}
+{% block meta_description %}{{ category.description|default:category.name|truncatechars:158 }}{% endblock %}
+{% block og_title %}{{ category.name }} · Documentum{% endblock %}
+{% block og_description %}{{ category.description|default:category.name|truncatechars:158 }}{% endblock %}
+{% block twitter_title %}{{ category.name }} · Documentum{% endblock %}
+{% block twitter_description %}{{ category.description|default:category.name|truncatechars:158 }}{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
+{% endblock %}
+
+{% block extra_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Documentum", "item": "{{ SITE_URL }}{% url 'wiki:category_list' %}"},
+    {"@type": "ListItem", "position": 2, "name": {{ category.name|json_str }}, "item": "{{ SITE_URL }}{{ request.path }}"}
+  ]
+}
+</script>
+{% endblock %}
 
 {% block docs_content %}
-<div class="docs-breadcrumbs">
-    <a href="{% url 'wiki:category_list' %}">Docs</a> / <span>{{ category.name }}</span>
-</div>
+<nav class="docs-breadcrumbs" aria-label="Migas de pan">
+    <ol>
+        <li><a href="{% url 'wiki:category_list' %}">Docs</a></li>
+        <li aria-current="page">{{ category.name }}</li>
+    </ol>
+</nav>
 
-<div class="docs-header">
-    <div style="font-size: 4rem; color: #CC0052; margin-bottom: 1rem;">
-        <i class="fa {{ category.icon }}"></i>
-    </div>
+<header class="docs-header">
+    <span class="docs-cat-icon"><i class="fa-solid {{ category.icon }}" aria-hidden="true"></i></span>
     <h1>{{ category.name }}</h1>
-    <p style="font-size: 1.8rem; color: #666;">{{ category.description }}</p>
-</div>
+    {% if category.description %}<p class="docs-lead">{{ category.description }}</p>{% endif %}
+</header>
 
-<div class="docs-list" style="display: flex; flex-direction: column; gap: 2rem;">
+<ul class="docs-list">
     {% for doc in documents %}
-    <div style="padding: 2.5rem; background: #fff; border-bottom: 1px solid #eee;">
-        <h2 style="font-size: 2.2rem; margin-bottom: 1rem;">
-            <a href="{{ wiki.get_absolute_url }}" style="text-decoration: none; color: #111; transition: color 0.2s;"
-                onmouseover="this.style.color='#CC0052'" onmouseout="this.style.color='#111'">
-                {{ doc.title }}
-            </a>
-        </h2>
-        <div class="docs-meta" style="margin-bottom: 1.5rem;">
-            <span><i class="fa fa-clock"></i> {{ doc.reading_time }} min lectura</span>
-            <span><i class="fa fa-calendar-alt"></i> Act: {{ doc.updated_at|date:"d M Y" }}</span>
+    <li class="docs-list-item">
+        <h2><a href="{{ doc.get_absolute_url }}">{{ doc.title }}</a></h2>
+        <div class="docs-meta">
+            <span>{% icon "clock" %} {{ doc.reading_time }} min lectura</span>
+            <span>{% icon "calendar" %} Act: <time datetime="{{ doc.updated_at|date:'c' }}">{{ doc.updated_at|date:"d M Y" }}</time></span>
             {% if doc.stack_version %}
-            <span><i class="fa fa-code"></i> {{ doc.stack_version }}</span>
+            <span>{% icon "code" %} {{ doc.stack_version }}</span>
             {% endif %}
         </div>
-        <p style="color: #666; font-size: 1.5rem; line-height: 1.6;">{{ doc.meta_description }}</p>
-    </div>
+        {% if doc.meta_description %}<p>{{ doc.meta_description }}</p>{% endif %}
+    </li>
     {% empty %}
-    <div style="padding: 4rem; text-align: center; background: #f9f9f9; border-radius: 8px;">
-        <p style="font-size: 1.6rem; color: #999;">No hay documentos publicados en esta categoría todavía.</p>
-    </div>
+    <li class="docs-empty">No hay documentos publicados en esta categoría todavía.</li>
     {% endfor %}
-</div>
+</ul>
 {% endblock %}

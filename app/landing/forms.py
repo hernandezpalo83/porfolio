@@ -5,8 +5,13 @@ from django_recaptcha.fields import ReCaptchaField
 from typing import Any
 
 
+class LazyReCaptchaV3(ReCaptchaV3):
+    """reCAPTCHA v3 that downloads Google's script only when the form is near, focused or submitted."""
+    template_name = "landing/widgets/recaptcha_v3_lazy.html"
+
+
 class FormularioContacto(forms.ModelForm):
-    captcha: ReCaptchaField = ReCaptchaField(widget=ReCaptchaV3)
+    captcha: ReCaptchaField = ReCaptchaField(widget=LazyReCaptchaV3)
     # Campo honeypot: invisible para humanos, los bots lo rellenan
     website = forms.CharField(required=False, widget=forms.HiddenInput())
 
@@ -15,9 +20,9 @@ class FormularioContacto(forms.ModelForm):
         fields: list[str] = ['nombre', 'email', 'asunto', 'mensaje', 'captcha']
 
         widgets: dict[str, Any] = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu nombre'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Tu email'}),
-            'asunto': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Asunto'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu nombre', 'autocomplete': 'name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'tu@email.com', 'autocomplete': 'email'}),
+            'asunto': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Asunto', 'autocomplete': 'off'}),
             'mensaje': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Escribe tu mensaje...', 'rows': 4}),
         }
 

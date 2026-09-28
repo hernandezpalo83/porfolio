@@ -1,6 +1,8 @@
 {% extends "landing/layouts/base.html" %}
 {% load static %}
 
+{% block robots %}{% if query or current_year %}<meta name="robots" content="noindex, follow">{% endif %}{% endblock %}
+
 {% block title %}Blog | Javier Hernández Martin | TPM{% endblock %}
 {% block meta_description %}{{ meta_description }}{% endblock %}
 {% block twitter_title %}Blog | Javier Hernández Martin{% endblock %}
@@ -8,9 +10,11 @@
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'blog/css/blog_list.css' %}">
+<link rel="alternate" type="application/rss+xml" title="Blog de Javier Hernández Martin (RSS)" href="{% url 'blog:post_feed_rss' %}">
+<link rel="alternate" type="application/atom+xml" title="Blog de Javier Hernández Martin (Atom)" href="{% url 'blog:post_feed_atom' %}">
 {# SEO: paginación para crawlers #}
-{% if posts.has_previous %}<link rel="prev" href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}">{% endif %}
-{% if posts.has_next %}<link rel="next" href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}">{% endif %}
+{% if posts.has_previous %}<link rel="prev" href="?page={{ posts.previous_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if current_year %}&amp;year={{ current_year }}{% endif %}">{% endif %}
+{% if posts.has_next %}<link rel="next" href="?page={{ posts.next_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if current_year %}&amp;year={{ current_year }}{% endif %}">{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -19,7 +23,7 @@
     <section class="blog-hero">
         <div class="row text-center">
             <div class="col-twelve">
-                <h5 class="hero-sub">Insights & Artículos</h5>
+                <p class="hero-sub">Insights &amp; Artículos</p>
                 <h1 class="hero-title">
                     {% if query %} Resultados para: "{{ query }}"
                     {% elif category %} Categoría: {{ category.name }}
@@ -31,7 +35,7 @@
     </section>
 
     <section style="padding-bottom: 10rem;">
-        <div class="row">
+        <div class="row blog-layout">
             <div class="col-nine tab-full">
                 {% for post in posts %}
                 <article class="post-item">
@@ -69,7 +73,7 @@
                             {{ post.excerpt }}
                         </div>
 
-                        <a href="{{ post.get_absolute_url }}" class="read-more-link">Leer más →</a>
+                        <a href="{{ post.get_absolute_url }}" class="read-more-link">Leer más<span class="sr-only">: {{ post.title }}</span> →</a>
                     </div>
                 </article>
                 {% empty %}
@@ -80,24 +84,24 @@
                 {% endfor %}
 
                 {% if posts.has_other_pages %}
-                <nav class="pagination-nav">
+                <nav class="pagination-nav" aria-label="Paginación">
                     {% if posts.has_previous %}
-                    <a href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}"
-                        class="page-numbers prev">Prev</a>
+                    <a href="?page={{ posts.previous_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if current_year %}&amp;year={{ current_year }}{% endif %}"
+                        class="page-numbers prev" rel="prev">Anterior</a>
                     {% endif %}
 
                     {% for i in posts.paginator.page_range %}
                     {% if posts.number == i %}
-                    <span class="page-numbers current">{{ i }}</span>
+                    <span class="page-numbers current" aria-current="page">{{ i }}</span>
                     {% elif i > posts.number|add:'-3' and i < posts.number|add:'3' %} <a
-                        href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}"
+                        href="?page={{ i }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if current_year %}&amp;year={{ current_year }}{% endif %}"
                         class="page-numbers">{{ i }}</a>
                         {% endif %}
                         {% endfor %}
 
                         {% if posts.has_next %}
-                        <a href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_year %}&year={{ current_year }}{% endif %}"
-                            class="page-numbers next">Next</a>
+                        <a href="?page={{ posts.next_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if current_year %}&amp;year={{ current_year }}{% endif %}"
+                            class="page-numbers next" rel="next">Siguiente</a>
                         {% endif %}
                 </nav>
                 {% endif %}
@@ -105,16 +109,16 @@
 
             <aside class="col-three tab-full">
                 <div class="sidebar-widget">
-                    <h4>Buscar</h4>
-                    <form action="{% url 'blog:post_list' %}" method="get">
-                        <input type="text" name="q" placeholder="Ej: Django, Agile..." value="{{ query|default:'' }}"
+                    <h2 class="widget-title"><label for="blog-search">Buscar</label></h2>
+                    <form action="{% url 'blog:post_list' %}" method="get" role="search">
+                        <input id="blog-search" type="search" name="q" placeholder="Ej: Django, Agile..." value="{{ query|default:'' }}"
                             class="full-width">
                         <button type="submit" class="button full-width btn-primary">Buscar</button>
                     </form>
                 </div>
 
                 <div class="sidebar-widget">
-                    <h4>Categorías</h4>
+                    <h2 class="widget-title">Categorías</h2>
                     <ul class="widget-list">
                         <li><a href="{% url 'blog:post_list' %}"
                                 class="{% if not category %}active{% endif %}">Todas</a></li>
@@ -126,7 +130,7 @@
                 </div>
 
                 <div class="sidebar-widget">
-                    <h4>Archivo</h4>
+                    <h2 class="widget-title">Archivo</h2>
                     <ul class="widget-list">
                         {% for y in archive_years %}
                         <li><a href="?year={{ y }}"
@@ -136,27 +140,20 @@
                     </ul>
                 </div>
 
-                <div class="sidebar-widget" style="background: rgba(204,0,82,0.06); border: 1px solid rgba(204,0,82,0.2); border-radius: 6px; padding: 2rem;">
-                    <h4 style="color: #CC0052; margin-bottom: 0.8rem;">Newsletter</h4>
-                    <p style="font-size: 1.3rem; color: #888; margin-bottom: 1.4rem; line-height: 1.6;">
-                        Recibe los nuevos artículos directamente en tu correo.
-                    </p>
+                <div class="sidebar-widget newsletter-widget">
+                    <h2 class="widget-title">Newsletter</h2>
+                    <p class="newsletter-text">Recibe los nuevos artículos directamente en tu correo.</p>
                     <form action="{% url 'blog:subscribe' %}" method="post">
                         {% csrf_token %}
-                        <input type="email" name="email" placeholder="tu@email.com" required
-                            style="width:100%; padding: 0.8rem; border: 1px solid #333; background: #111; color: #fff; border-radius: 4px; font-size: 1.3rem; margin-bottom: 0.8rem;">
-                        <button type="submit" class="button full-width btn-primary"
-                            style="background: #CC0052; color: #fff; border-color: #CC0052; width: 100%;">
-                            Suscribirme
-                        </button>
+                        <label class="sr-only" for="newsletter-email">Tu email</label>
+                        <input id="newsletter-email" type="email" name="email" placeholder="tu@email.com" autocomplete="email" required>
+                        <button type="submit" class="button full-width btn-primary">Suscribirme</button>
                     </form>
-                    <p style="font-size: 1.1rem; color: #555; margin-top: 0.8rem; text-align: center;">
-                        Sin spam. Cancelación en cualquier momento.
-                    </p>
+                    <p class="newsletter-note">Sin spam. Cancelación en cualquier momento.</p>
                 </div>
 
                 <div class="sidebar-widget">
-                    <h4>Feed RSS</h4>
+                    <h2 class="widget-title">Feed RSS</h2>
                     <ul class="widget-list">
                         <li><a href="{% url 'blog:post_feed_rss' %}">RSS 2.0</a></li>
                         <li><a href="{% url 'blog:post_feed_atom' %}">Atom</a></li>

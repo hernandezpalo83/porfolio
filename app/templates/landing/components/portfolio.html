@@ -1,3 +1,4 @@
+{% load ui %}
 <style>
     /* ── VIS-004: Project Showcase Mejorado ─────────────────────────────
        Mejoras:
@@ -14,7 +15,7 @@
         align-items: center;
         gap: 5px;
         font-size: 1.0rem;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -68,7 +69,7 @@
 
     .project-tech-tag {
         font-size: 1.05rem;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         color: #555;
         background: #f5f5f5;
         border: 1px solid #e5e5e5;
@@ -190,14 +191,14 @@
 <section id="portfolio">
     <div class="row section-intro">
         <div class="col-twelve">
-            <h5 data-aos="fade-up">Portfolio</h5>
-            <h1 data-aos="fade-up" data-aos-delay="200">Casos de Éxito y Proyectos</h1>
+            <p class="section-eyebrow">Portfolio</p>
+            <h2 class="section-heading">Casos de Éxito y Proyectos</h2>
         </div>
     </div>
     <div class="portfolio-grid">
         {% for project in projects %}
         {% with tags=project.categoria|split:"," %}
-        <div class="project-card{% if forloop.first %} project-card--featured{% endif %}" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
+        <div class="project-card{% if forloop.first %} project-card--featured{% endif %}" data-reveal>
             <div class="project-image-wrapper">
                 {# Badge: primera tag como categoría principal #}
                 {% if tags %}
@@ -211,7 +212,7 @@
                 </div>
                 {% else %}
                 <div class="project-image-placeholder">
-                    <i class="fa fa-code project-image-placeholder-icon" aria-hidden="true"></i>
+                    {% icon "code" "project-image-placeholder-icon" %}
                 </div>
                 {% endif %}
             </div>

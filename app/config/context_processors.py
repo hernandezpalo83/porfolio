@@ -6,7 +6,8 @@ def brand_assets(request):
     """Context processor para assets y branding global."""
     return {
         'BRAND': getattr(settings, 'PERSONAL_BRAND', {}),
-        'BRAND_ASSETS_URL': getattr(settings, 'BRAND_ASSETS_URL', '')
+        'BRAND_ASSETS_URL': getattr(settings, 'BRAND_ASSETS_URL', ''),
+        'SITE_URL': getattr(settings, 'SITE_URL', ''),
     }
 
 

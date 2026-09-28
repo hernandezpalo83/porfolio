@@ -17,7 +17,7 @@
         margin-bottom: 5rem;
     }
 
-    #companies .section-intro h5 {
+    #companies .section-intro .section-eyebrow {
         color: #CC0052;
         font-family: "poppins-bold", sans-serif;
         font-size: 1.4rem;
@@ -47,6 +47,7 @@
     .companies-carousel-wrapper {
         position: relative;
         width: 100%;
+        overflow: hidden;
         /* Máscaras de fade lateral */
         mask-image: linear-gradient(
             to right,
@@ -78,8 +79,15 @@
     }
 
     /* Pausa al hover sobre el wrapper */
-    .companies-carousel-wrapper:hover .companies-track {
+    .companies-carousel-wrapper:hover .companies-track,
+    .companies-carousel-wrapper:focus-within .companies-track {
         animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .companies-track {
+            animation: none;
+        }
     }
 
     @keyframes companies-scroll {
@@ -181,11 +189,11 @@
 
     <div class="row section-intro">
         <div class="col-twelve">
-            <h5 data-aos="fade-up">COLABORACIONES EN PROYECTOS TECNOLÓGICOS</h5>
-            <h2 id="companies-heading" data-aos="fade-up" data-aos-delay="100">
+            <p class="section-eyebrow">COLABORACIONES EN PROYECTOS TECNOLÓGICOS</p>
+            <h2 id="companies-heading" class="section-heading" data-reveal>
                 Empresas en las que he participado en proyectos tecnológicos
             </h2>
-            <p class="companies-microcopy" data-aos="fade-up" data-aos-delay="200">
+            <p class="companies-microcopy" data-reveal>
                 He participado en proyectos tecnológicos para distintas empresas desde entornos de consultoría, asumiendo responsabilidades que han ido desde el desarrollo de software hasta la dirección técnica y la gestión de evolutivos. Mi trabajo se centra en conectar necesidades de negocio con soluciones tecnológicas sólidas, aportando visión de producto, coordinación técnica y capacidad de ejecución.
             </p>
         </div>
@@ -208,7 +216,7 @@
                 {% endif %}
 
                     <img src="{{ company.logo_cdn_url }}"
-                         alt="{{ company.name }} — colaboración profesional"
+                         alt=""
                          width="130"
                          height="60"
                          loading="lazy">

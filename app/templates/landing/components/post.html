@@ -1,8 +1,8 @@
 <section id="blog-preview">
     <div class="row">
         <div class="col-twelve text-center">
-            <h5 class="section-subtitle">Insights</h5>
-            <h2 class="section-title">Últimos Artículos</h2>
+            <p class="section-subtitle">Insights</p>
+            <h2 class="section-title" data-reveal>Últimos Artículos</h2>
         </div>
     </div>
 
@@ -12,10 +12,10 @@
             <a href="{{ post.get_absolute_url }}" class="blog-card-link">
                 <div class="card-content">
                     <span class="card-meta">
-                        {{ post.publish|date:"d M Y" }} ·
+                        <time datetime="{{ post.publish|date:'c' }}">{{ post.publish|date:"d M Y" }}</time> ·
                         <span class="read-time">{{ post.get_read_time }} min lectura</span>
                     </span>
-                    <h4 class="card-title">{{ post.title }}</h4>
+                    <h3 class="card-title">{{ post.title }}</h3>
 
                     <div class="read-more">
                         Leer más →
