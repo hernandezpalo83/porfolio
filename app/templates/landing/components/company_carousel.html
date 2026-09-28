@@ -242,7 +242,7 @@
 
 </section>
 
-<script>
+<script nonce="{{ request.csp_nonce }}">
     (function () {
         const track = document.querySelector('.companies-track');
         if (!track) return;

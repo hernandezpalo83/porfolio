@@ -91,51 +91,52 @@ MIDDLEWARE = [
     'app.analytics.middleware.AnalyticsTrackingMiddleware',
 ]
 
-# ── TECH-003: Content Security Policy (Report-Only for now) ──────────────────────────
-# FIX #3 v2 intento: Django-csp nonce rendering falló ('nonce-{%s}' no se substituyó)
-# TODO: Revisar django-csp version y documentación para implementar nonce correctamente
-# Por ahora: REPORT_ONLY mode (seguro, sin bloqueos, permitiendo la funcionalidad)
+# ── TECH-003: Content Security Policy ─────────────────────────────────────────────
+# Public area (landing, blog, wiki): ENFORCED, nonce-based. Inline scripts must carry
+# nonce="{{ request.csp_nonce }}"; no inline event handlers (onclick/onload).
+# Private area, admin and tools use CDNs and inline handlers: excluded from the enforced
+# policy and only monitored through the report-only policy below.
+from csp.constants import NONCE, NONE, SELF, UNSAFE_INLINE  # noqa: E402
+
+CSP_PRIVATE_PREFIXES = (
+    '/admin', '/private', '/gym', '/prompts', '/ckeditor5', '/login', '/logout',
+    '/accounts', '/api', '/metadata',
+)
+
+CONTENT_SECURITY_POLICY = {
+    "EXCLUDE_URL_PREFIXES": CSP_PRIVATE_PREFIXES,
+    "DIRECTIVES": {
+        "default-src": [SELF],
+        "script-src": [SELF, NONCE, "www.google.com", "www.gstatic.com"],  # reCAPTCHA
+        "style-src": [SELF, UNSAFE_INLINE, "cdnjs.cloudflare.com"],  # component <style>, FA6 in wiki
+        "font-src": [SELF, "cdnjs.cloudflare.com"],
+        "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co",
+                    "www.gstatic.com"],
+        "connect-src": [SELF],
+        "frame-src": ["www.google.com"],  # reCAPTCHA iframe
+        "frame-ancestors": [NONE],
+        "object-src": [NONE],
+        "base-uri": [SELF],
+        "form-action": [SELF],
+        "upgrade-insecure-requests": True,
+        "report-uri": ["/csp-report/"],
+    },
+}
+
 CONTENT_SECURITY_POLICY_REPORT_ONLY = {
     "DIRECTIVES": {
-        "default-src": ["'self'"],
-        "script-src": [
-            "'self'",
-            "'unsafe-inline'",          # Temporal: CKEditor, AOS inline init
-            "www.google.com",           # reCAPTCHA
-            "www.gstatic.com",          # reCAPTCHA
-            "raw.githubusercontent.com",  # CDN logos
-            "cdn.tailwindcss.com",      # Tailwind CSS (private area)
-            "cdn.jsdelivr.net",         # Luxon, Bootstrap
-            "unpkg.com",                # Tabulator JS
-        ],
-        "style-src": [
-            "'self'",
-            "'unsafe-inline'",          # estilos inline necesarios (componentes Bootstrap)
-            "fonts.googleapis.com",
-            "cdn.jsdelivr.net",         # Bootstrap Icons CSS
-            "cdnjs.cloudflare.com",     # Font Awesome 6 (wiki category icons)
-            "unpkg.com",                # Tabulator CSS
-        ],
-        "font-src": [
-            "'self'",
-            "fonts.gstatic.com",
-            "cdn.jsdelivr.net",         # Bootstrap Icons fonts
-            "cdnjs.cloudflare.com",     # Font Awesome 6 webfonts
-        ],
-        "img-src": [
-            "'self'",
-            "data:",
-            "raw.githubusercontent.com",  # CDN imágenes
-            "cdn.jsdelivr.net",         # CDN imágenes (BRAND_ASSETS_URL)
-            "*.supabase.co",            # por si hay media en Supabase
-        ],
-        "connect-src": ["'self'"],
-        "frame-src": [
-            "www.google.com",           # reCAPTCHA iframe
-        ],
-        "object-src": ["'none'"],
-        "base-uri": ["'self'"],
-        "form-action": ["'self'"],
+        "default-src": [SELF],
+        "script-src": [SELF, UNSAFE_INLINE, "www.google.com", "www.gstatic.com", "cdn.tailwindcss.com",
+                       "cdn.jsdelivr.net", "unpkg.com"],
+        "style-src": [SELF, UNSAFE_INLINE, "fonts.googleapis.com", "cdn.jsdelivr.net", "cdnjs.cloudflare.com",
+                      "unpkg.com"],
+        "font-src": [SELF, "fonts.gstatic.com", "cdn.jsdelivr.net", "cdnjs.cloudflare.com"],
+        "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co"],
+        "connect-src": [SELF],
+        "frame-src": ["www.google.com"],
+        "object-src": [NONE],
+        "base-uri": [SELF],
+        "form-action": [SELF],
         "report-uri": ["/csp-report/"],
     },
 }

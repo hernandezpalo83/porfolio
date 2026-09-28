@@ -84,3 +84,20 @@ class PrivacyPageTests(TestCase):
         home = self.client.get(reverse('landing:index'))
         self.assertContains(home, 'href="/privacidad/"')
 
+
+class ContentSecurityPolicyTests(TestCase):
+    fixtures = ['test_landing.json']
+
+    def test_public_pages_enforce_nonce_policy(self):
+        resp = self.client.get(reverse('landing:index'))
+        policy = resp['Content-Security-Policy']
+        self.assertIn("'nonce-", policy)
+        self.assertNotIn("'unsafe-inline'", policy.split('script-src')[1].split(';')[0])
+        nonce = policy.split("'nonce-")[1].split("'")[0]
+        self.assertContains(resp, f'<script nonce="{nonce}">')
+        self.assertNotContains(resp, ' onload="')
+
+    def test_private_area_is_only_monitored(self):
+        resp = self.client.get('/login/')
+        self.assertNotIn('Content-Security-Policy', resp)
+        self.assertIn('Content-Security-Policy-Report-Only', resp)
