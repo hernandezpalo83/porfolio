@@ -87,7 +87,7 @@ def home(request: HttpRequest) -> HttpResponse:
         home_data = {
             'info': Info.objects.first(),
             'skills': list(Skill.objects.all().order_by('-score')),
-            'experiences': list(Experience.objects.all().order_by('-start_date')),
+            'experiences': list(Experience.objects.prefetch_related('technologies').order_by('-start_date')),
             'education': list(Education.objects.all().order_by('-start_date')),
             'projects': list(Project.objects.all()),
             'latest_posts': list(

@@ -61,6 +61,17 @@
         reveal.forEach((el) => el.classList.add('is-revealed'));
     }
 
+    // --- Dialogs: [data-dialog-open="id"] opens <dialog id="id">; <form method="dialog"> closes it ---
+    document.querySelectorAll('[data-dialog-open]').forEach((btn) => {
+        const dialog = document.getElementById(btn.dataset.dialogOpen);
+        if (!dialog || typeof dialog.showModal !== 'function') return;
+        btn.addEventListener('click', () => dialog.showModal());
+        // A click on the backdrop lands on the <dialog> element itself
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) dialog.close();
+        });
+    });
+
     // --- Back to top ---
     const goTop = document.getElementById('go-top');
     if (goTop) {

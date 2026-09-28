@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Info, Skill, Experience, Education, Project, Contact, Contacto, Metric
-from .models import MenuItem, CompanyCollaboration
+from .models import MenuItem, CompanyCollaboration, Technology
 
 @admin.register(Info)
 class InfoAdmin(admin.ModelAdmin):
@@ -18,12 +18,23 @@ class SkillAdmin(admin.ModelAdmin):
     list_editable = ('score',)
     ordering = ('-score',)
 
+@admin.register(Technology)
+class TechnologyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order', 'experience_count')
+    list_editable = ('order',)
+    search_fields = ('name',)
+
+    @admin.display(description="Experiencias")
+    def experience_count(self, obj):
+        return obj.experiences.count()
+
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
     list_display = ('company', 'position', 'start_date', 'end_date')
     search_fields = ('company', 'position')
-    list_filter = ('company', 'position')
+    list_filter = ('company', 'position', 'technologies')
     ordering = ('-start_date',)
+    filter_horizontal = ('technologies',)
 
 @admin.register(Education)
 class EducationAdmin(admin.ModelAdmin):
@@ -44,7 +55,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': ('title', 'categoria')
         }),
         ('Contenido', {
-            'fields': ('description', 'get_description_preview')
+            'fields': ('resumen', 'description', 'get_description_preview')
         }),
         ('Enlaces', {
             'fields': ('imagen', 'link')

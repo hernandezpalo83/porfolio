@@ -56,10 +56,10 @@
     {% include "landing/components/critical_css.html" %}
 
     {# Non-critical CSS: loaded without blocking first paint #}
-    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.4.1" as="style"
+    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.5.0" as="style"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.4.1">
+        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.5.0">
     </noscript>
 
     {% block extra_schema %}
@@ -117,8 +117,8 @@
         </div>
     </footer>
 
-    <script src="{% static 'landing/js/main.js' %}?v=2.4.1" defer></script>
-    <script src="{% static 'landing/js/dark-mode.js' %}?v=2.4.1" defer></script>
+    <script src="{% static 'landing/js/main.js' %}?v=2.5.0" defer></script>
+    <script src="{% static 'landing/js/dark-mode.js' %}?v=2.5.0" defer></script>
 
     {% block extra_js %}{% endblock %}
 </body>
