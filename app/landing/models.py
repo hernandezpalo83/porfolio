@@ -39,12 +39,38 @@ class Skill(models.Model):
         if not 0 <= self.score <= 100:
             raise ValidationError("Score debe estar entre 0 y 100")
     
+class Technology(models.Model):
+    """Tecnología del stack, mostrada como badge en la experiencia."""
+    name = models.CharField(max_length=50, unique=True, verbose_name="Nombre")
+    order = models.PositiveIntegerField(default=0, verbose_name="Orden",
+                                        help_text="Orden dentro de cada experiencia (menor = primero)")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = "Tecnología"
+        verbose_name_plural = "Stack tecnológico"
+
+    def __str__(self) -> str:
+        return self.name
+
+    def clean(self):
+        self.name = (self.name or '').strip()
+        if not self.name:
+            raise ValidationError("El nombre de la tecnología no puede estar vacío.")
+        clash = Technology.objects.filter(name__iexact=self.name).exclude(pk=self.pk)
+        if clash.exists():
+            raise ValidationError(f"Ya existe la tecnología «{clash.first().name}».")
+
+
 class Experience(models.Model):
     company = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
     resumen = CKEditor5Field('Text', config_name='default', blank=True, default="")
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+    technologies = models.ManyToManyField(Technology, blank=True, related_name='experiences',
+                                          verbose_name="Stack tecnológico")
 
     def __str__(self):
         return f"{self.position} @ {self.company}"
@@ -73,13 +99,33 @@ class Education(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=100)
     description = CKEditor5Field('Text', config_name='default', blank=True, default="")
+    resumen = models.CharField(max_length=220, blank=True, default='',
+                               help_text="Resumen de 1-2 frases para la tarjeta. Si se deja vacío se usa el inicio de la descripción.")
     imagen = models.CharField(max_length=500, blank=True, default='',
                               help_text="Ruta CDN relativa, ej: /projects/foto.webp")
-    categoria = models.CharField(max_length=100, blank=True, default='')
+    categoria = models.CharField(max_length=100, blank=True, default='',
+                                 help_text="Categorías separadas por comas, ej: Django, Python, Web. Se usan en el filtro.")
     link = models.URLField(max_length=500, blank=True, default='')
+    order = models.PositiveIntegerField(default=0, verbose_name="Orden",
+                                        help_text="Orden en el portfolio (menor = primero)")
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Proyecto"
+        verbose_name_plural = "Proyectos"
 
     def __str__(self):
         return self.title
+
+    @property
+    def tag_list(self) -> list[str]:
+        """Categorías de 'categoria' sin vacíos ni duplicados (ignorando mayúsculas)."""
+        seen, tags = set(), []
+        for tag in (t.strip() for t in self.categoria.split(',')):
+            if tag and tag.lower() not in seen:
+                seen.add(tag.lower())
+                tags.append(tag)
+        return tags
 
 class Contact(models.Model):
     email = models.EmailField()

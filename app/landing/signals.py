@@ -7,16 +7,16 @@ se elimina la caché para que el siguiente request recargue datos frescos.
 TTL de la caché: 30 min (ver landing/views.py :: _CACHE_TTL).
 """
 import logging
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.core.cache import cache
 
-from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration
+from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration, Technology
 
 logger = logging.getLogger(__name__)
 
 _CACHE_KEY = 'landing_home_data'
 
-INVALIDATING_MODELS = (Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration)
+INVALIDATING_MODELS = (Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration, Technology)
 
 
 def _invalidate_home_cache(sender, **kwargs):
@@ -32,3 +32,5 @@ def _invalidate_home_cache(sender, **kwargs):
 for _model in INVALIDATING_MODELS:
     post_save.connect(_invalidate_home_cache, sender=_model)
     post_delete.connect(_invalidate_home_cache, sender=_model)
+
+m2m_changed.connect(_invalidate_home_cache, sender=Experience.technologies.through)

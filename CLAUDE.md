@@ -85,6 +85,7 @@ DEBUG=False SECRET_KEY=test PYTHONPATH=. python app/manage.py collectstatic --no
 - ❌ **NO `request.scheme` / `build_absolute_uri` for canonical, OG or JSON-LD**: Render's proxy makes them `http://`. Use `{{ SITE_URL }}{{ request.path }}`; escape JSON-LD strings with `|json_str`.
 - ❌ **NO more than one `<h1>` per page**: Section titles are `<h2 class="section-heading">`, eyebrows `<p class="section-eyebrow">`.
 - ❌ **NO generic element selectors (`header`, `nav`) with layout in `bundle.v2.css`**: They leak into article headers and breadcrumbs. Scope them with a class.
+- ❌ **NO per-section paddings or fixed hero heights**: Home sections take their spacing from `--section-space` / `--section-head-gap` (`critical_css.html`), and the navbar offset from `--header-h` (updated by `main.js`). Never add `padding: 12rem 0` to a section or `height`/`translate` to the hero, or content will slide under the fixed navbar.
 
 ---
 

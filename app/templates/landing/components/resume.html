@@ -10,7 +10,7 @@
         margin: 0;
         list-style: none;
         position: relative;
-        padding: 2rem 0 1rem;
+        padding: 0;
     }
 
     .xp-timeline::before {
@@ -162,6 +162,27 @@
         color: var(--accent-primary);
     }
 
+    .xp-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .8rem;
+        margin: 1.6rem 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .xp-stack li {
+        margin: 0;
+        padding: .4rem 1.2rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--accent-muted);
+        border: 1px solid var(--border-color);
+        border-radius: 99rem;
+    }
+
     .xp-hint {
         display: flex;
         align-items: center;
@@ -234,6 +255,10 @@
             align-items: start;
             column-gap: 1.4rem;
             margin-bottom: 3.6rem;
+        }
+
+        .xp-item:last-child {
+            margin-bottom: 0;
         }
 
         .xp-marker,
@@ -485,6 +510,13 @@
                             <div class="xp-face xp-front">
                                 <h3 class="xp-role">{{ experience.position }}</h3>
                                 <p class="xp-company">{{ experience.company }}</p>
+                                {% with stack=experience.technologies.all %}
+                                {% if stack %}
+                                <ul class="xp-stack" aria-label="Stack tecnológico">
+                                    {% for tech in stack %}<li>{{ tech.name }}</li>{% endfor %}
+                                </ul>
+                                {% endif %}
+                                {% endwith %}
                                 <div class="xp-hint">
                                     {% icon "flip" %}
                                     <span>Ver funciones y logros</span>

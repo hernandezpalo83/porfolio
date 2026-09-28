@@ -3,7 +3,6 @@
         display: flex;
         flex-direction: column;
         gap: 3.2rem;
-        margin-top: 3.2rem;
     }
 
     .about-image-column {
@@ -19,10 +18,15 @@
     }
 
     .about-image-column .info-list {
-        margin-top: 2.4rem;
+        margin: 2.4rem 0 0;
         padding: 0;
         list-style: none;
         text-align: left;
+    }
+
+    .about-image-column > :first-child,
+    .about-text-column > :first-child {
+        margin-top: 0;
     }
 
     .about-text-column h3 {

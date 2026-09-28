@@ -1218,7 +1218,7 @@ input::-moz-focus-inner {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
-	margin-bottom: 3.6rem;
+	margin-bottom: var(--section-head-gap);
 	position: relative;
 }
 
@@ -1273,12 +1273,6 @@ input::-moz-focus-inner {
 	-moz-background-size: cover;
 	background-size: cover;
 	background-attachment: fixed;
-	width: 100%;
-	height: 100%;
-	min-height: 720px;
-	display: table;
-	position: relative;
-	text-align: center;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -1299,12 +1293,7 @@ input::-moz-focus-inner {
 }
 
 .intro-content {
-	display: table-cell;
-	vertical-align: middle;
 	text-align: center;
-	-webkit-transform: translateY(-2.1rem);
-	-ms-transform: translateY(-2.1rem);
-	transform: translateY(-2.1rem);
 }
 
 .intro-content h1 {
@@ -1385,10 +1374,6 @@ input::-moz-focus-inner {
 }
 
 @media only screen and (max-width:768px) {
-#intro {
-	min-height: 660px;
-}
-
 .intro-content h1 {
 	font-size: 5.2rem;
 }
@@ -1403,10 +1388,6 @@ input::-moz-focus-inner {
 }
 
 @media only screen and (max-width:600px) {
-#intro {
-	min-height: 600px;
-}
-
 .intro-content h1 {
 	font-size: 4.6rem;
 	margin-bottom: .6rem;
@@ -1434,17 +1415,9 @@ input::-moz-focus-inner {
 
 #about {
 	background: #f7f7f7;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
-}
-
-#about .section-intro {
-	margin-bottom: 3rem;
 }
 
 #resume {
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 	background: #ffffff !important;
 }
 
@@ -1458,14 +1431,10 @@ input::-moz-focus-inner {
 
 #portfolio {
 	background: #FFFFFF;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 }
 
 #contact {
 	background: #151515;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 }
 
 #contact .section-intro .section-heading {
@@ -1760,25 +1729,24 @@ footer .copyright span::after {
 }
 
 .blog-view-more-container {
-	margin-top: 15rem !important;
-	padding-bottom: 6rem;
+	margin-top: var(--section-head-gap) !important;
+	text-align: center;
 }
 
-@media (prefers-color-scheme: dark) {
-.blog-card {
+/* The site theme is data-theme, not the OS setting */
+:root[data-theme="dark"] .blog-card {
 	background: #1e1e1e;
 	border-color: #CC0052;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.blog-card:hover {
+:root[data-theme="dark"] .blog-card:hover {
 	background: #252525;
 	border-top-color: #fff;
 }
 
-.card-title {
+:root[data-theme="dark"] .card-title {
 	color: #eee !important;
-}
 }
 
 .contact-form {
@@ -1796,8 +1764,6 @@ footer .copyright span::after {
 
 .edu-section-dark {
 	background: #0a0a0a !important;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 	color: #fff;
 	position: relative;
 	overflow: hidden;
@@ -1814,169 +1780,8 @@ footer .copyright span::after {
 	pointer-events: none;
 }
 
-#portfolio {
-	padding-top: 12rem;
-	padding-bottom: 12rem;
-	background: #fff;
-}
-
-.portfolio-grid {
-	display: grid !important;
-	grid-template-columns: repeat(3, 1fr) !important;
-	gap: 30px;
-	width: 100% !important;
-	max-width: 1140px !important;
-	margin: 0 auto !important;
-	padding: 0 20px;
-}
-
-@media (max-width: 1100px) {
-.portfolio-grid {
-	grid-template-columns: repeat(2, 1fr) !important;
-}
-}
-
-@media (max-width: 768px) {
-.portfolio-grid {
-	grid-template-columns: 1fr !important;
-}
-}
-
-.project-card {
-	background: #fff;
-	border-radius: 8px;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
-	transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-	border: 1px solid #f0f0f0;
-}
-
-.project-card:hover {
-	transform: translateY(-10px);
-	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-}
-
-.project-image-wrapper {
-	position: relative;
-	width: 100%;
-	height: 0;
-	padding-bottom: 56.25%;
-	max-height: 250px;
-	overflow: hidden;
-}
-
-@supports (aspect-ratio: 16/9) {
-.project-image-wrapper {
-	aspect-ratio: 16 / 9;
-	height: auto;
-	padding-bottom: 0;
-}
-}
-
-.project-image-wrapper img {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	-o-object-fit: cover;
-	object-fit: cover;
-	-webkit-transition: -webkit-transform 0.6s ease;
-	transition: -webkit-transform 0.6s ease;
-	transition: transform 0.6s ease;
-	transition: transform 0.6s ease, -webkit-transform 0.6s ease;
-}
-
-.project-card:hover .project-image-wrapper img {
-	transform: scale(1.1);
-}
-
-.project-badge {
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	background: #CC0052;
-	color: #fff;
-	padding: 6px 14px;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	font-weight: 700;
-	font-size: 1.1rem;
-	border-radius: 4px;
-	z-index: 5;
-	text-transform: uppercase;
-	letter-spacing: 1px;
-}
-
-.project-card-info {
-	padding: 3rem;
-	flex-grow: 1;
-	display: flex;
-	flex-direction: column;
-}
-
-.project-title {
-	font-family: 'Poppins', sans-serif;
-	font-weight: 700;
-	font-size: 2.2rem;
-	color: #313131;
-	margin: 0 0 1.5rem 0;
-	transition: color 0.3s ease;
-}
-
-.project-card:hover .project-title {
-	color: #CC0052;
-}
-
-.project-description {
-	font-family: 'Lora', serif;
-	font-size: 1.5rem;
-	line-height: 1.7;
-	color: #666;
-	margin-bottom: 2.5rem;
-}
-
-.btn-view-more {
-	display: block;
-	width: 100%;
-	padding: 1.8rem !important;
-	background: #313131 !important;
-	color: #fff !important;
-	text-align: center;
-	text-transform: uppercase;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-	font-weight: 700;
-	letter-spacing: 2px;
-	font-size: 1.2rem;
-	border-radius: 4px;
-	margin-top: auto;
-	transition: all 0.3s ease !important;
-}
-
-.btn-view-more:hover {
-	background: #CC0052 !important;
-	color: #fff !important;
-}
-
 #blog-preview {
-	padding: 12rem 0;
 	background-color: #f9f9f9;
-}
-
-#blog-preview .section-title {
-	font-family: 'Poppins', sans-serif;
-	font-weight: 700;
-	margin-bottom: 4rem;
-	text-align: center;
-}
-
-#blog-preview .section-subtitle {
-	color: #CC0052;
-	letter-spacing: .2rem;
-	text-transform: uppercase;
-	margin-bottom: 1rem;
-	text-align: center;
 }
 
 .blog-card-link {
@@ -2039,14 +1844,19 @@ footer .copyright span::after {
 }
 
 .blog-wrapper,
-.post-detail-wrapper,
+.post-detail-wrapper {
+	width: 100% !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 #portfolio,
 #contact,
 #education {
 	width: 100% !important;
 	max-width: none !important;
 	margin: 0 !important;
-	padding: 0 !important;
 }
 
 #contact .contact-form {
@@ -2109,25 +1919,17 @@ footer .copyright span::after {
 	line-height: 1;
 }
 
-.button,
-.btn-view-more {
+.button {
 	transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease !important;
 }
 
-.button:hover,
-.btn-view-more:hover {
+.button:hover {
 	transform: translateY(-3px);
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.project-card,
 .metric-item {
 	transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.project-card:hover {
-	transform: translateY(-5px);
-	z-index: 10;
 }
 
 a {
