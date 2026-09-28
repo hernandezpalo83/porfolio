@@ -136,7 +136,7 @@ def subscribe(request: HttpRequest) -> HttpResponse:
     subscriber, created = Subscriber.objects.get_or_create(email=email)
 
     if created:
-        logger.info("Nuevo suscriptor: %s — token %s", email, subscriber.token)
+        logger.info("Nuevo suscriptor id=%s", subscriber.pk)  # sin email ni token en los logs
         # TODO: enviar email con subscriber.get_confirm_url() via SendGrid/SMTP
         # Cuando se configure un email backend en settings, descomentar:
         # from django.core.mail import send_mail

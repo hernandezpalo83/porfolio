@@ -1,0 +1,214 @@
+{% extends "landing/layouts/base.html" %}
+
+{% block title %}Aviso legal y privacidad | HernandezPalo{% endblock %}
+{% block meta_description %}Aviso legal, política de privacidad y cookies de hernandezpalo.es: qué datos se tratan, para qué y cómo ejercer tus derechos.{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, follow">{% endblock %}
+
+{% block extra_css %}
+<style>
+    .legal {
+        padding: var(--section-space) 1.6rem;
+        background: var(--bg-primary);
+        color: var(--text-secondary);
+    }
+
+    .legal-inner {
+        max-width: 72ch;
+        margin: 0 auto;
+    }
+
+    .legal h1 {
+        margin: 0 0 .8rem;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: clamp(2.8rem, 6vw, 4rem);
+        line-height: 1.2;
+        color: var(--text-primary);
+    }
+
+    .legal-updated {
+        margin: 0 0 3.2rem;
+        font-size: 1.4rem;
+        color: var(--text-tertiary);
+    }
+
+    .legal-toc {
+        margin: 0 0 4rem;
+        padding: 1.6rem 2rem;
+        background: var(--bg-secondary);
+        border-left: .4rem solid var(--accent-primary);
+        border-radius: .8rem;
+    }
+
+    .legal-toc ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .legal-toc a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+    }
+
+    .legal h2 {
+        margin: 4.8rem 0 1.6rem;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: 2.4rem;
+        line-height: 1.3;
+        color: var(--text-primary);
+    }
+
+    .legal h3 {
+        margin: 2.8rem 0 1rem;
+        font-size: 1.8rem;
+        color: var(--text-primary);
+    }
+
+    .legal p,
+    .legal li,
+    .legal td,
+    .legal th {
+        font-size: 1.6rem;
+        line-height: 1.7;
+        color: var(--text-secondary);
+    }
+
+    .legal ul {
+        margin: 0 0 1.6rem 2rem;
+        list-style: disc;
+    }
+
+    .legal li {
+        display: list-item;
+        margin-bottom: .6rem;
+    }
+
+    .legal strong {
+        color: var(--text-primary);
+    }
+
+    .legal a {
+        color: var(--accent-primary);
+        text-decoration: underline;
+        text-underline-offset: .2em;
+    }
+
+    .legal-table {
+        width: 100%;
+        margin: 1.6rem 0;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+    }
+
+    .legal-table th,
+    .legal-table td {
+        padding: 1rem 1.2rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .legal-table th {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<article class="legal">
+    <div class="legal-inner">
+        <h1>Aviso legal y privacidad</h1>
+        <p class="legal-updated">Última actualización: 29 de septiembre de 2026</p>
+
+        <nav class="legal-toc" aria-label="Contenido de la página">
+            <ul>
+                <li><a href="#aviso-legal">Aviso legal</a></li>
+                <li><a href="#privacidad">Política de privacidad</a></li>
+                <li><a href="#cookies">Cookies y almacenamiento local</a></li>
+            </ul>
+        </nav>
+
+        <section id="aviso-legal" aria-labelledby="aviso-legal-title">
+            <h2 id="aviso-legal-title">Aviso legal</h2>
+            <p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información (LSSI-CE):</p>
+            <ul>
+                <li><strong>Titular:</strong> {{ info.name|default:"Javier Hernández Martin" }}</li>
+                {% if info.email %}<li><strong>Contacto:</strong> <a href="mailto:{{ info.email }}">{{ info.email }}</a></li>{% endif %}
+                {% if info.address %}<li><strong>Ubicación:</strong> {{ info.address }}</li>{% endif %}
+                <li><strong>Sitio web:</strong> hernandezpalo.es</li>
+            </ul>
+            <p>Este sitio es un portfolio profesional con blog y documentación técnica. No vende productos ni servicios en línea.</p>
+            <p>Los textos, imágenes y el código propio publicados aquí pertenecen a su titular salvo que se indique otra licencia. Puedes citarlos enlazando a la fuente. Las marcas y logotipos de empresas y clientes pertenecen a sus propietarios y se muestran solo como referencia de proyectos en los que he participado.</p>
+        </section>
+
+        <section id="privacidad" aria-labelledby="privacidad-title">
+            <h2 id="privacidad-title">Política de privacidad</h2>
+            <p>Responsable del tratamiento: <strong>{{ info.name|default:"Javier Hernández Martin" }}</strong>{% if info.email %}, <a href="mailto:{{ info.email }}">{{ info.email }}</a>{% endif %}.</p>
+
+            <h3>Qué datos trato y para qué</h3>
+            <table class="legal-table">
+                <thead>
+                    <tr><th scope="col">Cuándo</th><th scope="col">Datos</th><th scope="col">Finalidad y base legal</th><th scope="col">Conservación</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Formulario de contacto</td>
+                        <td>Nombre, email, asunto y mensaje</td>
+                        <td>Responder a tu mensaje. Base: tu consentimiento al enviarlo (art. 6.1.a RGPD).</td>
+                        <td>Hasta resolver la consulta y un máximo de 12 meses.</td>
+                    </tr>
+                    <tr>
+                        <td>Newsletter del blog</td>
+                        <td>Email</td>
+                        <td>Enviarte los artículos nuevos. Base: tu consentimiento, confirmado por email (art. 6.1.a RGPD).</td>
+                        <td>Hasta que te des de baja.</td>
+                    </tr>
+                    <tr>
+                        <td>Estadísticas de visitas</td>
+                        <td>Página visitada, web de procedencia, tipo de dispositivo y país aproximado. <strong>No se guarda tu IP ni se usan cookies.</strong> Las visitas del mismo día se agrupan con un identificador anónimo que cambia cada día y no permite identificarte.</td>
+                        <td>Saber qué contenidos se leen para mejorarlos. Son datos anónimos.</td>
+                        <td>90 días.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>No vendo ni cedo tus datos, ni los uso para publicidad o decisiones automatizadas.</p>
+
+            <h3>Proveedores que intervienen</h3>
+            <ul>
+                <li><strong>Render</strong> (alojamiento de la web) y <strong>Supabase</strong> (base de datos).</li>
+                <li><strong>Cloudflare</strong> (red de distribución y protección frente a ataques). Procesa la dirección IP de cada visita para servir la página.</li>
+                <li><strong>Google reCAPTCHA</strong>: solo se carga al usar el formulario de contacto, para frenar el spam. Google trata tu IP y datos de navegación según su <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de privacidad</a>.</li>
+                <li><strong>jsDelivr</strong> y <strong>GitHub</strong> sirven algunas imágenes y recursos estáticos.</li>
+            </ul>
+            <p>Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo con las garantías previstas en el RGPD, como las cláusulas contractuales tipo o el Marco de Privacidad de Datos UE-EE. UU.</p>
+
+            <h3>Tus derechos</h3>
+            <p>Puedes pedir el acceso, la rectificación o la supresión de tus datos, oponerte a su tratamiento, limitarlo o solicitar su portabilidad{% if info.email %} escribiendo a <a href="mailto:{{ info.email }}">{{ info.email }}</a>{% endif %}. Para darte de baja de la newsletter basta con el enlace de cada email.</p>
+            <p>Si crees que no he atendido bien tu solicitud, puedes reclamar ante la Agencia Española de Protección de Datos en <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">aepd.es</a>.</p>
+        </section>
+
+        <section id="cookies" aria-labelledby="cookies-title">
+            <h2 id="cookies-title">Cookies y almacenamiento local</h2>
+            <p>Este sitio no usa cookies de analítica ni de publicidad, por eso no muestra un aviso de cookies. Solo usa las técnicas imprescindibles:</p>
+            <table class="legal-table">
+                <thead>
+                    <tr><th scope="col">Nombre</th><th scope="col">Para qué</th><th scope="col">Duración</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>csrftoken</code></td><td>Proteger los formularios frente a envíos falsificados.</td><td>1 año</td></tr>
+                    <tr><td><code>sessionid</code></td><td>Mantener la sesión, solo si inicias sesión en el área privada.</td><td>2 semanas</td></tr>
+                    <tr><td><code>hernandezpalo-theme</code></td><td>Recordar si prefieres el tema claro u oscuro. Se guarda en tu navegador (almacenamiento local) y no se envía al servidor.</td><td>Hasta que lo borres</td></tr>
+                    <tr><td>Cookies de Google reCAPTCHA</td><td>Detectar spam en el formulario de contacto. Solo aparecen si interactúas con él.</td><td>Según Google</td></tr>
+                </tbody>
+            </table>
+            <p>Puedes borrar o bloquear las cookies desde la configuración de tu navegador. Si bloqueas <code>csrftoken</code>, no podrás enviar formularios.</p>
+        </section>
+    </div>
+</article>
+{% endblock %}

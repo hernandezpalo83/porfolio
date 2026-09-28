@@ -108,6 +108,11 @@ def home(request: HttpRequest) -> HttpResponse:
     }
     return render(request, 'landing/pages/home.html', context)
 
+def privacy(request: HttpRequest) -> HttpResponse:
+    """Aviso legal, política de privacidad y cookies (RGPD / LSSI-CE)."""
+    return render(request, 'landing/pages/privacy.html', {'info': Info.objects.first()})
+
+
 def is_superuser(user) -> bool:
     return user.is_authenticated and user.is_superuser
     

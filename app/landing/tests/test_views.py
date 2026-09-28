@@ -71,3 +71,16 @@ class PrivateAreaTests(TestCase):
         resp = self.client.post(reverse('landing:db_backup'), {'action': 'export'})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp['Content-Type'], 'application/json')
+
+
+class PrivacyPageTests(TestCase):
+    fixtures = ['test_landing.json']
+
+    def test_privacy_page_and_links(self):
+        resp = self.client.get(reverse('landing:privacy'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'id="privacidad"')
+        self.assertContains(resp, 'noindex, follow')
+        home = self.client.get(reverse('landing:index'))
+        self.assertContains(home, 'href="/privacidad/"')
+

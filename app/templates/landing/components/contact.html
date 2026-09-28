@@ -99,6 +99,9 @@
                     {% endif %}{% endfor %}
                     {{ form.captcha }}
                     <button class="contact-submit" type="submit">Enviar mensaje</button>
+                    <p class="contact-legal">Usaré tus datos solo para responder a tu mensaje. Responsable: {{ info.name }}.
+                        Puedes ejercer tus derechos en cualquier momento: <a href="{% url 'landing:privacy' %}#privacidad">política de privacidad</a>.
+                    </p>
                     <p class="contact-legal">Protegido por reCAPTCHA de Google:
                         <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacidad</a> y
                         <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Condiciones</a>.
