@@ -16,6 +16,13 @@ from django.db import IntegrityError
 logger = logging.getLogger(__name__)
 
 
+@shared_task(ignore_result=True)
+def record_pageview_task(data: dict):
+    """Record one anonymous page view (see app.analytics.middleware)."""
+    from app.analytics.middleware import record_pageview
+    record_pageview(data)
+
+
 @shared_task(bind=True, max_retries=3)
 def batch_save_pageviews(self, pageviews_data: list):
     """

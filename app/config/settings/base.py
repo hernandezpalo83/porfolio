@@ -7,6 +7,7 @@ Environment-specific overrides are in: development.py, production.py, testing.py
 
 from pathlib import Path
 import os
+import sys
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -285,8 +286,10 @@ CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutos max
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_RESULT_EXPIRES = 3600  # 1 hora
 
-# Analytics: tamaño de batch antes de enviar a Celery (evita overhead)
-ANALYTICS_BATCH_SIZE = 10
+# Analytics: Celery solo si hay un broker configurado de verdad (en Render no hay Redis);
+# si no, las visitas se guardan en un hilo en segundo plano. En tests, de forma síncrona.
+ANALYTICS_USE_CELERY = bool(os.getenv('CELERY_BROKER_URL'))
+ANALYTICS_ASYNC = sys.argv[1:2] != ['test']
 
 # En desarrollo/testing, hacer tareas eager (sincrónico) para debugging
 if DEBUG:

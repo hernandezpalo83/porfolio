@@ -1,164 +1,124 @@
+"""
+Privacy-first page analytics that never delays the response.
+
+- No cookies and no stored IP / user-agent: a visitor is an anonymous hash of
+  (secret salt, day, IP, user-agent) that changes every day, so sessions and
+  bounce rate work without keeping personal data (GDPR data minimisation).
+- Country comes from Cloudflare's CF-IPCountry header: no third-party lookups.
+- Only successful HTML page views from humans are recorded.
+- Writes run after the response is built: in Celery when a broker is configured
+  (ANALYTICS_USE_CELERY), otherwise in a small background thread pool.
+"""
+import hashlib
 import logging
-import uuid
-from django.utils.deprecation import MiddlewareMixin
-from django.utils import timezone
-from django.http import HttpRequest
+from concurrent.futures import ThreadPoolExecutor
+
 from django.conf import settings
+from django.db import close_old_connections
+from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
+
 from .models import PageView, SessionTracker
-from .utils import get_client_ip, detect_device, get_country_from_ip
+from .utils import detect_device, get_client_ip, get_country
 
 logger = logging.getLogger(__name__)
 
-# Configuration: batch size threshold before flushing to Celery
-BATCH_SIZE_THRESHOLD = getattr(settings, 'ANALYTICS_BATCH_SIZE', 10)
-# Use Celery for batch saving if available, else save synchronously
-USE_CELERY = getattr(settings, 'CELERY_BROKER_URL', None) is not None
+EXCLUDED_PREFIXES = (
+    '/admin/', '/private/', '/static/', '/media/', '/api/', '/health/', '/.well-known/',
+    '/login/', '/logout/', '/csp-report/', '/ckeditor5/', '/blog/feed/',
+)
+EXCLUDED_PATHS = ('/robots.txt', '/sitemap.xml', '/favicon.ico')
+BOT_MARKERS = ('bot', 'crawl', 'spider', 'slurp', 'curl', 'wget', 'python-requests',
+               'headless', 'lighthouse', 'pingdom', 'uptime', 'monitor', 'preview')
+
+_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix='analytics')
 
 
-class AnalyticsTrackingMiddleware(MiddlewareMixin):
-    """
-    Middleware que captura cada vista de página (privacy-first, sin cookies).
-    Registra: path, país, dispositivo, referrer, duración, scroll depth.
-    """
+def visitor_id(request: HttpRequest) -> str:
+    """Anonymous daily visitor hash: same person, same day → same id; nothing reversible is stored."""
+    raw = '|'.join((
+        settings.SECRET_KEY,
+        timezone.now().date().isoformat(),
+        get_client_ip(request),
+        request.META.get('HTTP_USER_AGENT', ''),
+    ))
+    return hashlib.sha256(raw.encode()).hexdigest()[:32]
 
-    EXCLUDED_PATHS = [
-        '/admin/',
-        '/static/',
-        '/media/',
-        '/api/',
-        '/health/',
-        '/.well-known/',
-    ]
 
-    def should_track(self, request: HttpRequest) -> bool:
-        """Determina si se debe trackear esta solicitud."""
-        path = request.path
+def record_pageview(data: dict) -> None:
+    """Persist one page view and update its visitor session (runs off the request path)."""
+    close_old_connections()
+    try:
+        session, created = SessionTracker.objects.get_or_create(
+            session_id=data['session_id'],
+            defaults={
+                'country': data['country'],
+                'device': data['device'],
+                'referrer': data['referrer'],
+                'first_page': data['path'],
+                'last_page': data['path'],
+                'page_count': 1,
+            },
+        )
+        if not created:
+            session.last_page = data['path']
+            session.page_count += 1
+            session.is_bounce = False
+            session.save(update_fields=['last_page', 'page_count', 'is_bounce', 'updated_at'])
+        PageView.objects.create(**data)
+    except Exception:
+        logger.exception("Could not record page view for %s", data.get('path'))
+    finally:
+        close_old_connections()
 
-        # Excluir paths administrativos
-        for excluded in self.EXCLUDED_PATHS:
-            if path.startswith(excluded):
-                return False
 
-        # Solo GET
-        if request.method != 'GET':
-            return False
+class AnalyticsTrackingMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-        return True
-
-    def process_request(self, request: HttpRequest):
-        """Al iniciar la solicitud: capturar metadata."""
-        if not self.should_track(request):
-            return None
-
-        # Generar o recuperar session_id (sin cookies)
-        session_id = request.META.get('HTTP_X_SESSION_ID')
-        if not session_id:
-            session_id = str(uuid.uuid4())
-
-        request._analytics_session_id = session_id
-        request._analytics_timestamp = timezone.now()
-        request._analytics_referrer = request.META.get('HTTP_REFERER', '')
-        request._analytics_country = get_country_from_ip(get_client_ip(request))
-        request._analytics_device = detect_device(request.META.get('HTTP_USER_AGENT', ''))
-        request._analytics_ip = get_client_ip(request)
-        request._analytics_user_agent = request.META.get('HTTP_USER_AGENT', '')
-
-        return None
-
-    def process_response(self, request: HttpRequest, response):
-        """
-        Al terminar la solicitud: acumular PageView en sesión y enviar a Celery cuando se alcanza el threshold.
-
-        En lugar de hacer CREATE inmediatamente (que añade 100ms+ de latencia por request),
-        acumulamos múltiples pageviews en la sesión y los enviamos a una tarea Celery en batch.
-        Esto reduce latencia a ~5ms.
-        """
-        if not hasattr(request, '_analytics_session_id'):
-            return response
-
-        if response.status_code not in [200, 304]:
-            return response
-
-        try:
-            # Preparar datos de PageView
-            pageview_data = {
-                'path': request.path[:500],  # Security: truncate path
-                'method': request.method,
-                'session_id': request._analytics_session_id,
-                'country': request._analytics_country,
-                'device': request._analytics_device,
-                'referrer': request._analytics_referrer[:500] if request._analytics_referrer else '',
-                'ip_address': request._analytics_ip,
-                'user_agent': request._analytics_user_agent[:200],
-                'scroll_depth': 0,
-                'time_spent': 0,
-            }
-
-            # Acumular en sesión (por key única para evitar duplicados)
-            if not hasattr(request, '_pageviews_batch'):
-                request._pageviews_batch = []
-
-            request._pageviews_batch.append(pageview_data)
-
-            # Actualizar o crear SessionTracker de forma sincrónica (importante para no perder sesiones)
-            session, created = SessionTracker.objects.get_or_create(
-                session_id=request._analytics_session_id,
-                defaults={
-                    'country': request._analytics_country,
-                    'device': request._analytics_device,
-                    'referrer': request._analytics_referrer[:500] if request._analytics_referrer else '',
-                    'first_page': request.path,
-                    'last_page': request.path,
-                    'page_count': 1,
-                }
-            )
-
-            if not created:
-                session.last_page = request.path
-                session.page_count += 1
-                session.is_bounce = (session.page_count == 1)
-                session.save(update_fields=['last_page', 'page_count', 'is_bounce', 'updated_at'])
-
-            # Enviar batch a Celery (siempre al final del request, no esperar al threshold)
-            # El batching es una optimización cuando hay muchos requests simultáneos,
-            # pero no podemos perder datos esperando a que se llene el buffer
-            if request._pageviews_batch:
-                self._flush_batch(request._pageviews_batch)
-                request._pageviews_batch = []
-
-        except Exception as e:
-            logger.error(f"Error en AnalyticsTrackingMiddleware: {e}", exc_info=True)
-
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        response = self.get_response(request)
+        if self.should_track(request, response):
+            self.dispatch(self.build_pageview(request))
         return response
 
-    def _flush_batch(self, pageviews_batch: list):
-        """
-        Envía batch de pageviews a Celery o guarda sincronizadamente si Celery no está disponible.
-        """
-        if not pageviews_batch:
-            return
-
-        if USE_CELERY:
-            try:
-                # Enviar batch a Celery de forma asincrónica
-                from app.tasks import batch_save_pageviews
-                batch_save_pageviews.delay(pageviews_batch)
-                logger.debug(f"Sent {len(pageviews_batch)} pageviews to Celery batch task")
-            except Exception as e:
-                logger.warning(f"Failed to send batch to Celery, saving synchronously: {e}")
-                self._save_batch_sync(pageviews_batch)
-        else:
-            # Fallback: guardar sincronizadamente si Celery no está disponible
-            self._save_batch_sync(pageviews_batch)
+    @staticmethod
+    def should_track(request: HttpRequest, response: HttpResponse) -> bool:
+        path = request.path
+        if request.method != 'GET' or response.status_code != 200:
+            return False
+        if path in EXCLUDED_PATHS or path.startswith(EXCLUDED_PREFIXES):
+            return False
+        if not response.get('Content-Type', '').startswith('text/html'):
+            return False
+        user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+        return bool(user_agent) and not any(marker in user_agent for marker in BOT_MARKERS)
 
     @staticmethod
-    def _save_batch_sync(pageviews_batch: list):
-        """
-        Guardar batch de pageviews de forma sincrónica (fallback si Celery no está disponible).
-        """
-        try:
-            pageviews = [PageView(**data) for data in pageviews_batch]
-            PageView.objects.bulk_create(pageviews, ignore_conflicts=True)
-            logger.debug(f"Batch saved {len(pageviews_batch)} pageviews synchronously")
-        except Exception as e:
-            logger.error(f"Error saving pageviews batch synchronously: {e}", exc_info=True)
+    def build_pageview(request: HttpRequest) -> dict:
+        return {
+            'path': request.path[:500],
+            'method': request.method,
+            'session_id': visitor_id(request),
+            'country': get_country(request),
+            'device': detect_device(request.META.get('HTTP_USER_AGENT', '')),
+            'referrer': request.META.get('HTTP_REFERER', '')[:500],
+            'ip_address': None,
+            'user_agent': None,
+            'scroll_depth': 0,
+            'time_spent': 0,
+        }
+
+    @staticmethod
+    def dispatch(data: dict) -> None:
+        if getattr(settings, 'ANALYTICS_USE_CELERY', False):
+            try:
+                from app.tasks import record_pageview_task
+                record_pageview_task.delay(data)
+                return
+            except Exception:
+                logger.warning("Celery unavailable, recording page view in-process", exc_info=True)
+        if getattr(settings, 'ANALYTICS_ASYNC', True):
+            _executor.submit(record_pageview, data)
+        else:
+            record_pageview(data)
