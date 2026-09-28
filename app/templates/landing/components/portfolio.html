@@ -1,38 +1,129 @@
-{% load ui landing_filters template_filters %}
+{% load ui template_filters %}
 <style>
     /* ── Case studies ────────────────────────────────────────────────────
-       Cards share one height whatever the description length: they show a
-       short summary, and the full case opens in a native <dialog>.
-       html font-size is 62.5% → 1rem = 10px. Colours come from the theme
-       variables, so light and dark need no overrides. */
-    .pf-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 32rem), 1fr));
-        gap: 2.8rem;
+       Filter chips by category + a grid of identical cards (every row is
+       as tall as the tallest, texts are clamped). The full case opens in a
+       native <dialog>. html font-size is 62.5% → 1rem = 10px. Colours come
+       from the theme variables, so light and dark need no overrides. */
+    .pf-wrap {
         max-width: 1280px;
         margin: 0 auto;
         padding: 0 1.6rem;
+    }
+
+    /* Filters: one scrollable row on mobile, wrapped and centred from tablet */
+    .pf-toolbar {
+        margin: 0 0 3.2rem;
+    }
+
+    .pf-filters {
+        display: flex;
+        gap: .8rem;
+        margin: 0 -1.6rem;
+        padding: .4rem 1.6rem 1.2rem;
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+    }
+
+    .pf-filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .pf-filters[hidden] {
+        display: none;
+    }
+
+    .pf-chip {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: .8rem;
+        height: auto;
+        min-height: 44px;
+        margin: 0;
+        padding: 0 1.8rem;
+        scroll-snap-align: start;
+        font: 600 1.4rem/1 "Poppins", sans-serif;
+        letter-spacing: 0;
+        text-transform: none;
+        white-space: nowrap;
+        color: var(--text-primary);
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 99rem;
+        cursor: pointer;
+        transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+    }
+
+    .pf-chip:hover {
+        border-color: var(--accent-primary);
+    }
+
+    .pf-chip[aria-pressed="true"] {
+        color: #FFFFFF;
+        background: #CC0052;
+        border-color: #CC0052;
+    }
+
+    .pf-chip-count {
+        min-width: 2.2rem;
+        padding: .3rem .6rem;
+        font-size: 1.2rem;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+        border-radius: 99rem;
+    }
+
+    .pf-chip[aria-pressed="true"] .pf-chip-count {
+        color: #FFFFFF;
+        background: rgba(255, 255, 255, .22);
+    }
+
+    #portfolio .pf-result {
+        margin: 1.2rem 0 0;
+        font-size: 1.4rem;
+        color: var(--text-tertiary);
+    }
+
+    /* Grid: identical cards */
+    .pf-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 32rem), 1fr));
+        grid-auto-rows: 1fr;
+        gap: 2.8rem;
+        margin: 0;
+        padding: 0;
         list-style: none;
     }
 
     .pf-card {
+        position: relative;
         display: flex;
         flex-direction: column;
         margin: 0;
         overflow: hidden;
         background: var(--card-bg);
         border: 1px solid var(--border-color);
-        border-top: .4rem solid var(--accent-primary);
         border-radius: 1.6rem;
         box-shadow: 0 1.2rem 3.2rem var(--card-shadow);
+        transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+
+    .pf-card[hidden] {
+        display: none;
     }
 
     .pf-media {
         position: relative;
+        flex: 0 0 auto;
         margin: 0;
         aspect-ratio: 16 / 9;
         overflow: hidden;
         background: #1F1F1F;
+        border-bottom: .4rem solid var(--accent-primary);
     }
 
     .pf-media img {
@@ -48,30 +139,31 @@
         align-items: center;
         justify-content: center;
         height: 100%;
-        background: linear-gradient(135deg, #1F1F1F 0%, #3A0018 100%);
-        color: #FF4D94;
+        background:
+            radial-gradient(circle at 80% 20%, rgba(255, 20, 147, .35) 0, transparent 55%),
+            linear-gradient(135deg, #1F1F1F 0%, #3A0018 100%);
+        font-family: "poppins-bold", sans-serif;
+        font-size: 5.6rem;
+        letter-spacing: .2rem;
+        color: #FFFFFF;
     }
 
-    .pf-placeholder .icon {
-        width: 4.8rem;
-        height: 4.8rem;
-    }
-
-    .pf-body {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        padding: 2.4rem 2.4rem 2.8rem;
-    }
-
-    .pf-status {
+    /* Status badge over the image: dark pill, readable on any photo */
+    #portfolio .pf-status {
+        position: absolute;
+        top: 1.4rem;
+        left: 1.4rem;
         display: inline-flex;
         align-items: center;
         gap: .8rem;
-        margin: 0 0 1rem;
-        font-size: 1.3rem;
+        margin: 0;
+        padding: .6rem 1.2rem;
+        font-size: 1.2rem;
         font-weight: 600;
-        color: var(--text-tertiary);
+        line-height: 1.2;
+        color: #FFFFFF;
+        background: rgba(12, 12, 12, .78);
+        border-radius: 99rem;
     }
 
     .pf-status::before {
@@ -79,19 +171,37 @@
         width: .8rem;
         height: .8rem;
         border-radius: 50%;
-        background: var(--text-tertiary);
+        background: #B8B8B8;
     }
 
     .pf-status--live::before {
-        background: var(--accent-primary);
-        box-shadow: 0 0 0 .3rem var(--accent-muted);
+        background: #FF4D94;
+        box-shadow: 0 0 0 .3rem rgba(255, 77, 148, .3);
+    }
+
+    .pf-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding: 2.2rem 2.4rem 2.4rem;
+    }
+
+    #portfolio .pf-category {
+        margin: 0 0 .6rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--accent-primary);
     }
 
     .pf-title {
+        display: -webkit-box;
         margin: 0 0 1rem;
+        overflow: hidden;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         font-family: "poppins-semibold", "poppins-bold", sans-serif;
-        font-size: 2.2rem;
-        line-height: 1.3;
+        font-size: 2rem;
+        line-height: 1.35;
         color: var(--text-primary);
     }
 
@@ -99,7 +209,7 @@
         display: -webkit-box;
         margin: 0;
         overflow: hidden;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         font-size: 1.5rem;
         line-height: 1.65;
@@ -109,7 +219,7 @@
     .pf-tags {
         display: flex;
         flex-wrap: wrap;
-        gap: .8rem;
+        gap: .6rem;
         margin: 1.6rem 0 0;
         padding: 0;
         list-style: none;
@@ -117,23 +227,33 @@
 
     .pf-tags li {
         margin: 0;
-        padding: .4rem 1.2rem;
-        font-size: 1.3rem;
+        padding: .3rem 1rem;
+        font-size: 1.2rem;
         font-weight: 600;
         line-height: 1.6;
         color: var(--text-primary);
         background: var(--accent-muted);
-        border: 1px solid var(--border-color);
         border-radius: 99rem;
+    }
+
+    .pf-tags .pf-tag-more {
+        color: var(--text-tertiary);
+        background: transparent;
+        border: 1px solid var(--border-color);
+    }
+
+    .pf-body .pf-tags {
+        margin-bottom: 2rem;
     }
 
     .pf-actions {
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
-        gap: 1.2rem 2rem;
+        justify-content: space-between;
+        gap: 1.2rem;
         margin-top: auto;
-        padding-top: 2.4rem;
+        padding-top: 1.6rem;
+        border-top: 1px solid var(--border-color);
     }
 
     .pf-open {
@@ -143,80 +263,101 @@
         height: auto;
         min-height: 44px;
         margin: 0;
-        padding: 1.4rem 2.2rem;
-        font: 600 1.3rem/1.2 "Poppins", sans-serif;
-        letter-spacing: .15rem;
-        color: #FFFFFF;
-        background: #CC0052;
+        padding: 0;
+        font: 600 1.4rem/1.2 "Poppins", sans-serif;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--accent-primary);
+        background: none;
         border: 0;
-        border-radius: .8rem;
         cursor: pointer;
-        transition: background-color .2s ease;
     }
 
-    .pf-open:hover,
-    .pf-open:focus-visible {
-        background: #A30042;
+    .pf-open .icon {
+        transition: transform .2s ease;
+    }
+
+    /* The "read" button covers the whole card, so any click on it opens the case */
+    .pf-open::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
     }
 
     .pf-link {
+        position: relative;
+        z-index: 2;
         display: inline-flex;
         align-items: center;
         gap: .6rem;
         min-height: 44px;
-        font-size: 1.4rem;
+        padding: 0 1.4rem;
+        font-size: 1.3rem;
         font-weight: 600;
-        color: var(--accent-primary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: .8rem;
+        transition: border-color .2s ease, color .2s ease;
     }
 
     .pf-link:hover,
     .pf-link:focus-visible {
-        text-decoration: underline;
-        text-underline-offset: .3em;
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
+    }
+
+    .pf-open:focus-visible,
+    .pf-link:focus-visible {
+        outline: none;
+    }
+
+    .pf-card:has(.pf-open:focus-visible),
+    .pf-card:has(.pf-link:focus-visible) {
+        outline: .3rem solid var(--accent-primary);
+        outline-offset: .3rem;
     }
 
     @media (hover: hover) {
+        .pf-card:hover {
+            transform: translateY(-.6rem);
+            border-color: var(--accent-primary);
+            box-shadow: 0 2rem 4.8rem var(--card-shadow);
+        }
+
         .pf-card:hover .pf-media img {
             transform: scale(1.05);
         }
+
+        .pf-card:hover .pf-open .icon {
+            transform: translateX(.4rem);
+        }
     }
 
-    /* The first case gets the wide slot: image beside the text */
-    @media (min-width: 1024px) {
-        .pf-card--featured {
-            grid-column: span 2;
-            flex-direction: row;
+    @media (min-width: 768px) {
+        .pf-toolbar {
+            text-align: center;
         }
 
-        .pf-card--featured .pf-media {
-            flex: 0 0 48%;
-            aspect-ratio: auto;
-            min-height: 100%;
-        }
-
-        .pf-card--featured .pf-body {
-            padding: 3.2rem;
-        }
-
-        .pf-card--featured .pf-title {
-            font-size: 2.6rem;
-        }
-
-        .pf-card--featured .pf-summary {
-            -webkit-line-clamp: 6;
+        .pf-filters {
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0;
+            padding: .4rem 0 0;
+            overflow: visible;
         }
     }
 
     /* ── Dialog with the full case ── */
     .pf-dialog {
-        width: min(76rem, calc(100% - 2.4rem));
-        max-height: min(88vh, 90rem);
+        width: min(80rem, calc(100% - 2.4rem));
+        max-height: min(90vh, 96rem);
         margin: auto;
         padding: 0;
+        overflow: hidden;
         color: var(--text-secondary);
         background: var(--card-bg);
         border: 1px solid var(--border-color);
-        border-top: .4rem solid var(--accent-primary);
         border-radius: 1.6rem;
         box-shadow: 0 2.4rem 6.4rem rgba(0, 0, 0, .35);
     }
@@ -240,51 +381,59 @@
         to   { opacity: 1; transform: none; }
     }
 
-    .pf-dialog-head {
-        display: flex;
-        align-items: flex-start;
-        gap: 1.6rem;
-        padding: 2.4rem 2.4rem 1.6rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .pf-dialog-head > div {
+    .pf-dialog-scroll {
         flex: 1;
-        min-width: 0;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
     }
 
-    .pf-dialog-title {
+    .pf-dialog-media {
+        position: relative;
         margin: 0;
-        font-family: "poppins-semibold", "poppins-bold", sans-serif;
-        font-size: 2.4rem;
-        line-height: 1.3;
-        color: var(--text-primary);
+        aspect-ratio: 21 / 9;
+        overflow: hidden;
+        background: #1F1F1F;
+        border-bottom: .4rem solid var(--accent-primary);
     }
 
-    .pf-dialog-head form {
+    .pf-dialog-media img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pf-dialog-media .pf-placeholder {
+        font-size: 4.8rem;
+    }
+
+    .pf-dialog > form {
         margin: 0;
     }
 
     .pf-close {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        z-index: 3;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         width: 44px;
         height: 44px;
-        margin: -.6rem -.6rem 0 0;
+        margin: 0;
         padding: 0;
-        color: var(--text-primary);
-        background: transparent;
-        border: 1px solid var(--border-color);
+        color: #FFFFFF;
+        background: rgba(12, 12, 12, .78);
+        border: 0;
         border-radius: 50%;
         cursor: pointer;
     }
 
     .pf-close:hover,
     .pf-close:focus-visible {
-        color: #FFFFFF;
         background: #CC0052;
-        border-color: #CC0052;
     }
 
     .pf-close .icon {
@@ -292,12 +441,24 @@
         height: 2rem;
     }
 
+    .pf-dialog-head {
+        padding: 2.4rem 2.8rem 0;
+    }
+
+    .pf-dialog-title {
+        margin: 0;
+        font-family: "poppins-semibold", "poppins-bold", sans-serif;
+        font-size: 2.6rem;
+        line-height: 1.3;
+        color: var(--text-primary);
+    }
+
+    .pf-dialog-head .pf-tags {
+        margin-top: 1.4rem;
+    }
+
     .pf-dialog-body {
-        flex: 1;
-        min-height: 0;
-        padding: 2rem 2.4rem;
-        overflow-y: auto;
-        overscroll-behavior: contain;
+        padding: 2rem 2.8rem 2.4rem;
         font-size: 1.6rem;
         line-height: 1.7;
     }
@@ -330,20 +491,63 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
         gap: 1.2rem;
-        padding: 1.6rem 2.4rem 2.4rem;
+        padding: 1.6rem 2.8rem;
         border-top: 1px solid var(--border-color);
     }
 
-    .pf-dialog-foot .pf-tags {
+    .pf-dialog-foot form {
         margin: 0;
+    }
+
+    .pf-back {
+        height: auto;
+        min-height: 44px;
+        margin: 0;
+        padding: 0 1.8rem;
+        font: 600 1.4rem/1 "Poppins", sans-serif;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--text-primary);
+        background: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: .8rem;
+        cursor: pointer;
+    }
+
+    .pf-back:hover,
+    .pf-back:focus-visible {
+        border-color: var(--accent-primary);
+    }
+
+    .pf-visit {
+        display: inline-flex;
+        align-items: center;
+        gap: .8rem;
+        min-height: 44px;
+        padding: 0 2rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #FFFFFF;
+        background: #CC0052;
+        border-radius: .8rem;
+    }
+
+    .pf-visit:hover,
+    .pf-visit:focus-visible {
+        color: #FFFFFF;
+        background: #A30042;
     }
 
     @media (max-width: 599px) {
         .pf-dialog {
             width: calc(100% - 1.6rem);
-            max-height: 92vh;
+            max-height: 94vh;
+        }
+
+        .pf-dialog-media {
+            aspect-ratio: 16 / 9;
         }
 
         .pf-dialog-head,
@@ -354,15 +558,29 @@
         }
 
         .pf-dialog-title {
-            font-size: 2rem;
+            font-size: 2.1rem;
+        }
+
+        .pf-dialog-foot > *,
+        .pf-back,
+        .pf-visit {
+            flex: 1 1 auto;
+            width: 100%;
+            justify-content: center;
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
+        .pf-card,
         .pf-media img,
+        .pf-open .icon,
         .pf-dialog[open] {
             transition: none;
             animation: none;
+        }
+
+        .pf-card:hover {
+            transform: none;
         }
     }
 </style>
@@ -375,80 +593,107 @@
         </div>
     </div>
 
-    <ul class="pf-grid">
-        {% for project in projects %}
-        {% with tags=project.categoria|split:"," %}
-        <li class="pf-card{% if forloop.first %} pf-card--featured{% endif %}" data-reveal>
-            <figure class="pf-media">
-                {% if project.imagen %}
-                <img src="{{ project.imagen }}" alt="" loading="lazy" decoding="async" width="1280" height="720">
-                {% else %}
-                <div class="pf-placeholder">{% icon "code" %}</div>
-                {% endif %}
-            </figure>
-
-            <div class="pf-body">
-                {% if project.link %}
-                <p class="pf-status pf-status--live">En producción</p>
-                {% else %}
-                <p class="pf-status">En desarrollo</p>
-                {% endif %}
-
-                <h3 class="pf-title">{{ project.title }}</h3>
-                <p class="pf-summary">{% if project.resumen %}{{ project.resumen }}{% else %}{{ project.description|plain_text|truncatewords:45 }}{% endif %}</p>
-
-                {% if tags %}
-                <ul class="pf-tags" aria-label="Tecnologías">
-                    {% for tag in tags %}{% if tag %}<li>{{ tag }}</li>{% endif %}{% endfor %}
-                </ul>
-                {% endif %}
-
-                <div class="pf-actions">
-                    <button type="button" class="pf-open" data-dialog-open="case-{{ project.pk }}" aria-haspopup="dialog">
-                        Leer el caso<span class="sr-only">: {{ project.title }}</span>
-                    </button>
-                    {% if project.link %}
-                    <a class="pf-link" href="{{ project.link }}" target="_blank" rel="noopener noreferrer">
-                        Ver proyecto {% icon "external" %}<span class="sr-only">(se abre en una pestaña nueva)</span>
-                    </a>
-                    {% endif %}
-                </div>
+    <div class="pf-wrap">
+        {% if project_filters|length > 1 %}
+        <div class="pf-toolbar">
+            {# Hidden until main.js wires it up: without JS every project is listed #}
+            <div class="pf-filters" role="group" aria-label="Filtrar proyectos por categoría" data-filter-group hidden>
+                <button type="button" class="pf-chip" data-filter="all" aria-pressed="true">
+                    Todos <span class="pf-chip-count">{{ projects|length }}</span>
+                </button>
+                {% for f in project_filters %}
+                <button type="button" class="pf-chip" data-filter="{{ f.key }}" data-label="{{ f.label }}" aria-pressed="false">
+                    {{ f.label }} <span class="pf-chip-count">{{ f.count }}</span>
+                </button>
+                {% endfor %}
             </div>
+            <p class="pf-result" data-filter-result aria-live="polite">{{ projects|length }} proyecto{{ projects|length|pluralize }}</p>
+        </div>
+        {% endif %}
 
-            <dialog id="case-{{ project.pk }}" class="pf-dialog" aria-labelledby="case-{{ project.pk }}-title">
-                <div class="pf-dialog-head">
-                    <div>
+        <ul class="pf-grid">
+            {% for project in projects %}
+            <li class="pf-card" data-reveal data-tags="{% for t in project.tags %}{{ t.key }} {% endfor %}">
+                <figure class="pf-media">
+                    {% if project.imagen %}
+                    <img src="{{ project.imagen }}" alt="" loading="lazy" decoding="async" width="1280" height="720">
+                    {% else %}
+                    <div class="pf-placeholder" aria-hidden="true">{{ project.initials }}</div>
+                    {% endif %}
+                    {% if project.link %}
+                    <p class="pf-status pf-status--live">En producción</p>
+                    {% else %}
+                    <p class="pf-status">En desarrollo</p>
+                    {% endif %}
+                </figure>
+
+                <div class="pf-body">
+                    {% if project.tags %}<p class="pf-category">{{ project.tags.0.label }}</p>{% endif %}
+                    <h3 class="pf-title">{{ project.title }}</h3>
+                    <p class="pf-summary">{% if project.resumen %}{{ project.resumen }}{% else %}{{ project.description|plain_text|truncatewords:40 }}{% endif %}</p>
+
+                    {% if project.tags|length > 1 %}
+                    <ul class="pf-tags" aria-label="Tecnologías">
+                        {% for t in project.tags|slice:"1:4" %}<li>{{ t.label }}</li>{% endfor %}
+                        {% if project.tags|length > 4 %}<li class="pf-tag-more">+{{ project.tags|length|add:"-4" }}</li>{% endif %}
+                    </ul>
+                    {% endif %}
+
+                    <div class="pf-actions">
+                        <button type="button" class="pf-open" data-dialog-open="case-{{ project.pk }}" aria-haspopup="dialog">
+                            Leer el caso<span class="sr-only">: {{ project.title }}</span> {% icon "arrow-right" %}
+                        </button>
                         {% if project.link %}
-                        <p class="pf-status pf-status--live">En producción</p>
-                        {% else %}
-                        <p class="pf-status">En desarrollo</p>
+                        <a class="pf-link" href="{{ project.link }}" target="_blank" rel="noopener noreferrer">
+                            Demo {% icon "external" %}<span class="sr-only">de {{ project.title }} (se abre en una pestaña nueva)</span>
+                        </a>
                         {% endif %}
-                        <p class="pf-dialog-title" id="case-{{ project.pk }}-title">{{ project.title }}</p>
                     </div>
+                </div>
+
+                <dialog id="case-{{ project.pk }}" class="pf-dialog" aria-labelledby="case-{{ project.pk }}-title">
                     <form method="dialog">
                         <button class="pf-close" aria-label="Cerrar">{% icon "close" %}</button>
                     </form>
-                </div>
+                    <div class="pf-dialog-scroll">
+                        <figure class="pf-dialog-media">
+                            {% if project.imagen %}
+                            <img src="{{ project.imagen }}" alt="Captura de {{ project.title }}" loading="lazy" decoding="async" width="1280" height="720">
+                            {% else %}
+                            <div class="pf-placeholder" aria-hidden="true">{{ project.initials }}</div>
+                            {% endif %}
+                            {% if project.link %}
+                            <p class="pf-status pf-status--live">En producción</p>
+                            {% else %}
+                            <p class="pf-status">En desarrollo</p>
+                            {% endif %}
+                        </figure>
 
-                <div class="pf-dialog-body">{{ project.description|sanitize_html }}</div>
+                        <div class="pf-dialog-head">
+                            <p class="pf-dialog-title" id="case-{{ project.pk }}-title">{{ project.title }}</p>
+                            {% if project.tags %}
+                            <ul class="pf-tags" aria-label="Tecnologías">
+                                {% for t in project.tags %}<li>{{ t.label }}</li>{% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
 
-                {% if tags or project.link %}
-                <div class="pf-dialog-foot">
-                    {% if tags %}
-                    <ul class="pf-tags" aria-label="Tecnologías">
-                        {% for tag in tags %}{% if tag %}<li>{{ tag }}</li>{% endif %}{% endfor %}
-                    </ul>
-                    {% endif %}
-                    {% if project.link %}
-                    <a class="pf-link" href="{{ project.link }}" target="_blank" rel="noopener noreferrer">
-                        Ver proyecto {% icon "external" %}<span class="sr-only">(se abre en una pestaña nueva)</span>
-                    </a>
-                    {% endif %}
-                </div>
-                {% endif %}
-            </dialog>
-        </li>
-        {% endwith %}
-        {% endfor %}
-    </ul>
+                        <div class="pf-dialog-body">{{ project.description|sanitize_html }}</div>
+                    </div>
+
+                    <div class="pf-dialog-foot">
+                        <form method="dialog">
+                            <button class="pf-back">Cerrar</button>
+                        </form>
+                        {% if project.link %}
+                        <a class="pf-visit" href="{{ project.link }}" target="_blank" rel="noopener noreferrer">
+                            Ver proyecto en producción {% icon "external" %}<span class="sr-only">(se abre en una pestaña nueva)</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </dialog>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </section>

@@ -103,11 +103,29 @@ class Project(models.Model):
                                help_text="Resumen de 1-2 frases para la tarjeta. Si se deja vacío se usa el inicio de la descripción.")
     imagen = models.CharField(max_length=500, blank=True, default='',
                               help_text="Ruta CDN relativa, ej: /projects/foto.webp")
-    categoria = models.CharField(max_length=100, blank=True, default='')
+    categoria = models.CharField(max_length=100, blank=True, default='',
+                                 help_text="Categorías separadas por comas, ej: Django, Python, Web. Se usan en el filtro.")
     link = models.URLField(max_length=500, blank=True, default='')
+    order = models.PositiveIntegerField(default=0, verbose_name="Orden",
+                                        help_text="Orden en el portfolio (menor = primero)")
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = "Proyecto"
+        verbose_name_plural = "Proyectos"
 
     def __str__(self):
         return self.title
+
+    @property
+    def tag_list(self) -> list[str]:
+        """Categorías de 'categoria' sin vacíos ni duplicados (ignorando mayúsculas)."""
+        seen, tags = set(), []
+        for tag in (t.strip() for t in self.categoria.split(',')):
+            if tag and tag.lower() not in seen:
+                seen.add(tag.lower())
+                tags.append(tag)
+        return tags
 
 class Contact(models.Model):
     email = models.EmailField()

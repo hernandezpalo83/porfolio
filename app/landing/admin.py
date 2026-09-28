@@ -45,14 +45,15 @@ class EducationAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'categoria', 'get_description_short')
+    list_display = ('title', 'order', 'categoria', 'get_description_short')
+    list_editable = ('order',)
     search_fields = ('title', 'categoria', 'description')
     list_filter = ('categoria',)
     readonly_fields = ('get_description_preview',)
     
     fieldsets = (
         ('Información Básica', {
-            'fields': ('title', 'categoria')
+            'fields': ('title', 'categoria', 'order')
         }),
         ('Contenido', {
             'fields': ('resumen', 'description', 'get_description_preview')

@@ -8,6 +8,7 @@ from .models import Info, Skill, Experience, Education, Project, Metric, Company
 from app.blog.models import Post
 from .forms import FormularioContacto
 from .seo import home_structured_data
+from .portfolio import build_portfolio
 from django.contrib import messages
 import logging
 from typing import Dict, Any
@@ -89,7 +90,7 @@ def home(request: HttpRequest) -> HttpResponse:
             'skills': list(Skill.objects.all().order_by('-score')),
             'experiences': list(Experience.objects.prefetch_related('technologies').order_by('-start_date')),
             'education': list(Education.objects.all().order_by('-start_date')),
-            'projects': list(Project.objects.all()),
+
             'latest_posts': list(
                 Post.objects.filter(status='published')
                 .only('title', 'slug', 'excerpt', 'publish', 'imagen_url', 'category_id', 'author_id')
@@ -98,6 +99,7 @@ def home(request: HttpRequest) -> HttpResponse:
             'metrics': list(Metric.objects.filter(is_visible=True).order_by('order')),
             'companies': list(CompanyCollaboration.objects.filter(is_active=True).order_by('order')),
         }
+        home_data['projects'], home_data['project_filters'] = build_portfolio(Project.objects.all())
         cache.set(_CACHE_KEY, home_data, _CACHE_TTL)
     context: Dict[str, Any] = {
         **home_data,

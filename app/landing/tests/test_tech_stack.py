@@ -53,3 +53,23 @@ class TechStackRenderingTests(TestCase):
 class PlainTextFilterTests(TestCase):
     def test_keeps_word_boundaries(self):
         self.assertEqual(plain_text('<p>Uno<br>dos</p><ul><li>tres</li></ul>&amp;'), 'Uno dos tres &')
+
+
+class PortfolioFilterTests(TestCase):
+    def test_categories_are_merged_ignoring_case(self):
+        from app.landing.portfolio import build_portfolio
+        a = Project.objects.create(title='Blog Engine', categoria='DJANGO, Web')
+        b = Project.objects.create(title='Gym', categoria='Django, AWS')
+        projects, filters = build_portfolio([a, b])
+        self.assertEqual(filters[0], {'key': 'django', 'label': 'Django', 'count': 2})
+        self.assertIn({'key': 'aws', 'label': 'AWS', 'count': 1}, filters)
+        self.assertEqual([t['label'] for t in projects[0].tags], ['Django', 'Web'])
+        self.assertEqual(projects[0].initials, 'BE')
+
+    def test_home_renders_filter_chips(self):
+        cache.clear()
+        Project.objects.create(title='A', categoria='Django')
+        Project.objects.create(title='B', categoria='Python')
+        resp = self.client.get(reverse('landing:index'))
+        self.assertContains(resp, 'data-filter="django"')
+        self.assertContains(resp, 'data-tags="python "')
