@@ -47,6 +47,7 @@
     // --- Content reveal (replaces AOS) ---
     const reveal = document.querySelectorAll('[data-reveal]');
     if (hasIO && reveal.length) {
+        document.documentElement.classList.add('reveal-ready');
         const io = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
