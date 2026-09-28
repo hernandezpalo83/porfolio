@@ -143,7 +143,7 @@
     :root[data-theme="dark"] #about h1, :root[data-theme="dark"] #about h2, :root[data-theme="dark"] #about h3,
     :root[data-theme="dark"] #about h4, :root[data-theme="dark"] #resume h2, :root[data-theme="dark"] #portfolio .section-heading,
     :root[data-theme="dark"] #portfolio h2, :root[data-theme="dark"] #portfolio h3,
-    :root[data-theme="dark"] #blog-preview .section-title, :root[data-theme="dark"] #about p.lead {
+    :root[data-theme="dark"] #blog-preview .section-heading, :root[data-theme="dark"] #about p.lead {
         color: var(--text-primary);
     }
 
@@ -155,7 +155,6 @@
     /* #CC0052 text drops to ~3.4:1 on dark surfaces; use the dark accent (#FF1493) */
     :root[data-theme="dark"] .section-eyebrow,
     :root[data-theme="dark"] .card-meta,
-    :root[data-theme="dark"] #blog-preview .section-subtitle,
     :root[data-theme="dark"] .blog-card .read-more,
     :root[data-theme="dark"] dt,
     :root[data-theme="dark"] .stats-tabs li a:hover {
@@ -381,9 +380,39 @@
         overflow-x: clip;
     }
 
+    /* Layout tokens. --header-h is the real navbar height: main.js updates it
+       if the bar ever grows (zoom, long brand), so nothing hides beneath it.
+       --section-space is the one vertical rhythm for every home section. */
+    :root {
+        --header-bar-h: 64px;
+        --header-h: var(--header-bar-h);
+        --section-space: 6.4rem;
+        --section-head-gap: 4rem;
+    }
+
+    @media (min-width: 768px) {
+        :root {
+            --section-space: 9.6rem;
+            --section-head-gap: 4.8rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        :root {
+            --header-bar-h: 80px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        :root {
+            --section-space: 12rem;
+            --section-head-gap: 5.6rem;
+        }
+    }
+
     html {
         scroll-behavior: smooth;
-        scroll-padding-top: 64px;
+        scroll-padding-top: var(--header-h);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -431,7 +460,28 @@
     }
 
     body {
-        padding-top: 64px;
+        padding-top: var(--header-h);
+    }
+
+    /* One vertical rhythm for every home section (the hero sets its own):
+       same space above/below each section and between heading and content.
+       .row forces margin:0 !important, hence the !important on the heading. */
+    main > section:not(#intro) {
+        padding-top: var(--section-space);
+        padding-bottom: var(--section-space);
+    }
+
+    main .section-intro {
+        margin-bottom: var(--section-head-gap) !important;
+    }
+
+    main .section-intro > :last-child,
+    main .section-intro > .col-twelve > :last-child,
+    #about .skill-bars,
+    #about .skill-bars li:last-child,
+    #contact fieldset,
+    #blog-preview .blog-view-more-container .button {
+        margin-bottom: 0;
     }
 
     .site-header {
@@ -447,7 +497,7 @@
         display: flex;
         align-items: center;
         gap: .8rem;
-        height: 64px;
+        min-height: var(--header-bar-h);
         padding: 0 1.2rem;
     }
 
@@ -463,6 +513,9 @@
         line-height: 1;
         color: #FF1493;
         white-space: nowrap;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .site-header-actions {
@@ -535,7 +588,7 @@
         display: none;
         background: #0C0C0C;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
-        max-height: calc(100vh - 64px);
+        max-height: calc(100vh - var(--header-h));
         overflow-y: auto;
     }
 
@@ -601,24 +654,11 @@
 
     @media (min-width: 1024px) {
         .site-header-bar {
-            height: 80px;
             padding: 0 3.2rem;
-        }
-
-        html {
-            scroll-padding-top: 80px;
-        }
-
-        body {
-            padding-top: 80px;
         }
 
         .site-logo {
             font-size: 2.4rem;
-        }
-
-        .main-nav {
-            max-height: calc(100vh - 80px);
         }
 
         .main-navigation {
@@ -654,11 +694,15 @@
         -moz-background-size: cover;
         background-size: cover;
         background-attachment: fixed;
-        width: 100%;
-        height: 100%;
-        min-height: 720px;
-        display: table;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        /* Fills the first screen but grows with long texts instead of overflowing under the navbar */
+        min-height: max(60rem, calc(100vh - var(--header-h)));
+        min-height: max(60rem, calc(100svh - var(--header-h)));
+        padding: var(--section-space) 0;
         text-align: center;
     }
 
@@ -700,12 +744,9 @@
     }
 
     .intro-content {
-        display: table-cell;
-        vertical-align: middle;
+        position: relative;
+        width: 100%;
         text-align: center;
-        -webkit-transform: translateY(-2.1rem);
-        -ms-transform: translateY(-2.1rem);
-        transform: translateY(-2.1rem);
     }
 
     .intro-content h1 {
@@ -796,9 +837,6 @@
     }
 
     @media only screen and (max-width:768px) {
-        #intro {
-            min-height: 660px;
-        }
 
         .intro-content h1 {
             font-size: 5.2rem;
@@ -810,9 +848,6 @@
     }
 
     @media only screen and (max-width:600px) {
-        #intro {
-            min-height: 600px;
-        }
 
         .intro-content h1 {
             font-size: 4.6rem;

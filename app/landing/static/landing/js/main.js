@@ -4,6 +4,14 @@
 (function () {
     'use strict';
 
+    // --- Keep --header-h equal to the real navbar height (body offset + anchor scroll) ---
+    const headerBar = document.querySelector('.site-header-bar');
+    if (headerBar && 'ResizeObserver' in window) {
+        new ResizeObserver(() => {
+            document.documentElement.style.setProperty('--header-h', headerBar.offsetHeight + 'px');
+        }).observe(headerBar);
+    }
+
     // --- Navigation menu ---
     const toggle = document.querySelector('.menu-toggle');
     const nav = document.getElementById('main-nav-wrap');
@@ -71,6 +79,35 @@
             if (e.target === dialog) dialog.close();
         });
     });
+
+    // --- Portfolio filter: [data-filter] chips show the cards whose data-tags include the key ---
+    const filterGroup = document.querySelector('[data-filter-group]');
+    if (filterGroup) {
+        const cards = document.querySelectorAll('[data-tags]');
+        const result = document.querySelector('[data-filter-result]');
+        filterGroup.hidden = false;
+        filterGroup.addEventListener('click', (e) => {
+            const chip = e.target.closest('[data-filter]');
+            if (!chip) return;
+            const key = chip.dataset.filter;
+            filterGroup.querySelectorAll('[data-filter]').forEach((c) => {
+                c.setAttribute('aria-pressed', c === chip ? 'true' : 'false');
+            });
+            let shown = 0;
+            cards.forEach((card) => {
+                const match = key === 'all' || card.dataset.tags.split(' ').includes(key);
+                card.hidden = !match;
+                if (match) {
+                    shown += 1;
+                    card.classList.add('is-revealed');
+                }
+            });
+            if (result) {
+                const noun = shown === 1 ? 'proyecto' : 'proyectos';
+                result.textContent = key === 'all' ? `${shown} ${noun}` : `${shown} ${noun} en ${chip.dataset.label}`;
+            }
+        });
+    }
 
     // --- Back to top ---
     const goTop = document.getElementById('go-top');

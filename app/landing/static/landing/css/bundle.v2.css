@@ -1218,7 +1218,7 @@ input::-moz-focus-inner {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
-	margin-bottom: 3.6rem;
+	margin-bottom: var(--section-head-gap);
 	position: relative;
 }
 
@@ -1273,12 +1273,6 @@ input::-moz-focus-inner {
 	-moz-background-size: cover;
 	background-size: cover;
 	background-attachment: fixed;
-	width: 100%;
-	height: 100%;
-	min-height: 720px;
-	display: table;
-	position: relative;
-	text-align: center;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -1299,12 +1293,7 @@ input::-moz-focus-inner {
 }
 
 .intro-content {
-	display: table-cell;
-	vertical-align: middle;
 	text-align: center;
-	-webkit-transform: translateY(-2.1rem);
-	-ms-transform: translateY(-2.1rem);
-	transform: translateY(-2.1rem);
 }
 
 .intro-content h1 {
@@ -1385,10 +1374,6 @@ input::-moz-focus-inner {
 }
 
 @media only screen and (max-width:768px) {
-#intro {
-	min-height: 660px;
-}
-
 .intro-content h1 {
 	font-size: 5.2rem;
 }
@@ -1403,10 +1388,6 @@ input::-moz-focus-inner {
 }
 
 @media only screen and (max-width:600px) {
-#intro {
-	min-height: 600px;
-}
-
 .intro-content h1 {
 	font-size: 4.6rem;
 	margin-bottom: .6rem;
@@ -1434,17 +1415,9 @@ input::-moz-focus-inner {
 
 #about {
 	background: #f7f7f7;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
-}
-
-#about .section-intro {
-	margin-bottom: 3rem;
 }
 
 #resume {
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 	background: #ffffff !important;
 }
 
@@ -1458,14 +1431,10 @@ input::-moz-focus-inner {
 
 #portfolio {
 	background: #FFFFFF;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 }
 
 #contact {
 	background: #151515;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 }
 
 #contact .section-intro .section-heading {
@@ -1760,25 +1729,24 @@ footer .copyright span::after {
 }
 
 .blog-view-more-container {
-	margin-top: 15rem !important;
-	padding-bottom: 6rem;
+	margin-top: var(--section-head-gap) !important;
+	text-align: center;
 }
 
-@media (prefers-color-scheme: dark) {
-.blog-card {
+/* The site theme is data-theme, not the OS setting */
+:root[data-theme="dark"] .blog-card {
 	background: #1e1e1e;
 	border-color: #CC0052;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.blog-card:hover {
+:root[data-theme="dark"] .blog-card:hover {
 	background: #252525;
 	border-top-color: #fff;
 }
 
-.card-title {
+:root[data-theme="dark"] .card-title {
 	color: #eee !important;
-}
 }
 
 .contact-form {
@@ -1796,8 +1764,6 @@ footer .copyright span::after {
 
 .edu-section-dark {
 	background: #0a0a0a !important;
-	padding-top: 12rem;
-	padding-bottom: 12rem;
 	color: #fff;
 	position: relative;
 	overflow: hidden;
@@ -1815,23 +1781,7 @@ footer .copyright span::after {
 }
 
 #blog-preview {
-	padding: 12rem 0;
 	background-color: #f9f9f9;
-}
-
-#blog-preview .section-title {
-	font-family: 'Poppins', sans-serif;
-	font-weight: 700;
-	margin-bottom: 4rem;
-	text-align: center;
-}
-
-#blog-preview .section-subtitle {
-	color: #CC0052;
-	letter-spacing: .2rem;
-	text-transform: uppercase;
-	margin-bottom: 1rem;
-	text-align: center;
 }
 
 .blog-card-link {
@@ -1894,14 +1844,19 @@ footer .copyright span::after {
 }
 
 .blog-wrapper,
-.post-detail-wrapper,
+.post-detail-wrapper {
+	width: 100% !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
 #portfolio,
 #contact,
 #education {
 	width: 100% !important;
 	max-width: none !important;
 	margin: 0 !important;
-	padding: 0 !important;
 }
 
 #contact .contact-form {
