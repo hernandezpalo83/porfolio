@@ -7,6 +7,7 @@ from django_ratelimit.decorators import ratelimit
 from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration
 from app.blog.models import Post
 from .forms import FormularioContacto
+from .seo import home_structured_data
 from django.contrib import messages
 import logging
 from typing import Dict, Any
@@ -98,7 +99,11 @@ def home(request: HttpRequest) -> HttpResponse:
             'companies': list(CompanyCollaboration.objects.filter(is_active=True).order_by('order')),
         }
         cache.set(_CACHE_KEY, home_data, _CACHE_TTL)
-    context: Dict[str, Any] = {**home_data, 'form': form}
+    context: Dict[str, Any] = {
+        **home_data,
+        'form': form,
+        'structured_data': home_structured_data(home_data),
+    }
     return render(request, 'landing/pages/home.html', context)
 
 def is_superuser(user) -> bool:

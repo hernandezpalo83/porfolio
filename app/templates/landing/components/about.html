@@ -1,42 +1,95 @@
+<style>
+    .about-profile-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 3.2rem;
+        margin-top: 3.2rem;
+    }
+
+    .about-image-column {
+        text-align: center;
+    }
+
+    .about-photo {
+        width: 18rem;
+        height: 18rem;
+        border-radius: 1.5rem;
+        border: .4rem solid #CC0052;
+        object-fit: cover;
+    }
+
+    .about-image-column .info-list {
+        margin-top: 2.4rem;
+        padding: 0;
+        list-style: none;
+        text-align: left;
+    }
+
+    .about-text-column h3 {
+        margin-top: 3rem;
+        color: #CC0052;
+    }
+
+    .about-text-column .skill-bars {
+        margin-top: 3.2rem;
+    }
+
+    @media (min-width: 768px) {
+        .about-profile-wrapper {
+            flex-direction: row;
+            gap: 4rem;
+        }
+
+        .about-image-column {
+            flex: 1;
+        }
+
+        .about-text-column {
+            flex: 2;
+            min-width: 0;
+        }
+
+        .about-photo {
+            width: 22rem;
+            height: 22rem;
+        }
+    }
+
+    :root[data-theme="dark"] .about-text-column h3 {
+        color: #FF1493;
+    }
+</style>
 <section id="about">
-    <div class="row section-intro">
+    <div class="row section-intro" data-reveal>
         <div class="col-twelve">
-            <h5 data-aos="fade-up">Mi Historia</h5>
-            <h1 data-aos="fade-up" data-aos-delay="200">Un Viaje de Transformación y Crecimiento</h1>
+            <p class="section-eyebrow">Mi Historia</p>
+            <h2 class="section-heading">Un Viaje de Transformación y Crecimiento</h2>
         </div>
     </div>
     <div class="row">
-        <div class="about-profile-wrapper" style="display: flex; flex-wrap: wrap; gap: 40px; margin-top: 40px;">
-            <div class="about-image-column" style="flex: 1; min-width: 250px; text-align: center;">
-
+        <div class="about-profile-wrapper">
+            <div class="about-image-column" data-reveal>
                 {% if info.photo %}
-                {# width/height explícitos previenen CLS mientras carga la imagen del CDN #}
-                <img src="{{ BRAND.PROFILE_PICTURE }}"
-                     alt="Javier Hernández Martin — Technical Product Manager"
-                     width="220"
-                     height="220"
-                     loading="lazy"
-                     decoding="async"
-                     data-aos="fade-right"
-                     data-aos-delay="300"
-                     style="width: 220px; height: 220px; border-radius: 15px; border: 4px solid #CC0052; object-fit: cover;">
+                <img class="about-photo" src="{{ BRAND.PROFILE_PICTURE }}"
+                     alt="Javier Hernández Martin, Technical Product Manager"
+                     width="220" height="220" loading="lazy" decoding="async">
                 {% endif %}
 
-                <ul class="info-list" style="text-align: left; margin-top: 30px; list-style: none; padding: 0;">
+                <ul class="info-list">
                     <li><strong>Nombre:</strong> <span>{{ info.name }}</span></li>
-                    <li><strong>Email:</strong> <span>{{ info.email }}</span></li>
-                    <li><strong>Web:</strong> <span>{{ info.web }}</span></li>
+                    {% if info.email %}<li><strong>Email:</strong> <a href="mailto:{{ info.email }}">{{ info.email }}</a></li>{% endif %}
+                    {% if info.web %}<li><strong>Web:</strong> <span>{{ info.web }}</span></li>{% endif %}
                 </ul>
             </div>
-            <div class="about-text-column" style="flex: 2; min-width: 300px;" data-aos="fade-left" data-aos-delay="500">
+            <div class="about-text-column" data-reveal>
                 <p class="lead">{{ info.bio }}</p>
-                <p>{{ info.perfil }}</p>
-                <h3 style="color:#CC0052; margin-top: 30px;">Habilidades Clave</h3>
-                <p> </p>
-                <ul class="skill-bars" style="margin-top: 50px;">
+                {% if info.perfil %}<p>{{ info.perfil }}</p>{% endif %}
+                <h3>Habilidades Clave</h3>
+                <ul class="skill-bars">
                     {% for skill in skills %}
                     <li>
-                        <div class="progress" data-percent="{{ skill.score }}%" style="width: 0%;">
+                        <div class="progress" data-percent="{{ skill.score }}%" style="width: 0%;" role="progressbar"
+                             aria-valuenow="{{ skill.score }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ skill.name }}">
                             <span>{{ skill.score }}%</span>
                         </div>
                         <strong>{{ skill.name }}</strong>

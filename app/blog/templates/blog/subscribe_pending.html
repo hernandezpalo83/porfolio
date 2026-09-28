@@ -1,6 +1,7 @@
 {% extends "landing/layouts/base.html" %}
 {% load static %}
 
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
 {% block title %}Suscripción pendiente · Blog{% endblock %}
 {% block meta_description %}Revisa tu correo para confirmar tu suscripción al blog de Javier Hernández Martín.{% endblock %}
 
@@ -10,13 +11,13 @@
         <div class="row text-center">
             <div class="col-twelve">
                 {% if already_subscribed %}
-                <h5 class="hero-sub" style="color: #10b981;">Ya estás suscrito</h5>
+                <p class="hero-sub" style="color: #047857;">Ya estás suscrito</p>
                 <h1 class="hero-title" style="font-size: 3.6rem;">¡Ya formas parte del blog!</h1>
                 <p style="color: #aaa; font-size: 1.6rem; margin-top: 1.5rem;">
                     El correo <strong style="color:#fff;">{{ email }}</strong> ya está confirmado.
                 </p>
                 {% else %}
-                <h5 class="hero-sub" style="color: #CC0052;">Casi listo</h5>
+                <p class="hero-sub" style="color: #CC0052;">Casi listo</p>
                 <h1 class="hero-title" style="font-size: 3.6rem;">Confirma tu suscripción</h1>
                 <p style="color: #aaa; font-size: 1.6rem; margin-top: 1.5rem;">
                     Te hemos enviado un email a <strong style="color:#fff;">{{ email }}</strong>.<br>

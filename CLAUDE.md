@@ -80,6 +80,11 @@ DEBUG=False SECRET_KEY=test PYTHONPATH=. python app/manage.py collectstatic --no
 - ❌ **NO CKEditor HTML inside `<p>`**: The content brings its own `<p>`; browsers eject them from the wrapper. Use a `<div>`.
 - ❌ **NO 16px `rem` assumptions in landing**: `html { font-size: 62.5% }` → `1rem = 10px`.
 - ❌ **NO `#CC0052` text on dark / `#FF0077` on light**: Fails WCAG AA. Use `#CC0052` on light, `#FF1493` on dark (`var(--accent-primary)` handles it).
+- ❌ **NO icon fonts in public pages**: Use `{% load ui %}{% icon "name" %}` (SVG sprite in `landing/components/icon_sprite.html`). Font Awesome 6 is only loaded, non-blocking, in wiki pages with DB-driven category icons.
+- ❌ **NO AOS / animation libraries**: Use `data-reveal` (IntersectionObserver in `main.js`); content must stay visible without JS.
+- ❌ **NO `request.scheme` / `build_absolute_uri` for canonical, OG or JSON-LD**: Render's proxy makes them `http://`. Use `{{ SITE_URL }}{{ request.path }}`; escape JSON-LD strings with `|json_str`.
+- ❌ **NO more than one `<h1>` per page**: Section titles are `<h2 class="section-heading">`, eyebrows `<p class="section-eyebrow">`.
+- ❌ **NO generic element selectors (`header`, `nav`) with layout in `bundle.v2.css`**: They leak into article headers and breadcrumbs. Scope them with a class.
 
 ---
 

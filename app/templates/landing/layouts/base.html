@@ -1,4 +1,4 @@
-{% load static %}
+{% load static ui %}
 <!DOCTYPE html>
 <html class="no-js" lang="es">
 
@@ -6,29 +6,33 @@
     <meta charset="UTF-8">
     <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');
         try { var t = localStorage.getItem('hernandezpalo-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0C0C0C">
 
     <title>{% block title %}Technical Product Manager | Javier Hernández Martin | Madrid{% endblock %}</title>
 
     <meta name="description"
         content="{% block meta_description %}Javier Hernández Martin: Technical Product Manager Senior en Madrid. Experto en alinear visión de producto con ingeniería escalable, Python y Agile.{% endblock %}">
-    <meta name="keywords"
-        content="{% block meta_keywords %}Technical Product Manager, TPM, Product Owner, Django, Agile, Madrid, Javier Hernández Martin{% endblock %}">
     <meta name="author" content="Javier Hernández Martin">
+    {% block robots %}{% endblock %}
 
     {% block canonical %}
-    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    <link rel="canonical" href="{{ SITE_URL }}{{ request.path }}">
     {% endblock %}
 
     {# Open Graph / Social Media #}
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ SITE_URL }}{{ request.path }}{% endblock %}">
     <meta property="og:title"
         content="{% block og_title %}Javier Hernández Martin | TPM & Senior Developer{% endblock %}">
     <meta property="og:description"
         content="{% block og_description %}Javier Hernández Martin: Technical Product Manager Senior en Madrid. Experto en alinear visión de producto con ingeniería escalable.{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{% static 'landing/img/og-image.webp' %}{% endblock %}">
-    <meta property="og:site_name" content="HernandezPalo Portfolio">
+    <meta property="og:image" content="{% block og_image %}{{ SITE_URL }}{% static 'landing/img/og-image.jpg' %}{% endblock %}">
+    <meta property="og:image:width" content="{% block og_image_width %}1200{% endblock %}">
+    <meta property="og:image:height" content="{% block og_image_height %}630{% endblock %}">
+    <meta property="og:image:alt" content="{% block og_image_alt %}Javier Hernández Martin, Technical Product Manager{% endblock %}">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:site_name" content="HernandezPalo">
 
     {# Twitter Cards #}
     <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
@@ -38,52 +42,24 @@
     <meta name="twitter:description"
         content="{% block twitter_description %}Javier Hernández Martin: Technical Product Manager Senior en Madrid. Experto en alinear visión de producto con ingeniería escalable.{% endblock %}">
     <meta name="twitter:image"
-        content="{% block twitter_image %}{% static 'landing/img/og-image.webp' %}{% endblock %}">
+        content="{% block twitter_image %}{{ SITE_URL }}{% static 'landing/img/og-image.jpg' %}{% endblock %}">
 
-    {# 🚀 FAVICON #}
     <link rel="icon" type="image/png" href="{% static 'landing/img/favicon.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/img/favicon.png' %}">
 
-    {# 🚀 PRECONNECT — CDNs remotos #}
-    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
-    <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-    {# reCAPTCHA v3 — preconnect para reducir latencia del script #}
-    <link rel="preconnect" href="https://www.google.com">
-    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-    {# 🚀 FUENTES PRELOAD #}
-    <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-regular-webfont.woff2' %}" as="font"
-        type="font/woff2" crossorigin>
-    <link rel="preload" href="{% static 'landing/fonts/lora/lora-regular-webfont.woff2' %}" as="font" type="font/woff2"
-        crossorigin>
+    <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-medium-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'landing/fonts/poppins/poppins-bold-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+    {% block preload %}{% endblock %}
 
-    <link rel="stylesheet" href="{% static 'landing/fonts/poppins/stylesheet-optimized.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/fonts/lora/stylesheet-optimized.css' %}">
-
-    {# 🚀 LOCAL FONTS #}
-    <link rel="stylesheet" href="{% static 'landing/css/fonts.css' %}">
-
-    {# 🚀 ICONS #}
-    <link rel="stylesheet" href="{% static 'landing/css/font-awesome/css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'landing/css/micons/micons.css' %}">
-
-    {# 🚀 CRITICAL ASSETS PRELOAD #}
-    <link rel="preload" as="image" href="{% static 'landing/img/intro-bg.webp' %}">
-
-    {# 🚀 CRITICAL CSS (Above the Fold) #}
     {% include "landing/components/critical_css.html" %}
 
-    {# 🚀 AOS CSS (deferred — 25KB, solo afecta animaciones scroll) #}
-    <link rel="preload" href="{% static 'landing/css/vendor/aos.min.css' %}" as="style"
-        onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{% static 'landing/css/vendor/aos.min.css' %}"></noscript>
-
-    {# 🚀 CSS CONSOLIDADO (Defered) #}
-    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.3.0" as="style"
+    {# Non-critical CSS: loaded without blocking first paint #}
+    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.4.0" as="style"
         onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.3.0">
+        <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.4.0">
     </noscript>
 
     {% block extra_schema %}
@@ -91,8 +67,10 @@
     {
       "@context": "https://schema.org",
       "@type": "Person",
+      "@id": "{{ SITE_URL }}/#person",
       "name": "Javier Hernández Martin",
-      "url": "https://hernandezpalo.es",
+      "url": "{{ SITE_URL }}/",
+      "image": "{{ BRAND.PROFILE_PICTURE }}",
       "jobTitle": "Technical Product Manager",
       "worksFor": {
         "@type": "Organization",
@@ -119,9 +97,10 @@
 </head>
 
 <body id="top">
+    {% include "landing/components/icon_sprite.html" %}
     {% include "landing/components/navbar.html" %}
 
-    <main>
+    <main id="main-content" tabindex="-1">
         {% block content %}{% endblock %}
     </main>
 
@@ -133,32 +112,13 @@
                 </div>
             </div>
             <div id="go-top">
-                <a class="smoothscroll" title="Volver arriba" href="#top">
-                    <i class="fa fa-long-arrow-up"></i>
-                </a>
+                <a title="Volver arriba" href="#top" aria-label="Volver arriba">{% icon "arrow-up" %}</a>
             </div>
         </div>
     </footer>
 
-    {# REMOVED: jQuery and Plugins (Refactored to Vanilla JS) #}
     <script src="{% static 'landing/js/main.js' %}" defer></script>
-
-    {# 🚀 TYPING EFFECT & AOS ANIMATIONS — vendor local (sin CDN externo) #}
-    <script src="{% static 'landing/js/vendor/typed.min.js' %}"></script>
-    <script src="{% static 'landing/js/vendor/aos.min.js' %}"></script>
-    <script >
-        AOS.init({ duration: 800, easing: 'ease-in-out', once: true, mirror: false });
-        document.addEventListener('DOMContentLoaded', function () {
-            if (document.getElementById('typed-roles')) {
-                new Typed('#typed-roles', {
-                    strings: ['Technical Product Manager', 'Senior Software Engineer', 'Agile & Data-Driven Leader'],
-                    typeSpeed: 50, backSpeed: 30, backDelay: 2000, loop: true
-                });
-            }
-        });
-    </script>
-    <script src="{% static 'landing/js/dark-mode.js' %}"></script>
-    <script src="{% static 'landing/js/metrics.js' %}" defer></script>
+    <script src="{% static 'landing/js/dark-mode.js' %}" defer></script>
 
     {% block extra_js %}{% endblock %}
 </body>

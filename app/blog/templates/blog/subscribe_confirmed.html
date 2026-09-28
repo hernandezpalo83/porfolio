@@ -1,6 +1,7 @@
 {% extends "landing/layouts/base.html" %}
 {% load static %}
 
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
 {% block title %}Suscripción confirmada · Blog{% endblock %}
 {% block meta_description %}Tu suscripción al blog de Javier Hernández Martín ha sido confirmada.{% endblock %}
 
@@ -9,7 +10,7 @@
     <section class="blog-hero" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
         <div class="row text-center">
             <div class="col-twelve">
-                <h5 class="hero-sub" style="color: #10b981;">¡Confirmado!</h5>
+                <p class="hero-sub" style="color: #047857;">¡Confirmado!</p>
                 <h1 class="hero-title" style="font-size: 3.6rem;">Bienvenido al blog</h1>
                 <p style="color: #aaa; font-size: 1.6rem; margin-top: 1.5rem;">
                     <strong style="color:#fff;">{{ email }}</strong> está ahora suscrito.<br>

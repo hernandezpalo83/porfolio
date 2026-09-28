@@ -1,42 +1,23 @@
 {% extends "landing/layouts/base.html" %}
+{% load ui %}
 {% load static %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'docs/css/docs.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 <div class="docs-container">
-
-    <!-- 📄 Main Content Area -->
-    <main class="docs-main">
+    <div class="docs-main">
         <div class="docs-content">
             {% block docs_content %}{% endblock %}
         </div>
 
-        <div style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid #eee;">
-            <a href="{% url 'landing:index' %}" style="color: #999; text-decoration: none; font-size: 1.2rem;">
-                <i class="fa fa-arrow-left"></i> Volver a Portfolio
-            </a>
+        <div class="docs-back">
+            <a href="{% url 'landing:index' %}">{% icon "arrow-left" %} Volver a Portfolio</a>
         </div>
-    </main>
+    </div>
 
-    <!-- 📑 TOC Sidebar (Optional) -->
     {% block docs_toc %}{% endblock %}
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script >
-    // Smooth scroll for anchors
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-</script>
 {% endblock %}
