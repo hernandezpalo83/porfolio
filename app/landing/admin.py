@@ -1,13 +1,22 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Info, Skill, Experience, Education, Project, Contact, Contacto, Metric
-from .models import MenuItem, CompanyCollaboration, Technology
+from .models import MenuItem, CompanyCollaboration, Technology, CredlyBadge
 
 @admin.register(Info)
 class InfoAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone', 'address')
     search_fields = ('name', 'email', 'phone', 'address')
     list_filter = ('name',)
+
+@admin.register(CredlyBadge)
+class CredlyBadgeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'issuer', 'issued_at', 'is_visible')
+    list_editable = ('is_visible',)
+    list_filter = ('issuer', 'is_visible')
+    search_fields = ('name', 'issuer')
+    readonly_fields = ('credly_id', 'created_at', 'updated_at')
+    date_hierarchy = 'issued_at'
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
