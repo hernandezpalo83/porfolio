@@ -582,7 +582,7 @@
     </div>
 </section>
 
-<script>
+<script nonce="{{ request.csp_nonce }}">
     (function () {
         var cards = document.querySelectorAll('.xp-card');
         function toggle(card) {

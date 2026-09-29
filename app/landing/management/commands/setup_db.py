@@ -305,6 +305,12 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"Error actualizando analytics: {e}"))
             # No abortamos, es no-crítico
 
+        # RETENTION step: apply the periods promised in /privacidad/ (no Celery Beat on Render)
+        try:
+            call_command('purge_personal_data')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Error aplicando la retención de datos: {e}"))
+
         # Final check: verify critical tables exist (debugging for production issues)
         self._check_critical_tables()
 

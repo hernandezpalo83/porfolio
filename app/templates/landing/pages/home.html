@@ -30,7 +30,7 @@
 {% block extra_js %}
 <script src="{% static 'landing/js/vendor/typed.min.js' %}" defer></script>
 <script src="{% static 'landing/js/metrics.js' %}" defer></script>
-<script>
+<script nonce="{{ request.csp_nonce }}">
     document.addEventListener('DOMContentLoaded', function () {
         var el = document.getElementById('typed-roles');
         if (!el || !window.Typed || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

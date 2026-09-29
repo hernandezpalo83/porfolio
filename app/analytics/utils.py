@@ -1,7 +1,5 @@
-import requests
 import logging
 import ipaddress
-from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
@@ -22,34 +20,10 @@ def get_client_ip(request) -> str:
         return '0.0.0.0'
 
 
-@lru_cache(maxsize=1000)
-def get_country_from_ip(ip: str) -> str:
-    """
-    Obtener país de IP usando ip-api.com (caché de 1000 IPs).
-    Privacy-first: sin cookies, solo detecta país anónimamente.
-    SECURITY: IP validado antes de usarlo en la URL (previene SSRF).
-    """
-    if ip in ['0.0.0.0', '127.0.0.1', 'localhost']:
-        return 'XX'
-
-    try:
-        ipaddress.ip_address(ip)
-    except ValueError:
-        logger.warning(f"IP inválida recibida: {ip}")
-        return 'XX'
-
-    try:
-        response = requests.get(
-            f'https://ip-api.com/json/{ip}?fields=countryCode',
-            timeout=2
-        )
-        if response.status_code == 200:
-            data = response.json()
-            return data.get('countryCode', 'XX')
-    except Exception as e:
-        logger.warning(f"Error detectando país de {ip}: {e}")
-
-    return 'XX'
+def get_country(request) -> str:
+    """ISO country from Cloudflare's CF-IPCountry header (no IP leaves the server). 'XX' when unknown."""
+    code = (request.META.get('HTTP_CF_IPCOUNTRY') or '').upper()
+    return code if len(code) == 2 and code.isalpha() and code not in ('XX', 'T1') else 'XX'
 
 
 def detect_device(user_agent: str) -> str:

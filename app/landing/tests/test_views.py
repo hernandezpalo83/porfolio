@@ -71,3 +71,35 @@ class PrivateAreaTests(TestCase):
         resp = self.client.post(reverse('landing:db_backup'), {'action': 'export'})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp['Content-Type'], 'application/json')
+
+
+class PrivacyPageTests(TestCase):
+    fixtures = ['test_landing.json']
+
+    def test_privacy_page_and_links(self):
+        resp = self.client.get(reverse('landing:privacy'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'id="privacidad"')
+        self.assertContains(resp, 'noindex, follow')
+        home = self.client.get(reverse('landing:index'))
+        self.assertContains(home, 'href="/privacidad/"')
+
+
+class ContentSecurityPolicyTests(TestCase):
+    fixtures = ['test_landing.json']
+
+    def test_public_pages_enforce_nonce_policy(self):
+        resp = self.client.get(reverse('landing:index'))
+        policy = resp['Content-Security-Policy']
+        self.assertIn("'nonce-", policy)
+        self.assertNotIn("'unsafe-inline'", policy.split('script-src')[1].split(';')[0])
+        nonce = policy.split("'nonce-")[1].split("'")[0]
+        self.assertContains(resp, f'<script nonce="{nonce}">')
+        self.assertNotContains(resp, ' onload="')
+        # Safari upgrades http://localhost too: static files would break in development
+        self.assertNotIn('upgrade-insecure-requests', policy)
+
+    def test_private_area_is_only_monitored(self):
+        resp = self.client.get('/login/')
+        self.assertNotIn('Content-Security-Policy', resp)
+        self.assertIn('Content-Security-Policy-Report-Only', resp)

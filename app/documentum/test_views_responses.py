@@ -44,3 +44,29 @@ class DocumentumViewResponsesTests(TestCase):
         resp = self.client.get('/sitemap.xml')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, self.doc.get_absolute_url())
+
+
+class UnpublishMigrationTests(TestCase):
+    def test_vendor_and_internal_docs_become_drafts(self):
+        import importlib
+        from django.apps import apps as global_apps
+        migration = importlib.import_module('app.documentum.migrations.0002_unpublish_vendor_and_internal_docs')
+        Category = apps.get_model('documentum', 'Category')
+        Document = apps.get_model('documentum', 'Document')
+        vendor = Category.objects.create(name='app', slug='app', is_visible=True)
+        general = Category.objects.create(name='General', slug='general', is_visible=True)
+        lic = Document.objects.create(title='License.F94', slug='licensef94142512c91', category=vendor,
+                                      content_markdown='MIT', status='published')
+        log = Document.objects.create(title='CHANGELOG', slug='changelog', category=general,
+                                      content_markdown='x', status='published')
+        keep = Document.objects.create(title='Portfolio', slug='portfolio', category=general,
+                                       content_markdown='x', status='published')
+        migration.unpublish(global_apps, None)
+        for doc in (lic, log, keep):
+            doc.refresh_from_db()
+        vendor.refresh_from_db()
+        general.refresh_from_db()
+        self.assertEqual((lic.status, log.status, keep.status), ('draft', 'draft', 'published'))
+        self.assertFalse(vendor.is_visible)
+        self.assertTrue(general.is_visible)
+        self.assertEqual(self.client.get(lic.get_absolute_url()).status_code, 404)

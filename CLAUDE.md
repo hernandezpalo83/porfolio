@@ -86,6 +86,9 @@ DEBUG=False SECRET_KEY=test PYTHONPATH=. python app/manage.py collectstatic --no
 - ❌ **NO more than one `<h1>` per page**: Section titles are `<h2 class="section-heading">`, eyebrows `<p class="section-eyebrow">`.
 - ❌ **NO generic element selectors (`header`, `nav`) with layout in `bundle.v2.css`**: They leak into article headers and breadcrumbs. Scope them with a class.
 - ❌ **NO per-section paddings or fixed hero heights**: Home sections take their spacing from `--section-space` / `--section-head-gap` (`critical_css.html`), and the navbar offset from `--header-h` (updated by `main.js`). Never add `padding: 12rem 0` to a section or `height`/`translate` to the hero, or content will slide under the fixed navbar.
+- ❌ **NO inline event handlers or un-nonced inline scripts in public templates**: The public CSP is enforced (`CONTENT_SECURITY_POLICY`). Inline `<script>` needs `nonce="{{ request.csp_nonce }}"` (not available inside form widgets: use a static JS file); async CSS uses `media="print" data-async-css`, never `onload=`. Private prefixes are listed in `CSP_PRIVATE_PREFIXES`.
+- ❌ **NO blocking work in middleware**: No external HTTP calls or synchronous remote DB writes per request. Analytics stores no IP/user-agent (anonymous daily hash, country from `CF-IPCountry`) and writes off the request path.
+- ❌ **NO personal data without a retention rule**: Retention promised in `/privacidad/` is applied by `purge_personal_data` (run by `setup_db` on every deploy). Update both if it changes.
 
 ---
 

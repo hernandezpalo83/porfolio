@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <script>document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');
+    <script nonce="{{ request.csp_nonce }}">document.documentElement.classList.remove('no-js'); document.documentElement.classList.add('js');
         try { var t = localStorage.getItem('hernandezpalo-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0C0C0C">
@@ -56,8 +56,8 @@
     {% include "landing/components/critical_css.html" %}
 
     {# Non-critical CSS: loaded without blocking first paint #}
-    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.6.0" as="style"
-        onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'landing/css/bundle.v2.css' %}?v=2.6.0" as="style">
+    <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.6.0" media="print" data-async-css>
     <noscript>
         <link rel="stylesheet" href="{% static 'landing/css/bundle.v2.css' %}?v=2.6.0">
     </noscript>
@@ -94,6 +94,14 @@
     {% block extra_css %}{% endblock %}
 
     {% block head %}{% endblock %}
+
+    {# Async stylesheets (media="print" + data-async-css) switch to all media once loaded. No inline onload: the CSP forbids it #}
+    <script nonce="{{ request.csp_nonce }}">
+        document.querySelectorAll('link[data-async-css]').forEach(function (l) {
+            function apply() { l.media = 'all'; }
+            if (l.sheet) { apply(); } else { l.addEventListener('load', apply); }
+        });
+    </script>
 </head>
 
 <body id="top">
@@ -109,6 +117,7 @@
             <div class="col-six tab-full">
                 <div class="copyright">
                     <span>© HernandezPalo {% now "Y" %}.</span>
+                    <span><a href="{% url 'landing:privacy' %}">Aviso legal y privacidad</a></span>
                 </div>
             </div>
             <div id="go-top">
