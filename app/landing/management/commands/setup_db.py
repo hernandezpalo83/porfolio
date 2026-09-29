@@ -305,6 +305,12 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"Error actualizando analytics: {e}"))
             # No abortamos, es no-crítico
 
+        # CREDLY step: refresh the verified badges shown in Education (non-critical)
+        try:
+            call_command('sync_credly')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Error sincronizando Credly: {e}"))
+
         # RETENTION step: apply the periods promised in /privacidad/ (no Celery Beat on Render)
         try:
             call_command('purge_personal_data')

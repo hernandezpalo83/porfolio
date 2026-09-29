@@ -112,7 +112,7 @@ CONTENT_SECURITY_POLICY = {
         "style-src": [SELF, UNSAFE_INLINE, "cdnjs.cloudflare.com"],  # component <style>, FA6 in wiki
         "font-src": [SELF, "cdnjs.cloudflare.com"],
         "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co",
-                    "www.gstatic.com"],
+                    "www.gstatic.com", "images.credly.com"],
         "connect-src": [SELF, "www.google.com"],  # reCAPTCHA telemetry (api2/clr)
         "frame-src": ["www.google.com"],  # reCAPTCHA iframe
         "frame-ancestors": [NONE],
@@ -133,7 +133,8 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
         "style-src": [SELF, UNSAFE_INLINE, "fonts.googleapis.com", "cdn.jsdelivr.net", "cdnjs.cloudflare.com",
                       "unpkg.com"],
         "font-src": [SELF, "fonts.gstatic.com", "cdn.jsdelivr.net", "cdnjs.cloudflare.com"],
-        "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co"],
+        "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co",
+                    "images.credly.com"],
         "connect-src": [SELF, "www.google.com"],  # reCAPTCHA telemetry (api2/clr)
         "frame-src": ["www.google.com"],
         "object-src": [NONE],

@@ -4,7 +4,7 @@ from app.utils.content_cache import cached
 from django.core.management import call_command
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django_ratelimit.decorators import ratelimit
-from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration
+from .models import Info, Skill, Experience, Education, Project, Metric, CompanyCollaboration, CredlyBadge
 from app.blog.models import Post
 from .forms import FormularioContacto
 from .seo import home_structured_data
@@ -70,6 +70,10 @@ def _build_home_data() -> Dict[str, Any]:
         ),
         'metrics': list(Metric.objects.filter(is_visible=True).order_by('order')),
         'companies': list(CompanyCollaboration.objects.filter(is_active=True).order_by('order')),
+        'credly_badges': list(CredlyBadge.objects.filter(is_visible=True)[:5]),
+        'credly_count': CredlyBadge.objects.filter(is_visible=True).count(),
+        'credly_issuers': list(CredlyBadge.objects.filter(is_visible=True).exclude(issuer='')
+                               .values_list('issuer', flat=True).distinct().order_by('issuer')),
     }
     home_data['projects'], home_data['project_filters'] = build_portfolio(Project.objects.all())
     return home_data

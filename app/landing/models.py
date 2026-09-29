@@ -23,6 +23,12 @@ class Info(models.Model):
     Experience_title = models.CharField(max_length=150, default='Experience')
     Experience_subtitle = models.CharField(max_length=300, default='Experience')
     Experience_description = CKEditor5Field('Text', config_name='default', blank=True, default="")
+    credly_url = models.URLField(
+        max_length=300, blank=True, default='',
+        verbose_name="Perfil de Credly",
+        help_text="URL pública de tus insignias, ej: https://www.credly.com/users/tu-usuario/badges. "
+                  "Las insignias se sincronizan en cada despliegue (comando sync_credly).",
+    )
     
     def __str__(self):
         return self.name
@@ -240,3 +246,26 @@ class CompanyCollaboration(models.Model):
         elif not base_url.endswith('/') and not self.logo.startswith('/'):
             return f"{base_url}/{self.logo}"
         return f"{base_url}{self.logo}"
+
+
+class CredlyBadge(models.Model):
+    """Insignia verificada de Credly, sincronizada con `manage.py sync_credly`."""
+    credly_id = models.CharField(max_length=64, unique=True, editable=False)
+    name = models.CharField(max_length=200, verbose_name="Nombre")
+    issuer = models.CharField(max_length=150, blank=True, default='', verbose_name="Emisor")
+    image_url = models.URLField(max_length=500, verbose_name="Imagen")
+    badge_url = models.URLField(max_length=500, verbose_name="Enlace de verificación")
+    issued_at = models.DateField(verbose_name="Fecha de emisión")
+    expires_at = models.DateField(null=True, blank=True, verbose_name="Caduca")
+    is_visible = models.BooleanField(default=True, verbose_name="Visible",
+                                     help_text="Desmárcala para ocultarla en la web; la sincronización la respeta.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-issued_at', 'name']
+        verbose_name = "Insignia de Credly"
+        verbose_name_plural = "Insignias de Credly"
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.issuer})" if self.issuer else self.name

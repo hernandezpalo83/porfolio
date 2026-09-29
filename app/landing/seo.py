@@ -26,7 +26,7 @@ def home_structured_data(home_data: Dict[str, Any]) -> str:
         "jobTitle": "Technical Product Manager",
         "worksFor": {"@type": "Organization", "name": "Sandav Consultores SL"},
         "address": {"@type": "PostalAddress", "addressLocality": "Madrid", "addressCountry": "ES"},
-        "sameAs": SAME_AS,
+        "sameAs": SAME_AS + ([info.credly_url] if info and getattr(info, "credly_url", "") else []),
     }
     if brand.get("PROFILE_PICTURE"):
         person["image"] = brand["PROFILE_PICTURE"]
