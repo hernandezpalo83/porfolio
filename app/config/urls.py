@@ -10,24 +10,31 @@ from django.conf.urls.static import static
 from app.documentum.sitemaps import DocumentSitemap, CategorySitemap
 
 from django.views.generic import TemplateView
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django_ratelimit.decorators import ratelimit
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def health_check(request):
     return JsonResponse({"status": "ok"})
 
 
+@csrf_exempt  # browsers send CSP reports without a CSRF token
+@require_POST
+@ratelimit(key='ip', rate='30/m', block=True)
 def csp_report(request):
-    """Recibe violaciones CSP del navegador (Report-Only). Solo registra en logs."""
-    import logging, json
-    logger = logging.getLogger('app.config')
-    if request.method == 'POST':
+    """Recibe las violaciones CSP que envía el navegador y las registra en los logs."""
+    if len(request.body) <= 8192:
         try:
-            body = json.loads(request.body)
-            logger.warning("CSP violation: %s", body)
-        except Exception:
-            pass
-    return JsonResponse({}, status=204)
+            logger.warning("CSP violation: %s", json.loads(request.body))
+        except ValueError:
+            logger.info("CSP report with an invalid body")
+    return HttpResponse(status=204)
 
 
 def debug_diagnostics(request):
