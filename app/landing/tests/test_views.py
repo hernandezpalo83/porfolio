@@ -103,3 +103,18 @@ class ContentSecurityPolicyTests(TestCase):
         resp = self.client.get('/login/')
         self.assertNotIn('Content-Security-Policy', resp)
         self.assertIn('Content-Security-Policy-Report-Only', resp)
+
+
+class CspReportEndpointTests(TestCase):
+    def test_accepts_browser_reports_without_csrf(self):
+        from django.test import Client
+        client = Client(enforce_csrf_checks=True)
+        resp = client.post('/csp-report/', data='{"csp-report": {"violated-directive": "connect-src"}}',
+                           content_type='application/csp-report')
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(client.get('/csp-report/').status_code, 405)
+
+    def test_recaptcha_can_connect(self):
+        resp = self.client.get(reverse('landing:index'))
+        connect = resp['Content-Security-Policy'].split('connect-src')[1].split(';')[0]
+        self.assertIn('www.google.com', connect)

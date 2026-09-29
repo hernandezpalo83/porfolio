@@ -112,7 +112,7 @@ CONTENT_SECURITY_POLICY = {
         "font-src": [SELF, "cdnjs.cloudflare.com"],
         "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co",
                     "www.gstatic.com"],
-        "connect-src": [SELF],
+        "connect-src": [SELF, "www.google.com"],  # reCAPTCHA telemetry (api2/clr)
         "frame-src": ["www.google.com"],  # reCAPTCHA iframe
         "frame-ancestors": [NONE],
         "object-src": [NONE],
@@ -133,7 +133,7 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
                       "unpkg.com"],
         "font-src": [SELF, "fonts.gstatic.com", "cdn.jsdelivr.net", "cdnjs.cloudflare.com"],
         "img-src": [SELF, "data:", "raw.githubusercontent.com", "cdn.jsdelivr.net", "*.supabase.co"],
-        "connect-src": [SELF],
+        "connect-src": [SELF, "www.google.com"],  # reCAPTCHA telemetry (api2/clr)
         "frame-src": ["www.google.com"],
         "object-src": [NONE],
         "base-uri": [SELF],
