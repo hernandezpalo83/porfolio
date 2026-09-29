@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.cache import cache
+from app.utils.content_cache import cached
 from django.core.management import call_command
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django_ratelimit.decorators import ratelimit
@@ -56,6 +56,25 @@ def profile(request: HttpRequest) -> HttpResponse:
     """
     return redirect('landing:private_area')
 
+def _build_home_data() -> Dict[str, Any]:
+    home_data: Dict[str, Any] = {
+        'info': Info.objects.first(),
+        'skills': list(Skill.objects.all().order_by('-score')),
+        'experiences': list(Experience.objects.prefetch_related('technologies').order_by('-start_date')),
+        'education': list(Education.objects.all().order_by('-start_date')),
+        # get_read_time needs 'content': deferring it cost one extra query per post on every request
+        'latest_posts': list(
+            Post.objects.filter(status='published')
+            .only('title', 'slug', 'excerpt', 'content', 'publish', 'imagen_url', 'category_id', 'author_id')
+            .order_by('-publish')[:3]
+        ),
+        'metrics': list(Metric.objects.filter(is_visible=True).order_by('order')),
+        'companies': list(CompanyCollaboration.objects.filter(is_active=True).order_by('order')),
+    }
+    home_data['projects'], home_data['project_filters'] = build_portfolio(Project.objects.all())
+    return home_data
+
+
 @ratelimit(key='ip', rate='5/h', method='POST', block=False)
 def home(request: HttpRequest) -> HttpResponse:
     # 1. GESTIÓN DEL FORMULARIO (POST)
@@ -80,27 +99,9 @@ def home(request: HttpRequest) -> HttpResponse:
         # Carga inicial de la página
         form = FormularioContacto()
 
-    # 2. CARGA DE DATOS PARA LA LANDING (GET) — cacheados 30 min
-    _CACHE_KEY = 'landing_home_data'
-    _CACHE_TTL = 60 * 30
-    home_data = cache.get(_CACHE_KEY)
-    if home_data is None:
-        home_data = {
-            'info': Info.objects.first(),
-            'skills': list(Skill.objects.all().order_by('-score')),
-            'experiences': list(Experience.objects.prefetch_related('technologies').order_by('-start_date')),
-            'education': list(Education.objects.all().order_by('-start_date')),
-
-            'latest_posts': list(
-                Post.objects.filter(status='published')
-                .only('title', 'slug', 'excerpt', 'publish', 'imagen_url', 'category_id', 'author_id')
-                .order_by('-publish')[:3]
-            ),
-            'metrics': list(Metric.objects.filter(is_visible=True).order_by('order')),
-            'companies': list(CompanyCollaboration.objects.filter(is_active=True).order_by('order')),
-        }
-        home_data['projects'], home_data['project_filters'] = build_portfolio(Project.objects.all())
-        cache.set(_CACHE_KEY, home_data, _CACHE_TTL)
+    # 2. CARGA DE DATOS PARA LA LANDING (GET): caché versionada, se invalida al guardar
+    #    cualquier modelo de la landing o del blog (últimos artículos)
+    home_data = cached(('landing', 'blog'), 'home', _build_home_data, ttl=60 * 30)
     context: Dict[str, Any] = {
         **home_data,
         'form': form,

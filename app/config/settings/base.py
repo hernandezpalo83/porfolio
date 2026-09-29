@@ -77,6 +77,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    'app.utils.server_timing.ServerTimingMiddleware',  # first: measures the whole request
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -288,10 +289,31 @@ CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutos max
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_RESULT_EXPIRES = 3600  # 1 hora
 
+# ── Cache ───────────────────────────────────────────────────────────────────────
+# Shared by the 4 gunicorn workers on the same instance (a per-process LocMemCache
+# meant 4 cold caches and admin edits invalidating only one of them). Files in /tmp
+# survive restarts of a worker but not a redeploy, which is what we want.
+# Rate limiting keeps a per-process LocMemCache: FileBasedCache has no atomic incr.
+_TESTING = sys.argv[1:2] == ['test']
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache' if _TESTING
+        else 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.getenv('CACHE_DIR', '/tmp/hernandezpalo-cache'),
+        'TIMEOUT': 60 * 60,
+        'OPTIONS': {'MAX_ENTRIES': 3000},
+    },
+    'ratelimit': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'ratelimit',
+    },
+}
+RATELIMIT_USE_CACHE = 'ratelimit'
+
 # Analytics: Celery solo si hay un broker configurado de verdad (en Render no hay Redis);
 # si no, las visitas se guardan en un hilo en segundo plano. En tests, de forma síncrona.
 ANALYTICS_USE_CELERY = bool(os.getenv('CELERY_BROKER_URL'))
-ANALYTICS_ASYNC = sys.argv[1:2] != ['test']
+ANALYTICS_ASYNC = not _TESTING
 
 # En desarrollo/testing, hacer tareas eager (sincrónico) para debugging
 if DEBUG:

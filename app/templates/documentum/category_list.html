@@ -26,7 +26,7 @@
             <span class="docs-cat-icon"><i class="fa-solid {{ cat.icon }}" aria-hidden="true"></i></span>
             <h2>{{ cat.name }}</h2>
             <p>{{ cat.description|truncatewords:20 }}</p>
-            <span class="docs-card-count">{{ cat.document_count }} Documentos {% icon "arrow-right" %}</span>
+            <span class="docs-card-count">{{ cat.published_count }} documento{{ cat.published_count|pluralize }} {% icon "arrow-right" %}</span>
         </a>
     </li>
     {% empty %}

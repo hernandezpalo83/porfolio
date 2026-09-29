@@ -6,3 +6,8 @@ class DocumentumConfig(AppConfig):
     name = 'app.documentum'
     label = 'documentum'
     verbose_name = 'Documentum Hub'
+
+    def ready(self):
+        from app.utils.content_cache import register
+        from .models import Category, Document
+        register('wiki', Category, Document)
