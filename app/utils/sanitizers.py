@@ -6,6 +6,7 @@ allowing only whitelisted tags and attributes.
 """
 
 import logging
+from functools import lru_cache
 from bleach import clean
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,10 @@ ALLOWED_ATTRIBUTES = {
 }
 
 
+# Pure function of its input: memoised so the home does not re-parse the same CKEditor
+# texts with bleach on every request (it was half of the render time). An edited text
+# is a new key, so nothing needs invalidating.
+@lru_cache(maxsize=1024)
 def sanitize_html(html_content: str) -> str:
     """
     Sanitize HTML content using bleach library.

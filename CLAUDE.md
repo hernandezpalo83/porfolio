@@ -89,6 +89,7 @@ DEBUG=False SECRET_KEY=test PYTHONPATH=. python app/manage.py collectstatic --no
 - ❌ **NO inline event handlers or un-nonced inline scripts in public templates**: The public CSP is enforced (`CONTENT_SECURITY_POLICY`). Inline `<script>` needs `nonce="{{ request.csp_nonce }}"` (not available inside form widgets: use a static JS file); async CSS uses `media="print" data-async-css`, never `onload=`. Private prefixes are listed in `CSP_PRIVATE_PREFIXES`.
 - ❌ **NO blocking work in middleware**: No external HTTP calls or synchronous remote DB writes per request. Analytics stores no IP/user-agent (anonymous daily hash, country from `CF-IPCountry`) and writes off the request path.
 - ❌ **NO personal data without a retention rule**: Retention promised in `/privacidad/` is applied by `purge_personal_data` (run by `setup_db` on every deploy). Update both if it changes.
+- ❌ **NO ad-hoc cache keys for public content**: Use `app.utils.content_cache.cached((group,), key, builder)` and `register(group, *models)` so admin edits invalidate every worker. Never cache rendered HTML (it contains the CSRF token and the CSP nonce). Check `Server-Timing` (`connect`/`db`/`app`) before and after performance changes.
 
 ---
 

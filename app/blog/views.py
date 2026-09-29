@@ -2,14 +2,14 @@ import logging
 
 from django.conf import settings as django_settings
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.cache import cache
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from .models import Post, Category, Subscriber
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.db.models.functions import ExtractYear
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
+
+from app.utils.content_cache import cached
 from typing import Optional, List
 
 logger = logging.getLogger('app.blog')
@@ -40,35 +40,38 @@ def _search_posts(queryset, query: str):
         Q(title__icontains=query) | Q(excerpt__icontains=query) | Q(content__icontains=query)
     )
 
+def _published_posts() -> list:
+    return list(Post.objects.filter(status='published').select_related('category').order_by('-publish'))
+
+
 def post_list(request: HttpRequest, category_slug: Optional[str] = None) -> HttpResponse:
-    # Base de posts publicados
-    posts_list = Post.objects.filter(status='published').select_related('category').order_by('-publish')
-    
-    # Filtro por búsqueda
     query: Optional[str] = request.GET.get('q')
     year: Optional[str] = request.GET.get('year')
-    
+
+    # Posts y categorías salen de la caché (se invalida al guardar desde el admin);
+    # solo la búsqueda consulta la base de datos.
+    published = cached(('blog',), 'published_posts', _published_posts)
+    categories: List[Category] = cached(('blog',), 'categories', lambda: list(Category.objects.all()))
+
     category: Optional[Category] = None
-    categories: List[Category] = list(Category.objects.all())
-    
-    # Filtro por búsqueda (full-text en Postgres, icontains en SQLite)
-    if query:
-        posts_list = _search_posts(posts_list, query)
-    
-    # Filtro por categoría
     if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        posts_list = posts_list.filter(category=category)
+        category = next((c for c in categories if c.slug == category_slug), None)
+        if category is None:
+            raise Http404("Categoría no encontrada")
 
-    # Filtro por año
+    if query:
+        posts_list = list(_search_posts(
+            Post.objects.filter(status='published').select_related('category').order_by('-publish'), query
+        ))
+    else:
+        posts_list = published
+    if category:
+        posts_list = [p for p in posts_list if p.category_id == category.pk]
     if year:
-        posts_list = posts_list.filter(publish__year=year)
+        posts_list = [p for p in posts_list if str(p.publish.year) == year]
 
-    # Obtener lista de años únicos para el sidebar
-    archive_years = Post.objects.filter(status='published').annotate(
-        year_val=ExtractYear('publish')
-    ).values_list('year_val', flat=True).distinct().order_by('-year_val')
-    
+    archive_years = sorted({p.publish.year for p in published}, reverse=True)
+
     # Paginación (5 posts)
     paginator = Paginator(posts_list, 5)
     page = request.GET.get('page')
@@ -78,7 +81,7 @@ def post_list(request: HttpRequest, category_slug: Optional[str] = None) -> Http
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
-        
+
     # SEO: meta description dinámica según contexto del filtro
     if query:
         meta_description = f'Resultados de búsqueda para "{query}" en el blog de Javier Hernández Martin.'
@@ -100,23 +103,18 @@ def post_list(request: HttpRequest, category_slug: Optional[str] = None) -> Http
     })
 
 def post_detail(request: HttpRequest, post: str) -> HttpResponse:
-    post_obj: Post = get_object_or_404(
-        Post.objects.select_related('category', 'author'),
-        slug=post,
-        status='published',
-    )
+    post_obj: Optional[Post] = cached(('blog',), f'post:{post}', lambda: (
+        Post.objects.select_related('category', 'author').filter(slug=post, status='published').first()
+    ))
+    if post_obj is None:
+        raise Http404("Artículo no encontrado")
 
-    # Posts relacionados cacheados 15 min por categoría
-    cache_key = f'related_posts_{post_obj.category_id}'
-    related_posts = cache.get(cache_key)
-    if related_posts is None:
-        related_posts = list(
-            Post.objects.filter(category=post_obj.category, status='published')
-            .exclude(pk=post_obj.pk)
-            .only('title', 'slug', 'excerpt', 'publish', 'category_id')
-            .order_by('-publish')[:3]
-        )
-        cache.set(cache_key, related_posts, 60 * 15)
+    related_posts = cached(('blog',), f'related:{post_obj.category_id}:{post_obj.pk}', lambda: list(
+        Post.objects.filter(category=post_obj.category, status='published')
+        .exclude(pk=post_obj.pk)
+        .only('title', 'slug', 'excerpt', 'publish', 'category_id')
+        .order_by('-publish')[:3]
+    ))
 
     return render(request, 'blog/post_detail.html', {
         'post': post_obj,
