@@ -118,7 +118,8 @@ CONTENT_SECURITY_POLICY = {
         "object-src": [NONE],
         "base-uri": [SELF],
         "form-action": [SELF],
-        "upgrade-insecure-requests": True,
+        # No upgrade-insecure-requests: HSTS already forces HTTPS in production, and Safari
+        # applies it to http://localhost, which breaks every static file in development.
         "report-uri": ["/csp-report/"],
     },
 }

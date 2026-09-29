@@ -96,6 +96,8 @@ class ContentSecurityPolicyTests(TestCase):
         nonce = policy.split("'nonce-")[1].split("'")[0]
         self.assertContains(resp, f'<script nonce="{nonce}">')
         self.assertNotContains(resp, ' onload="')
+        # Safari upgrades http://localhost too: static files would break in development
+        self.assertNotIn('upgrade-insecure-requests', policy)
 
     def test_private_area_is_only_monitored(self):
         resp = self.client.get('/login/')
