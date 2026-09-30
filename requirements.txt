@@ -12,6 +12,7 @@ django-ckeditor-5
 psycopg[binary]
 dj-database-url
 requests
+maxminddb>=2.5  # offline IP → network owner (DB-IP ASN Lite) for recruiter analytics
 django-recaptcha
 django-ratelimit
 django-htmlmin

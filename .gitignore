@@ -73,3 +73,6 @@ fly.toml
 *.tmp
 .tmp/
 temp/
+
+# DB-IP ASN Lite database, downloaded on every deploy by update_network_db
+app/data/*.mmdb

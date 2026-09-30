@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from app.utils.content_cache import cached
+from app.analytics.middleware import record_event
+from app.analytics.models import Event
 from django.core.management import call_command
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django_ratelimit.decorators import ratelimit
@@ -90,6 +92,7 @@ def home(request: HttpRequest) -> HttpResponse:
         if form.is_valid():
             # Guardamos en la base de datos (Modelo Contacto)
             form.save()
+            record_event(request, Event.Kind.CONTACT_SUBMIT, label=form.cleaned_data.get('asunto', ''))
             # Mensaje de éxito para el usuario
             messages.success(request, '📩 ¡Tu mensaje está en camino! Te responderé lo antes posible.')
             # Redirigimos al ancla de contacto para limpiar los campos y mostrar el mensaje

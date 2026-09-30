@@ -305,6 +305,12 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"Error actualizando analytics: {e}"))
             # No abortamos, es no-crítico
 
+        # NETWORK DB step: DB-IP ASN Lite to name the company behind each visit (non-critical)
+        try:
+            call_command('update_network_db')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f"Error actualizando la base de datos de redes: {e}"))
+
         # CREDLY step: refresh the verified badges shown in Education (non-critical)
         try:
             call_command('sync_credly')
