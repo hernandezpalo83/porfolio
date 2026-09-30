@@ -133,3 +133,26 @@ class RecruiterDashboardTests(TestCase):
     def test_dashboard_requires_staff(self):
         self.client.force_login(User.objects.create_user('visitor', password='x'))
         self.assertEqual(self.client.get(reverse('analytics:dashboard')).status_code, 302)
+
+
+class ReclassificationTests(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_user('staff', password='x', is_staff=True)
+
+    def test_backbones_stored_as_business_are_moved_out_and_bots_flagged(self):
+        # Rows written with the first rules: Level 3 / RCN were taken for companies
+        for asn, org in ((3356, 'Level 3 Communications'), (6079, 'RCN')):
+            PageView.objects.create(path='/', session_id=f's{asn}', visitor_id=f'v{asn}', asn=asn,
+                                    organization=org, network_type=NetworkType.BUSINESS)
+        PageView.objects.create(path='/', session_id='s1', visitor_id='v1', asn=65010, organization='Acme Robots',
+                                network_type=NetworkType.BUSINESS)
+        PageView.objects.create(path='/', session_id='s2', visitor_id='v2', asn=65011, organization='Indra Sistemas',
+                                network_type=NetworkType.BUSINESS, time_spent=45)
+        self.client.force_login(self.admin)
+        resp = self.client.get(reverse('analytics:dashboard'))
+        orgs = resp.context['organizations']
+        self.assertEqual([o.name for o in orgs], ['Indra Sistemas', 'Acme Robots'])  # engaged first
+        self.assertEqual([o.engaged for o in orgs], [True, False])
+        self.assertEqual(resp.context['kpis']['organizations'], 1)
+        self.assertEqual(resp.context['kpis']['organizations_no_interaction'], 1)
+        self.assertContains(resp, 'Sin interacción (posible bot)')
