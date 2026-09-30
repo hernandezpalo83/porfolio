@@ -1,0 +1,64 @@
+{% extends 'private/layouts/base.html' %}
+
+{% block title %}{{ name }} · Quién mira mi portfolio{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <a class="small" href="{% url 'analytics:dashboard' %}?days={{ days }}"><i class="bi bi-arrow-left"></i> Volver al panel</a>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mt-2 mb-4">
+        <div>
+            <h1 class="h2 fw-bold mb-1">{{ name }}</h1>
+            <p class="text-muted mb-0">{{ type_label }}{% if asn %} · AS{{ asn }}{% endif %} · últimos {{ days }} días</p>
+        </div>
+        {% if asn %}
+        <a class="btn btn-sm btn-outline-secondary"
+           href="{% if has_label %}{% url 'admin:analytics_networklabel_changelist' %}?q={{ asn }}{% else %}{% url 'admin:analytics_networklabel_add' %}?asn={{ asn }}&name={{ name|urlencode }}{% endif %}">
+            <i class="bi bi-tag"></i> {% if has_label %}Editar etiqueta{% else %}Corregir nombre o tipo{% endif %}
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3"><div class="card card-gemini"><div class="card-body">
+            <div class="text-muted small">Visitas</div><div class="fs-3 fw-bold">{{ visits }}</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="card card-gemini"><div class="card-body">
+            <div class="text-muted small">Personas</div><div class="fs-3 fw-bold">{{ visitors }}</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="card card-gemini"><div class="card-body">
+            <div class="text-muted small">Días con visitas</div><div class="fs-3 fw-bold">{{ days_active }}</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="card card-gemini"><div class="card-body">
+            <div class="text-muted small">CV, contacto y newsletter</div><div class="fs-3 fw-bold">{{ conversions }}</div></div></div></div>
+    </div>
+
+    <h2 class="h5 fw-bold mb-3">Visitas, de la más reciente a la más antigua</h2>
+    {% for s in timeline %}
+    <div class="card card-gemini mb-3"><div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+            <div class="fw-semibold">{{ s.start|date:"j M Y, H:i" }}
+                <span class="text-muted fw-normal">· visitante <code>#{{ s.visitor }}</code></span></div>
+            <div class="small text-muted">
+                {{ s.source }}{% if s.channel %} · <span class="badge bg-light text-dark border">{{ s.channel }}</span>{% endif %}
+                · {{ s.device }}{% if s.country %} · {{ s.country }}{% endif %}
+                · {% if s.reading >= 60 %}{% widthratio s.reading 60 1 %} min{% else %}{{ s.reading }} s{% endif %} de lectura
+            </div>
+        </div>
+        <ol class="small mb-2">
+            {% for pv in s.pages %}
+            <li><a href="{{ pv.path }}" target="_blank" rel="noopener">{{ pv.path }}</a>
+                <span class="text-muted">· {{ pv.timestamp|date:"H:i" }}{% if pv.time_spent %} · {{ pv.time_spent }} s{% endif %}{% if pv.scroll_depth %} · {{ pv.scroll_depth }} % leído{% endif %}</span></li>
+            {% endfor %}
+        </ol>
+        {% if s.events %}
+        <div class="d-flex flex-wrap gap-2">
+            {% for ev in s.events %}
+            <span class="badge bg-primary-subtle text-primary-emphasis border"><i class="bi {{ ev.icon }}"></i> {{ ev.kind }}{% if ev.label %}: {{ ev.label|truncatechars:60 }}{% endif %}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div></div>
+    {% endfor %}
+
+    <p class="small text-muted mt-4">Datos de red: <a href="https://db-ip.com" target="_blank" rel="noopener">IP to ASN Lite by DB-IP</a> (CC BY 4.0).
+        Sin cookies ni direcciones IP guardadas.</p>
+</div>
+{% endblock %}

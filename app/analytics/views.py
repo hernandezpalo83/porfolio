@@ -1,55 +1,37 @@
 import logging
 from datetime import timedelta
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
-from django.db.models import Count, Avg
-from .models import PageView, SessionTracker, PostAnalytics, RelatedPostsCache
+from django.db.models import Count
+from . import insights
+from .models import PageView, PostAnalytics, RelatedPostsCache
 from app.blog.models import Post
 
 logger = logging.getLogger(__name__)
 
 
-@login_required
-def analytics_dashboard(request):
-    """Dashboard general de analítica."""
-    try:
-        today = timezone.now().date()
-        week_ago = today - timedelta(days=7)
-        month_ago = today - timedelta(days=30)
+def _is_staff(user) -> bool:
+    return user.is_authenticated and user.is_staff
 
-        # Métricas generales
-        total_views_today = PageView.objects.filter(timestamp__date=today).count()
-        total_views_7d = PageView.objects.filter(timestamp__date__gte=week_ago).count()
-        total_views_30d = PageView.objects.filter(timestamp__date__gte=month_ago).count()
 
-        unique_sessions_7d = SessionTracker.objects.filter(
-            created_at__date__gte=week_ago
-        ).count()
+@user_passes_test(_is_staff)
+def analytics_dashboard(request: HttpRequest) -> HttpResponse:
+    """Quién mira el portfolio (empresas, recurrentes, canal) y qué hace: solo páginas públicas."""
+    days = insights.period_from(request)
+    context = insights.build(days, include_datacenters=request.GET.get('datacenters') == '1')
+    return render(request, 'private/analytics_dashboard.html', context)
 
-        bounce_rate_7d = SessionTracker.objects.filter(
-            created_at__date__gte=week_ago
-        ).filter(is_bounce=True).count() / max(unique_sessions_7d, 1) * 100
 
-        avg_duration_7d = SessionTracker.objects.filter(
-            created_at__date__gte=week_ago
-        ).aggregate(Avg('total_duration'))['total_duration__avg'] or 0
-
-        contexto = {
-            'total_views_today': total_views_today,
-            'total_views_7d': total_views_7d,
-            'total_views_30d': total_views_30d,
-            'unique_sessions_7d': unique_sessions_7d,
-            'bounce_rate_7d': round(bounce_rate_7d, 1),
-            'avg_duration_7d': int(avg_duration_7d),
-        }
-
-        return render(request, 'private/analytics_dashboard.html', contexto)
-    except Exception as e:
-        logger.error(f"Error in analytics_dashboard: {str(e)}", exc_info=True)
-        raise
+@user_passes_test(_is_staff)
+def organization_detail(request: HttpRequest, key: str) -> HttpResponse:
+    days = insights.period_from(request)
+    detail = insights.organization_detail(key, days)
+    if detail is None:
+        raise Http404("Sin visitas de esa red en el periodo")
+    return render(request, 'private/analytics_organization.html', detail)
 
 
 @login_required

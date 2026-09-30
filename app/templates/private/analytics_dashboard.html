@@ -1,240 +1,297 @@
 {% extends 'private/layouts/base.html' %}
-{% load static %}
 
-{% block title %}Analytics Dashboard{% endblock %}
+{% block title %}Quién mira mi portfolio{% endblock %}
 
 {% block content %}
+<style>
+    .ins-kpi .value { font-size: 2.2rem; font-weight: 700; line-height: 1.1; }
+    .ins-kpi .hint { font-size: .8rem; }
+    .ins-table td, .ins-table th { vertical-align: middle; white-space: nowrap; }
+    .ins-table td.wrap { white-space: normal; min-width: 14rem; }
+    .ins-signal { display: inline-flex; align-items: center; gap: .25rem; margin-right: .6rem; }
+    .ins-feed li { padding: .6rem 0; border-bottom: 1px solid rgba(0,0,0,.06); }
+    .ins-feed li:last-child { border-bottom: 0; }
+    .ins-bar { height: .45rem; border-radius: 1rem; background: rgba(204,0,82,.15); }
+    .ins-bar > span { display: block; height: 100%; border-radius: 1rem; background: #CC0052; }
+</style>
+
 <div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-5 fw-bold">📊 Analytics Dashboard</h1>
-            <p class="text-muted">Datos en tiempo real de tu portfolio</p>
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h2 fw-bold mb-1"><i class="bi bi-binoculars"></i> Quién mira mi portfolio</h1>
+            <p class="text-muted mb-0">Solo páginas públicas. Sin cookies ni IPs guardadas: empresas por la red desde la que visitan.</p>
         </div>
-    </div>
-
-    <!-- Métricas principales -->
-    <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="card-title text-muted">Vistas Hoy</h6>
-                    <h2 class="fw-bold text-primary">{{ total_views_today }}</h2>
-                    <small class="text-muted">Últimas 24 horas</small>
-                </div>
+        <div class="d-flex flex-wrap gap-2">
+            <div class="btn-group" role="group" aria-label="Periodo">
+                {% for p in periods %}
+                <a class="btn btn-sm {% if p == days %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                   href="?days={{ p }}{% if include_datacenters %}&datacenters=1{% endif %}">{{ p }} días</a>
+                {% endfor %}
             </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="card-title text-muted">Vistas (7d)</h6>
-                    <h2 class="fw-bold text-success">{{ total_views_7d }}</h2>
-                    <small class="text-muted">Últimos 7 días</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="card-title text-muted">Sesiones Únicas (7d)</h6>
-                    <h2 class="fw-bold text-info">{{ unique_sessions_7d }}</h2>
-                    <small class="text-muted">Visitantes distintos</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="card-title text-muted">Bounce Rate (7d)</h6>
-                    <h2 class="fw-bold text-warning">{{ bounce_rate_7d }}%</h2>
-                    <small class="text-muted">Sesiones de una página</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gráficos -->
-    <div class="row mb-4">
-        <!-- Vistas en el tiempo -->
-        <div class="col-lg-8 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">📈 Vistas Diarias (30 días)</h5>
-                    <canvas id="viewsChart" height="80"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dispositivos -->
-        <div class="col-lg-4 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">📱 Distribución por Dispositivo</h5>
-                    <canvas id="devicesChart" height="80"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Más gráficos -->
-    <div class="row">
-        <!-- Países -->
-        <div class="col-lg-6 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">🌍 Top Países</h5>
-                    <canvas id="countriesChart" height="100"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Páginas populares -->
-        <div class="col-lg-6 mb-3">
-            <div class="card card-gemini shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">🔥 Top Páginas</h5>
-                    <div id="topPagesContainer">
-                        <small class="text-muted">Cargando...</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Link a blog analytics -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <a href="{% url 'analytics:blog_dashboard' %}" class="btn btn-primary btn-lg">
-                📝 Ver Blog Analytics
+            <a class="btn btn-sm btn-outline-secondary" href="?days={{ days }}{% if not include_datacenters %}&datacenters=1{% endif %}">
+                {% if include_datacenters %}Ocultar{% else %}Mostrar{% endif %} centros de datos / bots
             </a>
         </div>
     </div>
+
+    {# ── KPIs ── #}
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
+            <div class="text-muted small">Personas distintas</div>
+            <div class="value">{{ kpis.visitors }}</div>
+            <div class="hint text-muted">{{ kpis.visits }} páginas vistas</div>
+        </div></div></div>
+        <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
+            <div class="text-muted small">Han vuelto</div>
+            <div class="value text-primary">{{ kpis.returning }}</div>
+            <div class="hint text-muted">visitaron en más de un día</div>
+        </div></div></div>
+        <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
+            <div class="text-muted small">Empresas e instituciones</div>
+            <div class="value text-primary">{{ kpis.organizations }}</div>
+            <div class="hint text-muted">{{ kpis.private_visitors }} particulares ({{ kpis.private_visits }} vistas)</div>
+        </div></div></div>
+        <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
+            <div class="text-muted small">Descargas del CV</div>
+            <div class="value">{{ kpis.cv_downloads }}</div>
+            <div class="hint text-muted">botón del inicio</div>
+        </div></div></div>
+        <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
+            <div class="text-muted small">Mensajes de contacto</div>
+            <div class="value">{{ kpis.contacts }}</div>
+            <div class="hint text-muted">{{ kpis.newsletter }} suscripciones</div>
+        </div></div></div>
+        <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
+            <div class="text-muted small">Lectura media</div>
+            <div class="value">{% if kpis.avg_reading >= 60 %}{% widthratio kpis.avg_reading 60 1 %} min{% else %}{{ kpis.avg_reading }} s{% endif %}</div>
+            <div class="hint text-muted">por página, con la pestaña visible</div>
+        </div></div></div>
+    </div>
+
+    {# ── Evolución ── #}
+    <div class="card card-gemini mb-4"><div class="card-body">
+        <h2 class="h5 fw-bold">Evolución diaria</h2>
+        <canvas id="insChart" height="70" aria-label="Visitas, personas y empresas por día" role="img"></canvas>
+    </div></div>
+
+    {# ── Empresas ── #}
+    <div class="card card-gemini mb-4"><div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-2">
+            <h2 class="h5 fw-bold mb-0"><i class="bi bi-building"></i> Empresas e instituciones</h2>
+            <small class="text-muted">Ordenadas por interés: vueltas, lectura, casos abiertos y descargas.
+                ¿Alguna mal identificada? Corrígela en <a href="{% url 'admin:analytics_networklabel_changelist' %}">Etiquetas de red</a>.</small>
+        </div>
+        {% if organizations %}
+        <div class="table-responsive">
+            <table class="table table-hover ins-table mb-0">
+                <thead><tr>
+                    <th>Organización</th><th class="text-end">Visitas</th><th class="text-end">Personas</th>
+                    <th class="text-end">Días</th><th class="text-end">Páginas</th><th class="text-end">Lectura</th>
+                    <th>Canal</th><th>Señales</th><th>Última visita</th>
+                </tr></thead>
+                <tbody>
+                {% for org in organizations %}
+                <tr>
+                    <td class="wrap">
+                        <a class="fw-semibold" href="{% url 'analytics:organization_detail' org.key %}?days={{ days }}">{{ org.name }}</a>
+                        {% if org.is_returning %}<span class="badge bg-primary ms-1">Ha vuelto</span>{% endif %}
+                        <div class="small text-muted">{{ org.type_label }}{% if org.asn %} · AS{{ org.asn }}{% endif %}</div>
+                    </td>
+                    <td class="text-end">{{ org.visits }}</td>
+                    <td class="text-end">{{ org.visitors }}</td>
+                    <td class="text-end">{{ org.days }}</td>
+                    <td class="text-end">{{ org.pages }}</td>
+                    <td class="text-end">{% if org.reading_seconds >= 60 %}{% widthratio org.reading_seconds 60 1 %} min{% else %}{{ org.reading_seconds }} s{% endif %}</td>
+                    <td>{{ org.channels|join:", "|default:"—" }}</td>
+                    <td>
+                        {% if org.events.cv_download %}<span class="ins-signal text-success" title="Descargas del CV"><i class="bi bi-file-earmark-arrow-down"></i>{{ org.events.cv_download }}</span>{% endif %}
+                        {% if org.events.contact_submit %}<span class="ins-signal text-success" title="Mensajes de contacto"><i class="bi bi-envelope-check"></i>{{ org.events.contact_submit }}</span>{% endif %}
+                        {% if org.events.case_open %}<span class="ins-signal" title="Casos de éxito abiertos"><i class="bi bi-briefcase"></i>{{ org.events.case_open }}</span>{% endif %}
+                        {% if org.events.outbound_click %}<span class="ins-signal" title="Clics a LinkedIn, GitHub, Credly…"><i class="bi bi-box-arrow-up-right"></i>{{ org.events.outbound_click }}</span>{% endif %}
+                        {% if not org.events %}<span class="text-muted">—</span>{% endif %}
+                    </td>
+                    <td>{{ org.last_seen|timesince }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">Todavía no hay visitas desde redes de empresas o instituciones en este periodo.
+            Las visitas desde casa o el móvil cuentan como particulares.</p>
+        {% endif %}
+    </div></div>
+
+    <div class="row g-3 mb-4">
+        {# ── Canales ── #}
+        <div class="col-lg-6"><div class="card card-gemini h-100"><div class="card-body">
+            <h2 class="h5 fw-bold"><i class="bi bi-signpost-split"></i> Mis canales</h2>
+            <p class="small text-muted">Enlaces fijos para LinkedIn, la firma y el CV. Se gestionan en
+                <a href="{% url 'admin:analytics_channel_changelist' %}">Canales</a>.</p>
+            <table class="table table-sm ins-table mb-0">
+                <thead><tr><th>Canal</th><th class="text-end">Visitas</th><th class="text-end">Personas</th><th class="text-end">Conversiones</th></tr></thead>
+                <tbody>
+                {% for row in channels %}
+                <tr>
+                    <td class="wrap">{{ row.channel.name }}<div class="small text-muted user-select-all">{{ row.channel.url }}</div></td>
+                    <td class="text-end">{{ row.visits }}</td>
+                    <td class="text-end">{{ row.visitors }}</td>
+                    <td class="text-end">{{ row.conversions }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-muted">Sin canales creados.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div></div></div>
+
+        {# ── Procedencia ── #}
+        <div class="col-lg-6"><div class="card card-gemini h-100"><div class="card-body">
+            <h2 class="h5 fw-bold"><i class="bi bi-compass"></i> De dónde llegan</h2>
+            {% with total=kpis.visits %}
+            {% for s in sources %}
+            <div class="d-flex justify-content-between small"><span>{{ s.label }}</span><span>{{ s.visits }}</span></div>
+            <div class="ins-bar mb-2"><span style="width: {% widthratio s.visits total 100 %}%"></span></div>
+            {% empty %}
+            <p class="text-muted small">Sin datos.</p>
+            {% endfor %}
+            {% endwith %}
+            {% if referrers %}
+            <h3 class="h6 fw-bold mt-3">Webs que enlazan</h3>
+            <ul class="list-unstyled small mb-0">
+                {% for r in referrers %}<li class="d-flex justify-content-between"><span>{{ r.referrer_domain }}</span><span>{{ r.n }}</span></li>{% endfor %}
+            </ul>
+            {% endif %}
+            {% if campaigns %}
+            <h3 class="h6 fw-bold mt-3">Campañas (UTM)</h3>
+            <ul class="list-unstyled small mb-0">
+                {% for c in campaigns %}<li class="d-flex justify-content-between"><span>{{ c.utm_source }} · {{ c.utm_campaign|default:"—" }}</span><span>{{ c.n }}</span></li>{% endfor %}
+            </ul>
+            {% endif %}
+        </div></div></div>
+    </div>
+
+    {# ── Recurrentes ── #}
+    <div class="card card-gemini mb-4"><div class="card-body">
+        <h2 class="h5 fw-bold"><i class="bi bi-arrow-repeat"></i> Visitantes que han vuelto</h2>
+        <p class="small text-muted">La misma persona en el mismo dispositivo y red durante el mes (identificador anónimo, se renueva cada mes).</p>
+        {% if returning_visitors %}
+        <div class="table-responsive">
+            <table class="table table-sm ins-table mb-0">
+                <thead><tr><th>Visitante</th><th>Red</th><th class="text-end">Días</th><th class="text-end">Visitas</th>
+                    <th class="text-end">Lectura media</th><th>Canal</th><th class="text-end">Conversiones</th><th>Última visita</th></tr></thead>
+                <tbody>
+                {% for v in returning_visitors %}
+                <tr>
+                    <td><code>#{{ v.alias }}</code></td>
+                    <td class="wrap">{{ v.organization }}<div class="small text-muted">{{ v.type_label }}</div></td>
+                    <td class="text-end">{{ v.days }}</td>
+                    <td class="text-end">{{ v.visits }}</td>
+                    <td class="text-end">{{ v.reading|floatformat:0 }} s</td>
+                    <td>{{ v.channel|default:"—" }}</td>
+                    <td class="text-end">{{ v.conversions }}</td>
+                    <td>{{ v.last|timesince }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">Nadie ha vuelto todavía en este periodo.</p>
+        {% endif %}
+    </div></div>
+
+    <div class="row g-3 mb-4">
+        {# ── Contenido ── #}
+        <div class="col-lg-7"><div class="card card-gemini h-100"><div class="card-body">
+            <h2 class="h5 fw-bold"><i class="bi bi-book"></i> Qué leen</h2>
+            <div class="table-responsive">
+                <table class="table table-sm ins-table mb-0">
+                    <thead><tr><th>Página</th><th class="text-end">Visitas</th><th class="text-end">Personas</th>
+                        <th class="text-end">Lectura media</th><th class="text-end">Scroll medio</th></tr></thead>
+                    <tbody>
+                    {% for p in pages %}
+                    <tr>
+                        <td class="wrap"><a href="{{ p.path }}" target="_blank" rel="noopener">{{ p.path }}</a></td>
+                        <td class="text-end">{{ p.visits }}</td>
+                        <td class="text-end">{{ p.visitors }}</td>
+                        <td class="text-end">{% if p.avg_time %}{{ p.avg_time|floatformat:0 }} s{% else %}—{% endif %}</td>
+                        <td class="text-end">{% if p.avg_scroll %}{{ p.avg_scroll|floatformat:0 }} %{% else %}—{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-muted">Sin datos.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div></div></div>
+
+        <div class="col-lg-5"><div class="card card-gemini h-100"><div class="card-body">
+            <h2 class="h5 fw-bold"><i class="bi bi-briefcase"></i> Casos de éxito abiertos</h2>
+            <ul class="list-unstyled small">
+                {% for c in cases %}<li class="d-flex justify-content-between"><span>{{ c.label|default:"—" }}</span><span>{{ c.n }}</span></li>
+                {% empty %}<li class="text-muted">Ninguno todavía.</li>{% endfor %}
+            </ul>
+            <h2 class="h5 fw-bold mt-4"><i class="bi bi-box-arrow-up-right"></i> Clics a otras webs</h2>
+            <ul class="list-unstyled small mb-0">
+                {% for o in outbound %}<li class="d-flex justify-content-between gap-2"><span class="text-truncate">{{ o.label }}</span><span>{{ o.n }}</span></li>
+                {% empty %}<li class="text-muted">Ninguno todavía.</li>{% endfor %}
+            </ul>
+        </div></div></div>
+    </div>
+
+    {# ── Actividad ── #}
+    <div class="card card-gemini mb-4"><div class="card-body">
+        <h2 class="h5 fw-bold"><i class="bi bi-activity"></i> Actividad reciente de empresas</h2>
+        {% if activity %}
+        <ul class="list-unstyled ins-feed mb-0">
+            {% for a in activity %}
+            <li class="d-flex gap-3 align-items-start">
+                <i class="bi {{ a.icon }} fs-5 text-primary"></i>
+                <div>
+                    <a class="fw-semibold" href="{% url 'analytics:organization_detail' a.org_key %}?days={{ days }}">{{ a.organization }}</a>
+                    · {{ a.kind }}{% if a.label %}: <span class="text-muted">{{ a.label }}</span>{% endif %}
+                    {% if a.channel %}<span class="badge bg-light text-dark border ms-1">{{ a.channel }}</span>{% endif %}
+                    <div class="small text-muted">hace {{ a.when|timesince }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted mb-0">Sin acciones de empresas en este periodo.</p>
+        {% endif %}
+    </div></div>
+
+    <div class="d-flex flex-wrap justify-content-between gap-2 small text-muted">
+        <a href="{% url 'analytics:blog_dashboard' %}"><i class="bi bi-journal-text"></i> Analítica del blog</a>
+        <span>Datos de red: <a href="https://db-ip.com" target="_blank" rel="noopener">IP to ASN Lite by DB-IP</a> (CC BY 4.0)</span>
+    </div>
 </div>
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+{{ chart|json_script:"ins-chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-let chartsInstances = {};
-
-function destroyChart(chartId) {
-    if (chartsInstances[chartId]) {
-        chartsInstances[chartId].destroy();
-        delete chartsInstances[chartId];
-    }
-}
-
-// Gráfico de vistas diarias
-fetch('/private/analytics/api/views-by-day/')
-    .then(r => r.json())
-    .then(data => {
-        destroyChart('viewsChart');
-        const ctx = document.getElementById('viewsChart').getContext('2d');
-        chartsInstances['viewsChart'] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.data.map(d => d.date),
-                datasets: [{
-                    label: 'Vistas',
-                    data: data.data.map(d => d.views),
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    });
-
-// Gráfico de dispositivos
-fetch('/private/analytics/api/devices-distribution/')
-    .then(r => r.json())
-    .then(data => {
-        destroyChart('devicesChart');
-        const ctx = document.getElementById('devicesChart').getContext('2d');
-        chartsInstances['devicesChart'] = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: data.data.map(d => d.device),
-                datasets: [{
-                    data: data.data.map(d => d.count),
-                    backgroundColor: ['#007bff', '#28a745', '#ffc107'],
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            }
-        });
-    });
-
-// Gráfico de países
-fetch('/private/analytics/api/countries-distribution/')
-    .then(r => r.json())
-    .then(data => {
-        destroyChart('countriesChart');
-        const ctx = document.getElementById('countriesChart').getContext('2d');
-        chartsInstances['countriesChart'] = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: data.data.map(d => d.country),
-                datasets: [{
-                    label: 'Vistas',
-                    data: data.data.map(d => d.count),
-                    backgroundColor: '#007bff',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                indexAxis: 'y',
-                plugins: { legend: { display: false } }
-            }
-        });
-    });
-
-// Top páginas (seguro contra XSS)
-fetch('/private/analytics/api/top-pages/')
-    .then(r => r.json())
-    .then(data => {
-        const container = document.getElementById('topPagesContainer');
-        if (!data.data || data.data.length === 0) {
-            container.innerHTML = '<small class="text-muted">Sin datos</small>';
-            return;
+(function () {
+    var data = JSON.parse(document.getElementById('ins-chart-data').textContent);
+    var ctx = document.getElementById('insChart');
+    if (!ctx || typeof Chart === 'undefined') return;
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(function (d) { return d.day.slice(5); }),
+            datasets: [
+                { label: 'Páginas vistas', data: data.map(function (d) { return d.visits; }), borderColor: '#adb5bd', tension: .3, pointRadius: 0 },
+                { label: 'Personas', data: data.map(function (d) { return d.visitors; }), borderColor: '#CC0052', backgroundColor: 'rgba(204,0,82,.08)', fill: true, tension: .3, pointRadius: 2 },
+                { label: 'Empresas', data: data.map(function (d) { return d.organizations; }), borderColor: '#0d6efd', tension: .3, pointRadius: 2 }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom' } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
         }
-        container.innerHTML = '';
-        data.data.forEach(p => {
-            const row = document.createElement('div');
-            row.className = 'd-flex justify-content-between py-2 border-bottom';
-
-            const span = document.createElement('span');
-            const code = document.createElement('code');
-            code.textContent = p.path;
-            span.appendChild(code);
-
-            const strong = document.createElement('strong');
-            strong.textContent = p.views;
-
-            row.appendChild(span);
-            row.appendChild(strong);
-            container.appendChild(row);
-        });
     });
+})();
 </script>
 {% endblock %}

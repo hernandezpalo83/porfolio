@@ -10,6 +10,8 @@ from django.db.models import Q
 from django.http import Http404, HttpRequest, HttpResponse
 
 from app.utils.content_cache import cached
+from app.analytics.middleware import record_event
+from app.analytics.models import Event
 from typing import Optional, List
 
 logger = logging.getLogger('app.blog')
@@ -135,6 +137,7 @@ def subscribe(request: HttpRequest) -> HttpResponse:
 
     if created:
         logger.info("Nuevo suscriptor id=%s", subscriber.pk)  # sin email ni token en los logs
+        record_event(request, Event.Kind.NEWSLETTER)
         # TODO: enviar email con subscriber.get_confirm_url() via SendGrid/SMTP
         # Cuando se configure un email backend en settings, descomentar:
         # from django.core.mail import send_mail

@@ -6,6 +6,7 @@ app_name = 'analytics'
 urlpatterns = [
     # Dashboard general
     path('', views.analytics_dashboard, name='dashboard'),
+    path('red/<str:key>/', views.organization_detail, name='organization_detail'),
 
     # APIs de datos (JSON)
     path('api/views-by-day/', views.api_views_by_day, name='api_views_by_day'),

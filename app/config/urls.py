@@ -11,6 +11,7 @@ from app.documentum.sitemaps import DocumentSitemap, CategorySitemap
 
 from django.views.generic import TemplateView
 from django.http import HttpResponse, JsonResponse
+from app.analytics.beacon import beacon as analytics_beacon
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
@@ -175,6 +176,7 @@ sitemaps = {
 urlpatterns = [
     path("health/", health_check, name="health_check"),
     path("csp-report/", csp_report, name="csp_report"),
+    path('a/beacon/', analytics_beacon, name='analytics_beacon'),
     path("api/debug/diagnostics/", debug_diagnostics, name="debug_diagnostics"),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),

@@ -17,10 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(ignore_result=True)
-def record_pageview_task(data: dict):
-    """Record one anonymous page view (see app.analytics.middleware)."""
-    from app.analytics.middleware import record_pageview
-    record_pageview(data)
+def record_analytics_task(recorder: str, data: dict):
+    """Record one anonymous page view or event (see app.analytics.middleware)."""
+    from app.analytics import middleware
+    from app.analytics.beacon import record_reading
+    recorders = {'record_pageview': middleware.record_pageview, 'record_event_data': middleware.record_event_data,
+                 'record_reading': record_reading}
+    recorders[recorder](data)
 
 
 @shared_task(bind=True, max_retries=3)
