@@ -49,7 +49,7 @@
         <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
             <div class="text-muted small">Empresas e instituciones</div>
             <div class="value text-primary">{{ kpis.organizations }}</div>
-            <div class="hint text-muted">{{ kpis.private_visitors }} particulares ({{ kpis.private_visits }} vistas)</div>
+            <div class="hint text-muted">con lectura o acciones{% if kpis.organizations_no_interaction %} · {{ kpis.organizations_no_interaction }} sin interacción{% endif %}<br>{{ kpis.private_visitors }} particulares ({{ kpis.private_visits }} vistas)</div>
         </div></div></div>
         <div class="col-6 col-lg-2"><div class="card card-gemini h-100 ins-kpi"><div class="card-body">
             <div class="text-muted small">Descargas del CV</div>
@@ -91,10 +91,11 @@
                 </tr></thead>
                 <tbody>
                 {% for org in organizations %}
-                <tr>
+                <tr{% if not org.engaged %} class="text-muted"{% endif %}>
                     <td class="wrap">
                         <a class="fw-semibold" href="{% url 'analytics:organization_detail' org.key %}?days={{ days }}">{{ org.name }}</a>
                         {% if org.is_returning %}<span class="badge bg-primary ms-1">Ha vuelto</span>{% endif %}
+                        {% if not org.engaged %}<span class="badge bg-light text-secondary border ms-1" title="Sin tiempo de lectura ni acciones: suele ser un robot que se hace pasar por navegador">Sin interacción (posible bot)</span>{% endif %}
                         <div class="small text-muted">{{ org.type_label }}{% if org.asn %} · AS{{ org.asn }}{% endif %}</div>
                     </td>
                     <td class="text-end">{{ org.visits }}</td>

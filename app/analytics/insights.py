@@ -14,6 +14,7 @@ from django.db.models.functions import TruncDate
 from django.utils import timezone
 
 from .models import Channel, Event, NetworkLabel, NetworkType, PageView, TrafficSource
+from .network import classify
 
 PERIODS = (7, 30, 90)
 # Networks that point to a company or institution (the audience of the portfolio)
@@ -59,6 +60,11 @@ class Organization:
         return self.days > 1
 
     @property
+    def engaged(self) -> bool:
+        """A person reads (time is only counted with the tab visible) or acts; bots do neither."""
+        return self.reading_seconds > 0 or bool(self.events)
+
+    @property
     def interest(self) -> int:
         """Rough score to sort organizations: return visits, reading and conversions weigh most."""
         return (self.visits + 3 * max(self.days - 1, 0) + self.reading_seconds // 60
@@ -81,6 +87,9 @@ def _name(asn, organization, network_type, labels):
     label = labels.get(asn)
     if label:
         return label.name, label.network_type
+    if network_type == NetworkType.BUSINESS:
+        # Stored with older rules: re-run the current ones so fixes apply to past visits too
+        network_type = classify(organization)
     return organization or 'Red desconocida', network_type
 
 
@@ -135,7 +144,7 @@ def build(days: int, include_datacenters: bool = False) -> dict:
             org.events[row['kind']] += row['n']
 
     organizations = sorted((o for o in orgs.values() if o.network_type in ORGANIZATION_TYPES),
-                           key=lambda o: (o.interest, o.last_seen), reverse=True)
+                           key=lambda o: (o.engaged, o.interest, o.last_seen), reverse=True)
     private_visits = sum(o.visits for o in orgs.values() if o.network_type in PRIVATE_TYPES)
     private_visitors = sum(o.visitors for o in orgs.values() if o.network_type in PRIVATE_TYPES)
 
@@ -216,7 +225,8 @@ def build(days: int, include_datacenters: bool = False) -> dict:
             'visits': views.count(),
             'visitors': views.exclude(visitor_id='').values('visitor_id').distinct().count(),
             'returning': returning,
-            'organizations': len(organizations),
+            'organizations': sum(1 for o in organizations if o.engaged),
+            'organizations_no_interaction': sum(1 for o in organizations if not o.engaged),
             'private_visitors': private_visitors,
             'private_visits': private_visits,
             'cv_downloads': conversions[Event.Kind.CV_DOWNLOAD],

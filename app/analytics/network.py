@@ -37,6 +37,11 @@ RULES: list[tuple[str, str]] = [
                           r'server|vps|colocation|cloud'),
     (NetworkType.MOBILE, r'mobile|movil|móvil|wireless|cellular|\blte\b|\b5g\b|t-mobile|simyo|lowi|pepephone|'
                          r'\bo2\b|yoigo'),
+    # Internet backbones / transit carriers and big foreign ISPs: never the company that visits
+    (NetworkType.ISP, r'level 3|lumen|centurylink|cogent|zayo|hurricane electric|\bgtt\b|\bntt\b|telia|'
+                      r'arelion|tata comm|pccw|\brcn\b|frontier|windstream|optimum|altice|mediacom|'
+                      r'suddenlink|\bwow\b|shaw|rogers|bell canada|telus|reliance jio|airtel|'
+                      r'\bcommunications?\b|\bcommunication services\b'),
     (NetworkType.ISP, r'telefonica|telefónica|movistar|vodafone|orange|jazztel|masmovil|másmóvil|xfera|'
                       r'\bdigi\b|avatel|adamo|euskaltel|telecable|r cable|parlem|finetwork|'
                       r'lyntia|aire networks|comcast|verizon|at&t|charter|cox comm|spectrum|\bbt\b|'
